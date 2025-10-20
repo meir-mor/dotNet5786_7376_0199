@@ -7,6 +7,7 @@ partial class Program7376
         Welcome7376();
         Welcome0199();
         Console.ReadKey();
+        //nothing at all
     }
 
     static partial void Welcome0199();
