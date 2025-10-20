@@ -1,6 +1,6 @@
 ﻿using System;
 
-partial class Program
+partial class Program7376
 {
      static partial void Welcome0199()
      {
