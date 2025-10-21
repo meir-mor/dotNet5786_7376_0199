@@ -14,8 +14,8 @@ partial class Program7376
     private static void Welcome7376()
     {
         Console.Write("Enter your name: ");
-        string o = Console.ReadLine();
+        string name = Console.ReadLine();
 
-        Console.WriteLine($"{o} Welcon to my first console application");
+        Console.WriteLine("{0}, Welcome to my first console application", name);
     }
 }
