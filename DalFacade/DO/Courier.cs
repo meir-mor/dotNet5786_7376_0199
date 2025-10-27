@@ -1,16 +1,16 @@
 ﻿
 namespace DO;
 /// <summary>
-/// 
+/// Represents a courier with personal and work-related details.
 /// </summary>
-/// <param name="id"></param>
-/// <param name="name"></param>
-/// <param name="phone"></param>
-/// <param name="email"></param>
-/// <param name="isActive"></param>
-/// <param name="TaximumDistance"></param>
-/// <param name="TypeOfShipment"></param>
-/// <param name="startingWork"></param>
+/// <param name="id">Unique courier ID.</param>
+/// <param name="name">Courier full name.</param>
+/// <param name="phone">Courier phone number.</param>
+/// <param name="email">Courier email address.</param>
+/// <param name="isActive">Indicates whether the courier is active.</param>
+/// <param name="TaximumDistance">Maximum delivery distance (km).</param>
+/// <param name="TypeOfShipment">Type of shipment handled by the courier.</param>
+/// <param name="startingWork">Date the courier started working.</param>
 public record Courier
 (
     int id,
@@ -24,5 +24,5 @@ public record Courier
     double? TaximumDistance = null
 )
 {
-public Courier() : this(0) { }
+    public Courier() : this(0, "", "", "", false, default, DateTime.Now, null) { }
 }
