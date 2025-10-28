@@ -16,7 +16,7 @@ namespace DO;
 /// <param name="CreatedAt">Date and time when the order was created.</param>
 public record Order
 (
-     int Id,
+    int Id,
     OrderType Type,
     string? Description,
     string Address,
