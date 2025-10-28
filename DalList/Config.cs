@@ -17,7 +17,7 @@ internal static class Config
     // מזהה התחלתי לישות Order
     private const int startOrderId = 0;
     private static int nextOrderId = startOrderId;
-    internal static int NextEnrollmentId => ++nextOrderId;
+    internal static int NextOrderId => ++nextOrderId;
 
     // ======== שדות תצורה נוספים ========
     private static string MenagerId { get; set; }

@@ -16,4 +16,8 @@
     <ProjectReference Include="..\DalFacade\DalFacade.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Implemenation\" />
+  </ItemGroup>
+
 </Project>

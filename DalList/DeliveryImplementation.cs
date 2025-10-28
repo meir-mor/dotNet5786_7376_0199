@@ -1,0 +1,53 @@
+﻿namespace Dal;
+using DalApi;
+using DO;
+using static DataSource;
+
+
+public class DeliveryImplementation : IDelivery
+{
+    public void Create(Delivery item)
+    {
+        Deliveries.Add(new Delivery{Id = Config.NextDeliveryId,
+            OrderId = item.OrderId,
+            CourierId = item.CourierId,
+            ShipmentType = item.ShipmentType,
+            StartTime = item.StartTime,
+            ActualDistance = item.ActualDistance,
+            DeliveryEndType = item.DeliveryEndType,
+            EndTime = item.EndTime});
+    }
+
+    public Delivery? Read(int id)
+    {
+        return Deliveries.FirstOrDefault(d => d.Id == id);
+    }
+
+    public List<Delivery> ReadAll()
+    {
+        return Deliveries.ToList();
+    }
+
+    public void Update(Delivery item)
+    {
+        var index = Deliveries.FindIndex(d => d.Id == item.Id);
+        if (index == -1)
+            throw new KeyNotFoundException($"Delivery with ID {item.Id} not found.");
+
+        Deliveries[index] = item;
+    }
+
+    public void Delete(int id)
+    {
+        Delivery? delivery = Deliveries.FirstOrDefault(d => d.Id == id);
+        if (delivery == null)
+            throw new KeyNotFoundException($"Delivery with ID {id} not found.");
+
+        Deliveries.Remove(delivery);
+    }
+
+    public void DeleteAll()
+    {
+        Deliveries.Clear();
+    }
+}
