@@ -8,6 +8,17 @@ internal class ConfigImplementation : IConfig
         get => Config.ManagerId;
         set => Config.ManagerId = value;
     }
+    public DateTime Clock
+    {
+        get => Config.Clock;
+        set => Config.Clock = value;
+    }
+    public TimeSpan RiskRange
+    {
+        get => Config.RiskRange;
+        set => Config.RiskRange = value;
+    }
+
     public string ComponyAddress
     {
         get => Config.ComponyAddress;

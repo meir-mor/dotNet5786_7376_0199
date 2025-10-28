@@ -24,7 +24,7 @@ public record Order
     double Longitude,
     string CustomerName,
     string CustomerPhone,
-    bool IsFragile,
+    bool IsFragile,//אולי לשנות להאם דחוף או לא, יותר שימושי...
     DateTime CreatedAt
 )
 {

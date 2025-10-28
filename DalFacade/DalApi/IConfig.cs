@@ -8,7 +8,9 @@ public interface IConfig
     /// DateTime Clock { get; set; }
     string ManagerId { get; set; }
 
-    string ComponyAddress{ get; set; }
+    DateTime Clock { get; set; }
+    TimeSpan RiskRange { get; set; }
+    string ComponyAddress { get; set; }
 
     void Reset();
 }
