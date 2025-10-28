@@ -8,14 +8,8 @@ public class DeliveryImplementation : IDelivery
 {
     public void Create(Delivery item)
     {
-        Deliveries.Add(new Delivery{Id = Config.NextDeliveryId,
-            OrderId = item.OrderId,
-            CourierId = item.CourierId,
-            ShipmentType = item.ShipmentType,
-            StartTime = item.StartTime,
-            ActualDistance = item.ActualDistance,
-            DeliveryEndType = item.DeliveryEndType,
-            EndTime = item.EndTime});
+        var id = Config.NextDeliveryId;
+        Deliveries.Add(item with { Id = id });
     }
 
     public Delivery? Read(int id)

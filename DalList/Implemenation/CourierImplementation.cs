@@ -8,14 +8,8 @@ public class CourierImplementation : ICourier
 {
     public void Create(Courier item)
     {
-        Couriers.Add(new Courier{Id = Config.NextCourierId,
-            Name = item.Name,
-            Phone = item.Phone,
-            Email = item.Email,
-            IsActive = item.IsActive,
-            MaximumDistance = item.MaximumDistance,
-            TypeOfShipment = item.TypeOfShipment,
-            StartingWork = item.StartingWork});
+        var id = Config.NextCourierId;
+        Couriers.Add(item with { Id = id });
     }
 
     public Courier? Read(int id)

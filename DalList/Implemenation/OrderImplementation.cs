@@ -7,16 +7,8 @@ public class OrderImplementation : IOrder
 {
     public void Create(Order item)
     {
-        Orders.Add(new Order{Id = Config.NextOrderId,
-            Type = item.Type,
-            Description = item.Description,
-            Address = item.Address,
-            Latitude = item.Latitude,
-            Longitude = item.Longitude,
-            CustomerName = item.CustomerName,
-            CustomerPhone = item.CustomerPhone,
-            IsFragile = item.IsFragile,
-            CreatedAt = item.CreatedAt});
+        var id = Config.NextOrderId;
+        Orders.Add(item with { Id = id });
     }
 
     public Order? Read(int id)
