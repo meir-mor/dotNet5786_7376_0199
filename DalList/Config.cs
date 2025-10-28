@@ -20,7 +20,7 @@ internal static class Config
     internal static int NextOrderId => ++nextOrderId;
 
     // ======== שדות תצורה נוספים ========
-    private static string ManagerId { get; set; }
+    internal static string ManagerId { get; set; }
     internal static string ComponyAddress { get; set; }
 
     // ======== מתודה לאיפוס כל הערכים ========
