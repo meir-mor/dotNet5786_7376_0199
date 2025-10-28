@@ -1,4 +1,4 @@
-﻿namespace DalList;
+﻿namespace Dal;
 
 internal static class Config
 {

@@ -1,8 +1,7 @@
-﻿using DO;
+﻿namespace DalApi;
+using DO;
 
-namespace DalFacade.DalApi;
-
-internal interface IOrder
+public interface IOrder
 {
     void Create(Order item); //Creates new entity object in DAL
     Order? Read(int id); //Reads entity object by its ID 

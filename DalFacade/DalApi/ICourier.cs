@@ -1,8 +1,7 @@
-﻿using DO;
+﻿namespace DalApi;
+using DO;
 
-namespace DalFacade.DalApi;
-
-internal interface ICourier
+public interface ICourier
 {
     void Create(Courier item); //Creates new entity object in DAL
     Courier? Read(int id); //Reads entity object by its ID 
