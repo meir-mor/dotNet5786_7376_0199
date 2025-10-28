@@ -8,19 +8,19 @@ public class CourierImplementation : ICourier
 {
     public void Create(Courier item)
     {
-        Couriers.Add(new Courier{id = Config.NextCourierId,
-            name = item.name,
-            phone = item.phone,
-            email = item.email,
-            isActive = item.isActive,
-            TaximumDistance = item.TaximumDistance,
+        Couriers.Add(new Courier{Id = Config.NextCourierId,
+            Name = item.Name,
+            Phone = item.Phone,
+            Email = item.Email,
+            IsActive = item.IsActive,
+            MaximumDistance = item.MaximumDistance,
             TypeOfShipment = item.TypeOfShipment,
-            startingWork = item.startingWork});
+            StartingWork = item.StartingWork});
     }
 
     public Courier? Read(int id)
     {
-        return Couriers.FirstOrDefault(c => c.id == id, defaultValue:null);
+        return Couriers.FirstOrDefault(c => c.Id == id, defaultValue:null);
     }
 
     public List<Courier> ReadAll()
@@ -30,16 +30,16 @@ public class CourierImplementation : ICourier
 
     public void Update(Courier item)
     {
-        var index = Couriers.FindIndex(c => c.id == item.id);
+        var index = Couriers.FindIndex(c => c.Id == item.Id);
         if (index == -1)
-            throw new KeyNotFoundException($"Courier with ID {item.id} not found.");
+            throw new KeyNotFoundException($"Courier with ID {item.Id} not found.");
 
         Couriers[index] = item;
     }
 
     public void Delete(int id)
     {
-        Courier? courier = Couriers.FirstOrDefault(c => c.id == id);
+        Courier? courier = Couriers.FirstOrDefault(c => c.Id == id);
         if (courier == null)
             throw new KeyNotFoundException($"Courier with ID {id} not found.");
 

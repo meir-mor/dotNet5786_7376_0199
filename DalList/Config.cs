@@ -20,7 +20,7 @@ internal static class Config
     internal static int NextOrderId => ++nextOrderId;
 
     // ======== שדות תצורה נוספים ========
-    private static string MenagerId { get; set; }
+    private static string ManagerId { get; set; }
     internal static string ComponyAddress { get; set; }
 
     // ======== מתודה לאיפוס כל הערכים ========
@@ -32,7 +32,7 @@ internal static class Config
         nextOrderId = startOrderId;
 
         // איפוס שדות נוספים
-        MenagerId = "049821633";
+        ManagerId = "049821633";
         ComponyAddress = "Bar Cochva 2 BneiBrak Israel";
     }
 }
