@@ -20,13 +20,19 @@ public record Order
     OrderType Type,
     string? Description,
     string Address,
-    double Latitude,
-    double Longitude,
     string CustomerName,
     string CustomerPhone,
     bool IsFragile,//אולי לשנות להאם דחוף או לא, יותר שימושי...
     DateTime CreatedAt
 )
 {
-public Order(): this(0, default, null, "", 0.0, 0.0, "", "", false, DateTime.Now) { }
+    public double Latitude
+    {
+        get => 0;//ourFunctionToCalculate()
+    }
+    public double Longitude
+    {
+        get => 0;//ourFunctionToCalculate()
+    }
+public Order(): this(0, default, null, "", "", "", false, DateTime.Now) { }
 }
