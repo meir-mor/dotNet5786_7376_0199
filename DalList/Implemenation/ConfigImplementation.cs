@@ -1,7 +1,7 @@
 ﻿namespace Dal;
 using DalApi;
 
-internal class ConfigImplementation : IConfig
+public class ConfigImplementation : IConfig
 {
     public string ManagerId
     {
@@ -28,4 +28,5 @@ internal class ConfigImplementation : IConfig
     {
         Config.Reset();
     }
+    
 }

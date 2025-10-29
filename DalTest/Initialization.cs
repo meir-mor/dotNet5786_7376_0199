@@ -13,7 +13,7 @@ public static class Initialization
     
     public static void Do(IConfig dalConfig, IOrder dalOrder, ICourier dalCourier, IDelivery dalDelivery)
     {
-        s_dalConfig = dalConfig;
+        s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL object can not be null!");
         s_dalOrder = dalOrder ?? throw new NullReferenceException("DAL object can not be null!");
         s_dalCourier = dalCourier ?? throw new NullReferenceException("DAL object can not be null!");
         s_dalDelivery = dalDelivery ?? throw new NullReferenceException("DAL object can not be null!");
