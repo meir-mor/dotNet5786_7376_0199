@@ -18,9 +18,20 @@ internal static class Config
     // ======== שדות תצורה נוספים ========
 
     internal static DateTime Clock { get; set; } = DateTime.Now;
-    internal static TimeSpan RiskRange { get; set; } = TimeSpan.FromMinutes(30); 
-    internal static string ManagerId { get; set; }
+    internal static int ManagerId { get; set; }
+    internal static string ManagerPassword { get; set; } = "0";
     internal static string? ComponyAddress { get; set; }
+    internal static double? Latitude { get; }// = ourFunctionToCalculate();
+    internal static double? Longitude { get; }// = ourFunctionToCalculate();
+    internal static double? MaxDistance { get; set; } = 100;
+    internal static double AverageCarSpeed { get; set; }
+    internal static double AverageBikeSpeedBike { get; set; }
+    internal static double AverageBicycleSpeed { get; set; }
+    internal static double AverageWalkSpeed { get; set; }
+    internal static TimeSpan MaxDeliveryTime { get; set; }
+    internal static TimeSpan RiskRange { get; set; } = TimeSpan.FromMinutes(30); 
+    internal static TimeSpan TimeToBeDispose { get; set; }
+
 
     // ======== מתודה לאיפוס כל הערכים ========
     internal static void Reset()
@@ -32,7 +43,7 @@ internal static class Config
         RiskRange = TimeSpan.FromMinutes(30);
 
         // איפוס שדות נוספים
-        ManagerId = "049821633";
+        ManagerId = 0;
         ComponyAddress = "Bar Cochva 2 BneiBrak Israel";
     }
 }

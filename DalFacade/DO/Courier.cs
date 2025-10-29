@@ -17,12 +17,12 @@ public record Courier
     string Name,
     string Phone,
     string Email,
-    //string password,
+    string Password,
     bool IsActive,
+    double? MaximumDistance,
     typeOfShipment TypeOfShipment,
-    DateTime StartingWork,
-    double? MaximumDistance = null
+    DateTime StartingWork
 )
 {
-    public Courier() : this(0, "", "", "", false, default, DateTime.Now, null) { }
+    public Courier() : this(0, "", "", "", "", false, null, default, DateTime.MinValue) { }
 }
