@@ -1,6 +1,7 @@
 using Dal;
 using DalApi;
 using DO;
+using System.Threading.Channels;
 
 namespace DalTest
 {
@@ -11,7 +12,6 @@ namespace DalTest
         private static IDelivery? s_dalDelivery = new DeliveryImplementation();
         private static IOrder? s_dalOrder = new OrderImplementation();
 
-        
         static void Main(string[] args)
         {
             try
@@ -20,13 +20,13 @@ namespace DalTest
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"שגיאה: {ex.Message}");
+                Console.WriteLine($@"Error: {ex.Message} (שגיאה)");
                 if (ex.InnerException != null)
-                    Console.WriteLine($"שגיאה פנימית: {ex.InnerException.Message}");
+                    Console.WriteLine($@"Inner error: {ex.InnerException.Message} (שגיאה פנימית)");
             }
             finally
             {
-                Console.WriteLine("\nלחץ על מקש כלשהו כדי לצאת...");
+                Console.WriteLine(@"\nPress any key to exit... (יציאה)");
                 Console.ReadKey();
             }
         }
@@ -38,37 +38,43 @@ namespace DalTest
             do
             {
                 Console.Clear();
-                Console.WriteLine("====== תפריט ראשי ======");
-                Console.WriteLine("1. ניהול שליחים");
-                Console.WriteLine("2. ניהול משלוחים");
-                Console.WriteLine("3. ניהול הזמנות");
-                Console.WriteLine("4. ניהול תצורה (Config)");
-                Console.WriteLine("5. אתחול נתונים");
-                Console.WriteLine("6. הצגת כל הנתונים");
-                Console.WriteLine("7. איפוס כל הנתונים");
-                Console.WriteLine("0. יציאה");
-                Console.Write("בחר אפשרות: ");
+                Console.WriteLine(@"====== Main Menu (תפריט ראשי) ======");
+                Console.WriteLine(@"1. Manage Couriers (ניהול שליחים)");
+                Console.WriteLine(@"2. Manage Deliveries (ניהול משלוחים)");
+                Console.WriteLine(@"3. Manage Orders (ניהול הזמנות)");
+                Console.WriteLine(@"4. Configuration (תצורה)");
+                Console.WriteLine(@"5. Initialize Data (אתחול נתונים)");
+                Console.WriteLine(@"6. Show All Data (הצגת נתונים)");
+                Console.WriteLine(@"7. Reset All Data (איפוס נתונים)");
+                Console.WriteLine(@"0. Exit (יציאה)");
+                Console.Write(@"Select option: (בחר אפשרות) ");
 
-                choice = (MainMenuOption)int.Parse(Console.ReadLine() ?? "0");
+                if (!int.TryParse(Console.ReadLine(), out int menuChoice))
+                {
+                    Console.WriteLine(@"Invalid input! (קלט לא תקין)");
+                    menuChoice = 0; 
+                }
+
+                choice = (MainMenuOption)menuChoice;
                 Console.Clear();
 
                 switch (choice)
                 {
                     case MainMenuOption.CourierMenu:
-                        RunEntityMenu("שליח", s_dalCourier);
+                        RunEntityMenu("Courier", s_dalCourier);
                         break;
                     case MainMenuOption.DeliveryMenu:
-                        RunEntityMenu("משלוח", s_dalDelivery);
+                        RunEntityMenu("Delivery", s_dalDelivery);
                         break;
                     case MainMenuOption.OrderMenu:
-                        RunEntityMenu("הזמנה", s_dalOrder);
+                        RunEntityMenu("Order", s_dalOrder);
                         break;
                     case MainMenuOption.ConfigMenu:
                         RunConfigMenu();
                         break;
                     case MainMenuOption.Initialization:
                         Initialization.Do(s_dalConfig, s_dalOrder, s_dalCourier, s_dalDelivery);
-                        Console.WriteLine("✅ הנתונים אופסו ואוכלסו בהצלחה!");
+                        Console.WriteLine(@"Data reset and initialized successfully! (אתחול)");
                         break;
                     case MainMenuOption.ShowAllData:
                         ShowAllData();
@@ -77,15 +83,15 @@ namespace DalTest
                         ResetAll();
                         break;
                     case MainMenuOption.Exit:
-                        Console.WriteLine("👋 יציאה...");
+                        Console.WriteLine(@"Exiting... (יציאה)");
                         break;
                     default:
-                        Console.WriteLine("בחירה לא חוקית!");
+                        Console.WriteLine(@"Invalid choice! (בחירה לא חוקית)");
                         break;
                 }
 
                 if (choice == MainMenuOption.Exit) continue;
-                Console.WriteLine("\nלחץ על מקש כדי לחזור לתפריט הראשי...");
+                Console.WriteLine(@"\nPress any key to return to main menu... (חזרה לתפריט)");
                 Console.ReadKey();
 
             } while (choice != MainMenuOption.Exit);
@@ -95,7 +101,7 @@ namespace DalTest
         {
             if (dalEntity == null)
             {
-                Console.WriteLine($"❌ אין יישום עבור {entityName}");
+                Console.WriteLine($@" No implementation for {entityName} (אין יישום)");
                 return;
             }
 
@@ -103,17 +109,23 @@ namespace DalTest
             do
             {
                 Console.Clear();
-                Console.WriteLine($"====== תפריט {entityName} ======");
-                Console.WriteLine("1. הוסף אובייקט חדש");
-                Console.WriteLine("2. הצג לפי מזהה");
-                Console.WriteLine("3. הצג את כל האובייקטים");
-                Console.WriteLine("4. עדכן אובייקט קיים");
-                Console.WriteLine("5. מחק אובייקט לפי מזהה");
-                Console.WriteLine("6. מחק את כל האובייקטים");
-                Console.WriteLine("0. חזרה לתפריט הראשי");
-                Console.Write("בחר אפשרות: ");
+                Console.WriteLine($@"====== {entityName} Menu (תפריט {entityName}) ======");
+                Console.WriteLine(@"1. Add new entity (הוסף חדש)");
+                Console.WriteLine(@"2. Show by ID (הצג לפי מזהה)");
+                Console.WriteLine(@"3. Show all entities (הצג הכל)");
+                Console.WriteLine(@"4. Update existing entity (עדכון)");
+                Console.WriteLine(@"5. Delete by ID (מחק לפי מזהה)");
+                Console.WriteLine(@"6. Delete all entities (מחק הכל)");
+                Console.WriteLine(@"0. Return to main menu (חזרה)");
+                Console.Write(@"Select option: (בחר אפשרות) ");
 
-                choice = (EntityMenuOption)int.Parse(Console.ReadLine() ?? "0");
+                if (!int.TryParse(Console.ReadLine(),out int menuChoice))
+                {
+                Console.WriteLine("Invalid input! ");
+                choice = 0;
+                }
+
+                choice = (EntityMenuOption)menuChoice; //(EntityMenuOption)int.Parse(Console.ReadLine() ?? "0");
                 Console.Clear();
 
                 try
@@ -130,110 +142,128 @@ namespace DalTest
                             ReadAllEntities(dalEntity);
                             break;
                         case EntityMenuOption.Update:
-                            Console.WriteLine("עדכון אובייקט — טרם מומש.");
+                            Console.WriteLine(@"Update not implemented yet. (עדכון טרם מומש)");
                             break;
                         case EntityMenuOption.Delete:
                             DeleteEntity(dalEntity);
                             break;
                         case EntityMenuOption.DeleteAll:
                             dalEntity.DeleteAll();
-                            Console.WriteLine("✅ כל הנתונים נמחקו.");
+                            Console.WriteLine(@" All data deleted. (נמחק הכל)");
                             break;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"❌ שגיאה: {ex.Message}");
+                    Console.WriteLine($@" Error: {ex.Message} (שגיאה)");
                 }
 
                 if (choice == EntityMenuOption.Exit) continue;
-                Console.WriteLine("\nלחץ על מקש כדי להמשיך...");
+                Console.WriteLine(@"\nPress any key to continue... (המשך)");
                 Console.ReadKey();
 
             } while (choice != EntityMenuOption.Exit);
         }
 
-        // --- CONFIG MENU ---
+        //CONFIG MENU
         private static void RunConfigMenu()
         {
             ConfigMenuOption choice;
             do
             {
                 Console.Clear();
-                Console.WriteLine("====== תפריט תצורה ======");
-                Console.WriteLine("1. קדם שעון בדקה");
-                Console.WriteLine("2. קדם שעון בשעה");
-                Console.WriteLine("3. הצג שעון נוכחי");
-                Console.WriteLine("4. קבע שעון חדש");
-                Console.WriteLine("5. אפס תצורה");
-                Console.WriteLine("0. חזרה לתפריט הראשי");
-                Console.Write("בחר אפשרות: ");
+                Console.WriteLine(@"====== Configuration Menu (תפריט תצורה) ======");
+                Console.WriteLine(@"1. Advance clock by 1 minute (קדם דקה)");
+                Console.WriteLine(@"2. Advance clock by 1 hour (קדם שעה)");
+                Console.WriteLine(@"3. Show current clock (הצג שעה)");
+                Console.WriteLine(@"4. Set new clock (קבע שעה חדשה)");
+                Console.WriteLine(@"5. Reset configuration (איפוס)");
+                Console.WriteLine(@"0. Return to main menu (חזרה)");
+                Console.Write(@"Select option: (בחר אפשרות) ");
 
-                choice = (ConfigMenuOption)int.Parse(Console.ReadLine() ?? "0");
+                if(!int.TryParse(Console.ReadLine(), out int menuChoice))
+                {
+                    Console.WriteLine("Invalid input! ");
+                    menuChoice = 0;
+                }
+                choice = (ConfigMenuOption)menuChoice; //(ConfigMenuOption)int.Parse(Console.ReadLine() ?? "0");
                 Console.Clear();
 
                 switch (choice)
                 {
                     case ConfigMenuOption.AdvanceMinute:
-                        if(s_dalConfig?.Clock == null) break;
+                        if (s_dalConfig?.Clock == null) break;
                         s_dalConfig.Clock = s_dalConfig.Clock.AddMinutes(1);
-                        Console.WriteLine("✅ השעון קודם בדקה.");
+                        Console.WriteLine(@"Clock advanced by one minute. (קודם בדקה)");
                         break;
                     case ConfigMenuOption.AdvanceHour:
-                        if(s_dalConfig?.Clock == null) break;
+                        if (s_dalConfig?.Clock == null) break;
                         s_dalConfig.Clock = s_dalConfig.Clock.AddHours(1);
+                        Console.WriteLine(@"Clock advanced by one hour. (קודם בשעה)");
                         break;
                     case ConfigMenuOption.ShowClock:
-                        Console.WriteLine($"🕒 השעה הנוכחית: {s_dalConfig?.Clock}");
+                        Console.WriteLine($@"Current time: {s_dalConfig?.Clock} (שעה נוכחית)");
                         break;
                     case ConfigMenuOption.SetClock:
-                        Console.Write("הכנס שעה חדשה (yyyy-MM-dd HH:mm): ");
+                        Console.Write(@"Enter new time (yyyy-MM-dd HH:mm): (הכנס שעה חדשה) ");
                         if (DateTime.TryParse(Console.ReadLine(), out var newTime))
                         {
-                            if(s_dalConfig?.Clock == null) break;
+                            if (s_dalConfig?.Clock == null) break;
                             s_dalConfig.Clock = newTime;
-                            Console.WriteLine("✅ השעה עודכנה.");
+                            Console.WriteLine(@"Clock updated. (עודכן)");
                         }
                         else
                         {
-                            Console.WriteLine("❌ פורמט לא תקין.");
+                            Console.WriteLine(@"Invalid format. (פורמט לא תקין)");
                         }
                         break;
                     case ConfigMenuOption.Reset:
                         s_dalConfig?.Reset();
-                        Console.WriteLine("✅ התצורה אופסה.");
+                        Console.WriteLine(@"Configuration reset. (אופסה)");
                         break;
                 }
 
                 if (choice != ConfigMenuOption.Exit)
                 {
-                    Console.WriteLine("\nלחץ על מקש כדי להמשיך...");
+                    Console.WriteLine(@"\nPress any key to continue... (המשך)");
                     Console.ReadKey();
                 }
 
             } while (choice != ConfigMenuOption.Exit);
         }
 
-        // --- HELPERS ---
+        //HELPERS
         private static void CreateEntity(dynamic dalEntity, string entityName)
         {
-            Console.WriteLine($"הוספת {entityName} חדש:");
-            Console.Write("הכנס מזהה: ");
-            var id = int.Parse(Console.ReadLine() ?? "0");
-
-            // כאן תוכל להוסיף קליטת נתונים נוספים לפי סוג הישות
+            Console.WriteLine($@"Add new {entityName}: (הוסף חדש)");
+            Console.Write(@"Enter ID: (מזהה) ");
+            //var id = int.Parse(Console.ReadLine() ?? "0");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            { Console.WriteLine("Invalid ID! ");
+                return;
+            }
             var newEntity = Activator.CreateInstance(dalEntity.GetType().GenericTypeArguments[0], id);
 
             dalEntity.Create(newEntity);
-            Console.WriteLine($"✅ {entityName} נוסף בהצלחה.");
+            Console.WriteLine($@" {entityName} added successfully. (נוסף)");
         }
 
         private static void ReadEntity(dynamic dalEntity)
         {
-            Console.Write("הכנס מזהה לחיפוש: ");
-            var id = int.Parse(Console.ReadLine() ?? "0");
+            Console.Write(@"Enter ID to search: (הכנס מזהה) ");
+            //var id = int.Parse(Console.ReadLine() ?? "0");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("Invalid ID! ");
+                return;
+            }
             var entity = dalEntity.Read(id);
-            Console.WriteLine(entity != null ? entity.ToString() : "❌ לא נמצא.");
+            if (entity == null)
+            {
+                Console.WriteLine(@" Not found. (לא נמצא)");
+                return;
+            }
+            Console.WriteLine(entity);
         }
 
         private static void ReadAllEntities(dynamic dalEntity)
@@ -245,20 +275,25 @@ namespace DalTest
 
         private static void DeleteEntity(dynamic dalEntity)
         {
-            Console.Write("הכנס מזהה למחיקה: ");
-            int id = int.Parse(Console.ReadLine() ?? "0");
+            Console.Write(@"Enter ID to delete: (הכנס מזהה) ");
+            //int id = int.Parse(Console.ReadLine() ?? "0");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("Invalid ID! ");
+                return;
+            }
             dalEntity.Delete(id);
-            Console.WriteLine("✅ האובייקט נמחק בהצלחה.");
+            Console.WriteLine(@"Entity deleted successfully. (נמחק)");
         }
 
         private static void ShowAllData()
         {
-            Console.WriteLine("=== רשימת כל הנתונים ===");
-            Console.WriteLine("שליחים:");
+            Console.WriteLine(@"=== All Data (כל הנתונים) ===");
+            Console.WriteLine(@"Couriers: (שליחים)");
             ReadAllEntities(s_dalCourier);
-            Console.WriteLine("\nמשלוחים:");
+            Console.WriteLine(@"\nDeliveries: (משלוחים)");
             ReadAllEntities(s_dalDelivery);
-            Console.WriteLine("\nהזמנות:");
+            Console.WriteLine(@"\nOrders: (הזמנות)");
             ReadAllEntities(s_dalOrder);
         }
 
@@ -268,7 +303,8 @@ namespace DalTest
             s_dalDelivery?.DeleteAll();
             s_dalOrder?.DeleteAll();
             s_dalConfig?.Reset();
-            Console.WriteLine("✅ כל הנתונים אופסו בהצלחה.");
+            Console.WriteLine(@"All data reset successfully. (אופס)");
         }
     }
 }
+

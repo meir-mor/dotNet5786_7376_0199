@@ -144,7 +144,7 @@ public static class Initialization
                 CustomerPhone: $"050-{s_rand.Next(1000000, 9999999)}",
                 IsFragile: s_rand.NextDouble() > 0.5,
                 CreatedAt: DateTime.MinValue
-            ));
+            ));//יש לכתוב מתודת עזר שתחשב את המרחק האווירי בין כתובת נתונה (כתובת של הזמנה) לכתובת החברה ע"פ קואורדינטות (באתחול של רשימת משלוחים ייעשה שימוש במרחק זה)
         }
     }
 
@@ -201,11 +201,11 @@ public static class Initialization
             DateTime? endTime = s_rand.NextDouble() > 0.5 ? startTime.AddMinutes(s_rand.Next(10, 120)) : null;
 
             s_dalDelivery?.Create(new Delivery(
-                Id: 0,//מזהה רץ צריך להיות מוגדר אוטומטית!!! //פונקציית create דואגת לזה
+                Id: 0,
                 OrderId: order.Id,
                 CourierId: courier.Id,
                 ShipmentType: (ShipmentType)s_rand.Next(Enum.GetValues(typeof(ShipmentType)).Length),
-                StartTime: startTime,//אולי צריך להיות עכשיו ממש??//אני לא חושב שזה משנה
+                StartTime: startTime,
                 ActualDistance: s_rand.NextDouble() * 100,
                 DeliveryEndType: endTime != null ? (DeliveryEndType)s_rand.Next(Enum.GetValues(typeof(DeliveryEndType)).Length) : null,
                 EndTime: endTime// נראה לי שצריך להיות מוגדר ביישות הזמנה ומשם לקחת את הערך לפי זמן תחילת ההזמנה!!//יש פה חלק null מה שלא null זה מידע עבר
@@ -213,5 +213,3 @@ public static class Initialization
         }
     }
 }
-
-//להוסיף פונקציית בדיקת פורמט תקין בשדות השונים!!!
