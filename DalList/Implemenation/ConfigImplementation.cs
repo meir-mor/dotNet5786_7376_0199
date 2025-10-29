@@ -3,7 +3,7 @@ using DalApi;
 
 public class ConfigImplementation : IConfig
 {
-    public string ManagerId
+    public int ManagerId
     {
         get => Config.ManagerId;
         set => Config.ManagerId = value;

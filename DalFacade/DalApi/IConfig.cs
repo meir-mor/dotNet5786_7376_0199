@@ -6,7 +6,7 @@ public interface IConfig
     /// add function in the future if needed
     /// </summary>
     /// DateTime Clock { get; set; }
-    string ManagerId { get; set; }
+    int ManagerId { get; set; }
 
     DateTime Clock { get; set; }
     TimeSpan RiskRange { get; set; }
