@@ -3,7 +3,11 @@
 internal static class Config
 {
     // ======== מזהים ריצים (IDs) לדוגמה ========
-
+    // מזהה התחלתי לישות Courier
+    private const int startCourierId = 0;
+    private static int nextCouriertId = startCourierId;
+    internal static int NextCourierId => ++nextCouriertId;
+    
     // מזהה התחלתי לישות Delivery
     private const int startDeliveryId = 0;
     private static int nextDeliveryId = startDeliveryId;

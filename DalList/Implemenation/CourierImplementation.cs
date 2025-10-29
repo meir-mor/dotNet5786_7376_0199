@@ -8,10 +8,8 @@ public class CourierImplementation : ICourier
 {
     public void Create(Courier item)
     {
-        if (Couriers.Any(c => c.Id == item.Id))
-            throw new InvalidOperationException($"Courier with ID {item.Id} already exists");
-
-        Couriers.Add(item);
+        var id = Config.NextCourierId;
+        Couriers.Add(item with { Id = id });
     }
 
     public Courier? Read(int id)
