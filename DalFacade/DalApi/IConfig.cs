@@ -11,6 +11,16 @@ public interface IConfig
     DateTime Clock { get; set; }
     TimeSpan RiskRange { get; set; }
     string ComponyAddress { get; set; }
+    string ManagerPassword { get; set; }
+    double? Latitude { get; }
+    double? Longitude { get; }
+    double? MaxDistance { get; set; }
+    double AverageCarSpeed { get; set; }
+    double AverageBikeSpeedBike { get; set; }
+    double AverageBicycleSpeed { get; set; }
+    double AverageWalkSpeed { get; set; }
+    TimeSpan MaxDeliveryTime { get; set; }
+    TimeSpan TimeToBeDispose { get; set; }
 
     void Reset();
 }

@@ -5,15 +5,15 @@ internal static class Config
     // ======== מזהים ריצים (IDs) לדוגמה ========
 
     // מזהה התחלתי לישות Delivery
-    private const int startDeliveryId = 0;
-    private static int nextDeliveryId = startDeliveryId;
-    internal static int NextDeliveryId { get => ++nextDeliveryId; }
+    private const int StartDeliveryId = 0;
+    private static int _nextDeliveryId = StartDeliveryId;
+    internal static int NextDeliveryId { get => ++_nextDeliveryId; }
        
 
     // מזהה התחלתי לישות Order
-    private const int startOrderId = 0;
-    private static int nextOrderId = startOrderId;
-    internal static int NextOrderId { get => ++nextOrderId;}
+    private const int StartOrderId = 0;
+    private static int _nextOrderId = StartOrderId;
+    internal static int NextOrderId { get => ++_nextOrderId;}
 
     // ======== שדות תצורה נוספים ========
 
@@ -37,8 +37,8 @@ internal static class Config
     internal static void Reset()
     {
         // איפוס מזהים
-        nextDeliveryId = startDeliveryId;
-        nextOrderId = startOrderId;
+        _nextDeliveryId = StartDeliveryId;
+        _nextOrderId = StartOrderId;
         Clock = DateTime.Now;
         RiskRange = TimeSpan.FromMinutes(30);
 

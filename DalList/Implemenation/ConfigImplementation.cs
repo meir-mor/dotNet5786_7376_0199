@@ -3,6 +3,7 @@ using DalApi;
 
 public class ConfigImplementation : IConfig
 {
+    
     public int ManagerId
     {
         get => Config.ManagerId;
@@ -24,6 +25,66 @@ public class ConfigImplementation : IConfig
         get => Config.ComponyAddress;
         set => Config.ComponyAddress = value;
     }
+
+    public string ManagerPassword
+    {
+        get => Config.ManagerPassword;
+        set => Config.ManagerPassword = value;
+    }
+
+    public double? Latitude
+    {
+        get => Config.Latitude;
+    }
+
+    public double? Longitude
+    {
+        get => Config.Longitude;
+    }
+
+    public double? MaxDistance
+    {
+        get => Config.MaxDistance;
+        set => Config.MaxDistance = value;
+    }
+
+    public double AverageCarSpeed
+    {
+        get => Config.AverageCarSpeed;
+        set => Config.AverageCarSpeed = value;
+    }
+
+    public double AverageBikeSpeedBike
+    {
+        get => Config.AverageBikeSpeedBike;
+        set => Config.AverageBikeSpeedBike = value;
+    }
+
+    public double AverageBicycleSpeed
+    {
+        get => Config.AverageBicycleSpeed;
+        set => Config.AverageBicycleSpeed = value;
+    }
+
+    public double AverageWalkSpeed
+    {
+        get => Config.AverageWalkSpeed;
+        set => Config.AverageWalkSpeed = value;
+    }
+
+    public TimeSpan MaxDeliveryTime
+    {
+        get => Config.MaxDeliveryTime;
+        set => Config.MaxDeliveryTime = value;
+    }
+
+    public TimeSpan TimeToBeDispose
+    {
+        get => Config.TimeToBeDispose;
+        set => Config.TimeToBeDispose = value;
+    }
+
+
     public void Reset()
     {
         Config.Reset();
