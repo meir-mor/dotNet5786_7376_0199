@@ -84,6 +84,9 @@ public class ConfigImplementation : IConfig
         set => Config.TimeToBeDispose = value;
     }
 
+    public int NextDeliveryId => Config.NextDeliveryId;
+
+    public int NextOrderId => Config.NextOrderId;
 
     public void Reset()
     {

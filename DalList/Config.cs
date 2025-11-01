@@ -2,20 +2,19 @@
 
 internal static class Config
 {
-    // ======== מזהים ריצים (IDs) לדוגמה ========
 
-    // מזהה התחלתי לישות Delivery
+    // Initial ID for Delivery entity
     private const int StartDeliveryId = 0;
     private static int _nextDeliveryId = StartDeliveryId;
     internal static int NextDeliveryId { get => ++_nextDeliveryId; }
-       
 
-    // מזהה התחלתי לישות Order
+
+    // Initial ID for Order entity
     private const int StartOrderId = 0;
     private static int _nextOrderId = StartOrderId;
     internal static int NextOrderId { get => ++_nextOrderId;}
 
-    // ======== שדות תצורה נוספים ========
+    // Additional configuration fields
 
     internal static DateTime Clock { get; set; } = DateTime.Now;
     internal static int ManagerId { get; set; }
@@ -33,7 +32,9 @@ internal static class Config
     internal static TimeSpan TimeToBeDispose { get; set; }
 
 
-    // ======== מתודה לאיפוס כל הערכים ========
+    /// <summary>
+    /// Resets all IDs and configuration values to initial defaults.
+    /// </summary>
     internal static void Reset()
     {
         // איפוס מזהים
@@ -42,7 +43,6 @@ internal static class Config
         Clock = DateTime.Now;
         RiskRange = TimeSpan.FromMinutes(30);
 
-        // איפוס שדות נוספים
         ManagerId = 0;
         ComponyAddress = "Bar Cochva 2 BneiBrak Israel";
     }

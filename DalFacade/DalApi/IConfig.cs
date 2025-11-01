@@ -22,5 +22,7 @@ public interface IConfig
     TimeSpan MaxDeliveryTime { get; set; }
     TimeSpan TimeToBeDispose { get; set; }
 
+    int NextDeliveryId { get; }
+    int NextOrderId { get; }
     void Reset();
 }

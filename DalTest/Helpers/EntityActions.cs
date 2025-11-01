@@ -7,6 +7,10 @@ internal static class EntityActions
 {
     private static readonly ConfigImplementation ConfigImplementation = new ConfigImplementation();
     //TO DO: 
+    
+    /// <summary>
+    /// Creates a new entity from console input and adds it to the DAL.
+    /// </summary>
     public static void CreateEntity(dynamic dalEntity, string entityName)
     {
         var newEntity = GetFromConsole(entityName);
@@ -14,7 +18,9 @@ internal static class EntityActions
         Console.WriteLine($@"{entityName} added successfully.");
     }
 
-    //TO DO
+    /// <summary>
+    /// Updates an existing entity by reading its ID and new data from console.
+    /// </summary>
     public static void UpdateEntity(dynamic dalEntity, string entityName)
     {
         Console.Write($@"Enter ID for {entityName}: ");
@@ -35,6 +41,9 @@ internal static class EntityActions
         Console.WriteLine($@"{EntityFronConsole} updated successfully.");
     }
 
+    /// <summary>
+    /// Reads and displays an entity by ID from the DAL.
+    /// </summary>
     public static void ReadEntity(dynamic dalEntity)
     {
         Console.Write(@"Enter ID: ");
@@ -47,6 +56,9 @@ internal static class EntityActions
         Console.WriteLine(entity ?? "Not found.");
     }
 
+    /// <summary>
+    /// Reads and displays all entities from the DAL.
+    /// </summary>
     public static void ReadAllEntities(dynamic dalEntity)
     {
         var list = dalEntity.ReadAll();
@@ -54,6 +66,9 @@ internal static class EntityActions
             Console.WriteLine(item);
     }
 
+    /// <summary>
+    /// Deletes an entity by ID from the DAL.
+    /// </summary>
     public static void DeleteEntity(dynamic dalEntity)
     {
         Console.Write(@"Enter ID to delete: ");
@@ -86,6 +101,9 @@ internal static class EntityActions
         Console.WriteLine(@"All data reset successfully.");
     }
 
+    /// <summary>
+    /// Gets entity data from console based on entity name.
+    /// </summary>
     private static dynamic? GetFromConsole(string entityName)
     {
         switch(entityName)
@@ -134,8 +152,7 @@ internal static class EntityActions
 
     private static Order CreateOrder()
     {
-        Console.Write("Enter Order ID: ");
-        var id = int.TryParse(Console.ReadLine(), out var tmpId) ? tmpId : 0;
+        var orderId = ConfigImplementation.NextOrderId;
 
         Console.Write("Enter Order Type (number): ");
         var type = Enum.TryParse<OrderType>(Console.ReadLine(), out var tmpType) ? tmpType : default;
@@ -155,14 +172,16 @@ internal static class EntityActions
         Console.Write("Is Fragile? (true/false): ");
         var isFragile = bool.TryParse(Console.ReadLine(), out var tmpFragile) && tmpFragile;
 
-        return new Order(id, type, description, address, customerName, customerPhone, isFragile, ConfigImplementation.Clock);
+        return new Order(orderId, type, description, address, customerName, customerPhone, isFragile, ConfigImplementation.Clock);
     }
 
     private static Delivery CreateDelivery()
     {
+        var deliveryId = ConfigImplementation.NextDeliveryId;
+
         Console.Write("Enter Order ID: ");
         var orderId = int.TryParse(Console.ReadLine(), out var tmpOrderId) ? tmpOrderId : 0;
-
+       
         Console.Write("Enter Courier ID: ");
         var courierId = int.TryParse(Console.ReadLine(), out var tmpCourierId) ? tmpCourierId : 0;
 
@@ -172,7 +191,7 @@ internal static class EntityActions
         Console.Write("Enter Actual Distance (or leave empty): ");
         double? actualDistance = double.TryParse(Console.ReadLine(), out var tmpDist) ? tmpDist : null;
         
-        return new Delivery(orderId, orderId, courierId, shipmentType, ConfigImplementation.Clock, actualDistance, null, DateTime.MinValue);
+        return new Delivery(deliveryId, orderId, courierId, shipmentType, ConfigImplementation.Clock, actualDistance, null, DateTime.MinValue);
     }
 
 }
