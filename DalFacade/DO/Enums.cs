@@ -68,3 +68,10 @@ public enum ConfigMenuOption
     SetClock,
     Reset
 }
+
+public enum OrderStatus
+{
+    Open,
+    InProgress,
+    Closed
+}

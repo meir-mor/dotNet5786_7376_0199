@@ -23,7 +23,8 @@ public record Order
     string CustomerName,
     string CustomerPhone,
     bool IsFragile,//אולי לשנות להאם דחוף או לא, יותר שימושי...
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    OrderStatus Status
 )
 {
     public double Latitude
@@ -34,5 +35,5 @@ public record Order
     {
         get => 0;//ourFunctionToCalculate()
     }
-public Order(): this(0, default, null, "", "", "", false, DateTime.Now) { }
+public Order(): this(0, default, null, "", "", "", false, DateTime.Now, OrderStatus.Open) { }
 }

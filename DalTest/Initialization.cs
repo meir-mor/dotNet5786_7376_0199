@@ -31,7 +31,7 @@ public static class Initialization
 
     }
 
-    private static void CreateOrder(int count = 20)
+    private static void CreateOrder(int count = 50)
     {
 
         string[] addresses =
@@ -143,12 +143,13 @@ public static class Initialization
                 CustomerName: customerName[i],
                 CustomerPhone: $"050-{s_rand.Next(1000000, 9999999)}",
                 IsFragile: s_rand.NextDouble() > 0.5,
-                CreatedAt: DateTime.MinValue
-            ));
+                CreatedAt: s_dalConfig!.Clock.AddMinutes(-s_rand.Next(0, 24 * 60)).AddSeconds(-DateTime.Now.Second),
+                //OrderStatus: OrderStatus.Open
+                ));
         }
     }
 
-    private static void CreateCourier(int count = 10)
+    private static void CreateCourier(int count = 20)
     {
         string[] courierName =
             {
