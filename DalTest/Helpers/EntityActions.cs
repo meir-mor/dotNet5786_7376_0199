@@ -6,7 +6,6 @@ namespace DalTest.Helpers;
 internal static class EntityActions
 {
     private static readonly ConfigImplementation ConfigImplementation = new ConfigImplementation();
-    //TO DO: 
     
     /// <summary>
     /// Creates a new entity from console input and adds it to the DAL.
@@ -152,7 +151,7 @@ internal static class EntityActions
 
     private static Order CreateOrder()
     {
-        var orderId = ConfigImplementation.NextOrderId;//
+        var orderId = ConfigImplementation.NextOrderId;
 
         Console.Write("Enter Order Type (number): ");
         var type = Enum.TryParse<OrderType>(Console.ReadLine(), out var tmpType) ? tmpType : default;
