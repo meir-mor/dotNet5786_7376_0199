@@ -9,7 +9,7 @@ public class OrderImplementation : IOrder
     public void Create(Order item)
     {
         var id = Config.NextOrderId;
-        Orders.Add(item with { Id = id, CreatedAt = Config.Clock });
+        Orders.Add(item with { Id = id });
     }
 
     public Order? Read(int id)

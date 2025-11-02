@@ -45,6 +45,10 @@ public static class Initialization
                 < 30 => OrderStatus.InProgress,
                 _ => OrderStatus.Closed
             };
+            
+            var randomMinutes = s_rand.Next(0, 7 * 24 * 60); // 0 to 10079 minutes (last 7 days)
+            var randomSeconds = s_rand.Next(0, 60); // 0 to 59 seconds
+            var randomPastTime = s_dalConfig!.Clock.AddMinutes(-randomMinutes).AddSeconds(-randomSeconds);
 
             s_dalOrder?.Create(new Order(
                 0,
@@ -54,7 +58,7 @@ public static class Initialization
                 Mock.CustomerName[i],
                 $"050-{s_rand.Next(1000000, 9999999)}",
                 s_rand.NextDouble() > 0.5,
-                s_dalConfig!.Clock.AddMinutes(-s_rand.Next(0, 24 * 60)).AddSeconds(-DateTime.Now.Second),
+                randomPastTime,
                 status,
                 lat,
                 lon
