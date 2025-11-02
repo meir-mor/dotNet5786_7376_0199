@@ -143,7 +143,7 @@ internal static class EntityActions
         double? maxDistance = double.TryParse(Console.ReadLine(), out var tmpDist) ? tmpDist : null;
 
         Console.Write("Enter Type of Shipment (number): ");
-        var type = Enum.TryParse<typeOfShipment>(Console.ReadLine(), out var tmpType) ? tmpType : default;
+        var type = Enum.TryParse<ShipmentType>(Console.ReadLine(), out var tmpType) ? tmpType : default;
 
         Console.Write("Enter Starting Work Date (yyyy-MM-dd): ");
 
@@ -171,8 +171,14 @@ internal static class EntityActions
 
         Console.Write("Is Fragile? (true/false): ");
         var isFragile = bool.TryParse(Console.ReadLine(), out var tmpFragile) && tmpFragile;
+        
+        Console.Write("Enter Longitude: ");
+        double.TryParse(Console.ReadLine(), out var lon);
+        
+        Console.Write("Enter Latitude: ");
+        double.TryParse(Console.ReadLine(), out var lat);
 
-        return new Order(orderId, type, description, address, customerName, customerPhone, isFragile, ConfigImplementation.Clock);
+        return new Order(orderId, type, description, address, customerName, customerPhone, isFragile, ConfigImplementation.Clock, OrderStatus.Open, lat, lon);
     }
 
     private static Delivery CreateDelivery()
