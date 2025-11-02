@@ -1,9 +1,7 @@
-﻿
-namespace DO;
-
+﻿namespace DO;
 
 public enum ShipmentType
-{ 
+{
     Walk,
     Bicycle,
     Motorcycle,

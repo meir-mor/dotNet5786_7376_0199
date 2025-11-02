@@ -1,13 +1,14 @@
 ﻿using Dal;
 using DO;
 using static DalTest.Program;
+
 namespace DalTest.Helpers;
 
 internal static class EntityActions
 {
-    private static readonly ConfigImplementation ConfigImplementation = new ConfigImplementation();
+    private static readonly ConfigImplementation ConfigImplementation = new();
     //TO DO: 
-    
+
     /// <summary>
     /// Creates a new entity from console input and adds it to the DAL.
     /// </summary>
@@ -29,12 +30,14 @@ internal static class EntityActions
             Console.WriteLine("Invalid ID!");
             return;
         }
+
         var newEntity = dalEntity.Read(id);
         if (newEntity is null)
         {
             Console.WriteLine($@"{entityName} not found.");
             return;
         }
+
         Console.WriteLine($@"Update {newEntity}.");
         var EntityFronConsole = GetFromConsole(newEntity);
         dalEntity.Update(EntityFronConsole);
@@ -52,6 +55,7 @@ internal static class EntityActions
             Console.WriteLine("Invalid ID!");
             return;
         }
+
         var entity = dalEntity.Read(id);
         Console.WriteLine(entity ?? "Not found.");
     }
@@ -77,6 +81,7 @@ internal static class EntityActions
             Console.WriteLine("Invalid ID!");
             return;
         }
+
         dalEntity.Delete(id);
         Console.WriteLine("Entity deleted.");
     }
@@ -106,7 +111,7 @@ internal static class EntityActions
     /// </summary>
     private static dynamic? GetFromConsole(string entityName)
     {
-        switch(entityName)
+        switch (entityName)
         {
             case "Courier":
                 return CreateCourier();
@@ -118,7 +123,7 @@ internal static class EntityActions
                 return null;
         }
     }
-    
+
     private static Courier CreateCourier()
     {
         Console.Write("Enter Courier ID: ");
@@ -171,14 +176,15 @@ internal static class EntityActions
 
         Console.Write("Is Fragile? (true/false): ");
         var isFragile = bool.TryParse(Console.ReadLine(), out var tmpFragile) && tmpFragile;
-        
+
         Console.Write("Enter Longitude: ");
         double.TryParse(Console.ReadLine(), out var lon);
-        
+
         Console.Write("Enter Latitude: ");
         double.TryParse(Console.ReadLine(), out var lat);
 
-        return new Order(orderId, type, description, address, customerName, customerPhone, isFragile, ConfigImplementation.Clock, OrderStatus.Open, lat, lon);
+        return new Order(orderId, type, description, address, customerName, customerPhone, isFragile,
+            ConfigImplementation.Clock, OrderStatus.Open, lat, lon);
     }
 
     private static Delivery CreateDelivery()
@@ -187,17 +193,17 @@ internal static class EntityActions
 
         Console.Write("Enter Order ID: ");
         var orderId = int.TryParse(Console.ReadLine(), out var tmpOrderId) ? tmpOrderId : 0;
-       
+
         Console.Write("Enter Courier ID: ");
         var courierId = int.TryParse(Console.ReadLine(), out var tmpCourierId) ? tmpCourierId : 0;
 
         Console.Write("Enter Shipment Type (number): ");
         var shipmentType = Enum.TryParse<ShipmentType>(Console.ReadLine(), out var tmpShipment) ? tmpShipment : default;
-        
+
         Console.Write("Enter Actual Distance (or leave empty): ");
         double? actualDistance = double.TryParse(Console.ReadLine(), out var tmpDist) ? tmpDist : null;
-        
-        return new Delivery(deliveryId, orderId, courierId, shipmentType, ConfigImplementation.Clock, actualDistance, null, DateTime.MinValue);
-    }
 
+        return new Delivery(deliveryId, orderId, courierId, shipmentType, ConfigImplementation.Clock, actualDistance,
+            null, DateTime.MinValue);
+    }
 }

@@ -59,8 +59,6 @@ internal static class MainMenu
             if (choice == MainMenuOption.Exit) continue;
             Console.WriteLine(@"\nPress any key to return... (חזרה)");
             Console.ReadKey();
-
         } while (choice != MainMenuOption.Exit);
     }
 }
-

@@ -1,4 +1,5 @@
 ﻿namespace Dal;
+
 using DalApi;
 using DO;
 using static DataSource;
@@ -32,11 +33,11 @@ public class OrderImplementation : IOrder
 
     public void Delete(int id)
     {
-       Order? order = Orders.FirstOrDefault(o => o.Id == id);
-       if (order == null)
-           throw new KeyNotFoundException($"Order with ID {id} not found.");
+        var order = Orders.FirstOrDefault(o => o.Id == id);
+        if (order == null)
+            throw new KeyNotFoundException($"Order with ID {id} not found.");
 
-       Orders.Remove(order);
+        Orders.Remove(order);
     }
 
     public void DeleteAll()

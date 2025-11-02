@@ -1,8 +1,8 @@
 ﻿namespace Dal;
+
 using DalApi;
 using DO;
 using static DataSource;
-
 
 public class DeliveryImplementation : IDelivery
 {
@@ -33,7 +33,7 @@ public class DeliveryImplementation : IDelivery
 
     public void Delete(int id)
     {
-        Delivery? delivery = Deliveries.FirstOrDefault(d => d.Id == id);
+        var delivery = Deliveries.FirstOrDefault(d => d.Id == id);
         if (delivery == null)
             throw new KeyNotFoundException($"Delivery with ID {id} not found.");
 

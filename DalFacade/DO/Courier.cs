@@ -1,5 +1,5 @@
-﻿
-namespace DO;
+﻿namespace DO;
+
 /// <summary>
 /// Represents a courier with personal and work-related details.
 /// </summary>
@@ -11,8 +11,7 @@ namespace DO;
 /// <param name="MaximumDistance">Maximum delivery distance (km).</param>
 /// <param name="ShipmentType">Type of shipment handled by the courier.</param>
 /// <param name="StartingWork">Date the courier started working.</param>
-public record Courier
-(
+public record Courier(
     int Id,
     string Name,
     string Phone,
@@ -24,5 +23,7 @@ public record Courier
     DateTime StartingWork
 )
 {
-    public Courier() : this(0, "", "", "", "", false, null, default, DateTime.MinValue) { }
+    public Courier() : this(0, "", "", "", "", false, null, default, DateTime.MinValue)
+    {
+    }
 }
