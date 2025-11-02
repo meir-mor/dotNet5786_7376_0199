@@ -171,8 +171,14 @@ internal static class EntityActions
 
         Console.Write("Is Fragile? (true/false): ");
         var isFragile = bool.TryParse(Console.ReadLine(), out var tmpFragile) && tmpFragile;
+        
+        Console.Write("Enter Longitude: ");
+        double.TryParse(Console.ReadLine(), out var lon);
+        
+        Console.Write("Enter Latitude: ");
+        double.TryParse(Console.ReadLine(), out var lat);
 
-        return new Order(orderId, type, description, address, customerName, customerPhone, isFragile, ConfigImplementation.Clock, OrderStatus.Open);
+        return new Order(orderId, type, description, address, customerName, customerPhone, isFragile, ConfigImplementation.Clock, OrderStatus.Open, lat, lon);
     }
 
     private static Delivery CreateDelivery()

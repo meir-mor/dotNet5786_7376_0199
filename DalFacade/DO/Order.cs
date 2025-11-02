@@ -25,11 +25,11 @@ public record Order
     string CustomerPhone,
     bool IsFragile,//אולי לשנות להאם דחוף או לא, יותר שימושי...
     DateTime CreatedAt,
-    OrderStatus Status
+    OrderStatus Status,
+    double Latitude,
+    double Longitude
 )
 {
-    public double Latitude => 0;//ourFunctionToCalculate()
-    public double Longitude => 0;//ourFunctionToCalculate()
     
-public Order(): this(0, default, null, "", "", "", false, DateTime.Now, OrderStatus.Open) { }
+public Order(): this(0, default, null, "", "", "", false, DateTime.Now, OrderStatus.Open, 0.0, 0.0) { }
 }
