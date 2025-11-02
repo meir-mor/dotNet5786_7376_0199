@@ -137,66 +137,140 @@ public static class Initialization
 
     private static void CreateCourier(int count = 20)
     {
-        string[] courierName =
+        string[] courierNames =
         [
             "Ori Zigi", "Itay Blum", "Amit Grossman", "Tal Shapiro", "Yossi Mizrachi",
             "Shira Ben-David", "Sarah Cohen", "Michal Avraham", "Nir Carmi", "Gal Noy",
             "Ronen Fisher", "Yael Katz", "Hila Raz", "Noam Peretz", "Maya Solomon",
-            "Erez Ben-Yosef", "Avital Ashkenazi", "Ariel Ben-Ami", "Tzvika Mor", "Lior Shani",
-            "Adi Malka", "Doron Peled", "Eden Levi", "Benny Tal", "Gali Levy",
-            "Avi Nave", "Yaara Shmuel", "Yonatan Green", "Hadar Silver", "Ella Sapir",
-            "David Golan", "Shani Alon", "Omer Dahan", "Rotem Menashe", "Roi Bachar",
-            "Tomer Brill", "Linor Yaakov", "Hodaya Shaked", "Elad Rozen", "Maayan Sasson",
-            "Hanan Ravid", "Ron Aloni", "Galit Azulay", "Oded Tal", "Dana Biran",
-            "Ofir Gil", "Nofar Ben-Atar", "Ruth Shalom", "Itamar Cohen", "Yael Ben-Zvi"
+            "Erez Ben-Yosef", "Avital Ashkenazi", "Ariel Ben-Ami", "Tzvika Mor", "Lior Shani"
         ];
+
         for (var i = 0; i < count; i++)
         {
             int id;
             do
-                id= s_rand.Next(10000000, 99999999);
-            while (s_dalCourier?.Read(id) != null);//כאן להוסיף תנאי חדש או שהערכים לא תקינים!!
-           
+                id = s_rand.Next(10000000, 99999999);
+            while (s_dalCourier?.Read(id) != null);
+
+            var name = courierNames[i % courierNames.Length];
+            var email = $"{name.Replace(" ", ".").ToLower()}@gmail.com";
+            var phone = $"052-{s_rand.Next(1000000, 9999999)}";
+
+            // סוג שילוח — הסתברות שווה לכל סוג
+            var shipmentType = (typeOfShipment)s_rand.Next(Enum.GetValues(typeof(typeOfShipment)).Length);
+
+            // הסתברות פעילות (לרוב פעילים, חלק לא)
+            bool isActive = s_rand.NextDouble() > 0.25;
+
+            // תאריך תחילת עבודה (בין עכשיו ל-5 שנים אחורה)
+            DateTime startDate = s_dalConfig!.Clock.AddDays(-s_rand.Next(30, 5 * 365));
+
+            // טווח מרחק הגיוני לפי סוג השילוח
+            double? maxDistance = shipmentType switch
+            {
+                typeOfShipment.foot => s_rand.Next(1, 6),
+                typeOfShipment.bike => s_rand.Next(3, 16),
+                typeOfShipment.motorcycle => s_rand.Next(10, 41),
+                typeOfShipment.car => s_rand.Next(30, 101),
+                _ => null
+            };
+
+            if (s_rand.NextDouble() < 0.1)
+                maxDistance = null;
+
             s_dalCourier?.Create(new Courier(
                 Id: id,
-                Name: courierName[i],
-                Phone: $"052-{s_rand.Next(1000000, 9999999)}",
-                Email: $"{courierName[i]}@gmail.com",
-                Password: "0",
-                IsActive: s_rand.NextDouble() > 0.2, // 80% active
-                TypeOfShipment: (typeOfShipment)s_rand.Next(Enum.GetValues(typeof(typeOfShipment)).Length),
-                StartingWork: DateTime.Now.AddDays(-s_rand.Next(0, 1500)), // up to 4 years back
-                MaximumDistance: s_rand.NextDouble() > 0.3 ? s_rand.Next(5, 100) : null // some have unlimited range
+                Name: name,
+                Phone: phone,
+                Email: email,
+                Password: "1234",
+                IsActive: isActive,
+                TypeOfShipment: shipmentType,
+                StartingWork: startDate,
+                MaximumDistance: maxDistance
             ));
         }
     }
 
     private static void CreateDelivery(int count = 15)
     {
-        // Assuming you already created orders and couriers before
-        var orders = s_dalOrder?.ReadAll() ?? [];
-        var couriers = s_dalCourier?.ReadAll() ?? [];
+        var orders = s_dalOrder?.ReadAll()?.ToList() ?? new();
+        var couriers = s_dalCourier?.ReadAll()?.ToList() ?? new();
+        if (orders.Count == 0 || couriers.Count == 0) return;
 
-        for (var i = 0; i < count; i++)
+        var courierDeliveries = new Dictionary<int, List<(DateTime start, DateTime? end)>>();
+
+        for (var i = 0; i < count && orders.Count != 0; i++)
         {
-            if (!orders.Any() || !couriers.Any()) break;
-
             var order = orders[s_rand.Next(orders.Count)];
-            var courier = couriers[s_rand.Next(couriers.Count)];
 
-            var startTime = DateTime.Now.AddHours(-s_rand.Next(0, 200));
-            DateTime? endTime = s_rand.NextDouble() > 0.5 ? startTime.AddMinutes(s_rand.Next(10, 120)) : null;
+            var possibleCouriers = couriers
+                .Where(c => c.IsActive && (c.MaximumDistance == null || c.MaximumDistance >= s_rand.Next(1, 60)))
+                .ToList();
+
+            if (possibleCouriers.Count == 0)
+                continue;
+
+            var courier = possibleCouriers[s_rand.Next(possibleCouriers.Count)];
+
+            var startTime = order.CreatedAt.AddMinutes(s_rand.Next(5, 120));
+
+            if (!courierDeliveries.ContainsKey(courier.Id))
+                courierDeliveries[courier.Id] = new List<(DateTime, DateTime?)>();
+
+            bool hasConflict;
+            var attempts = 0;
+            do
+            {
+                hasConflict = courierDeliveries[courier.Id]
+                    .Any(d => !(startTime.AddHours(1) < d.start || (d.end ?? d.start.AddHours(1)) < startTime));
+                if (hasConflict)
+                    startTime = startTime.AddMinutes(s_rand.Next(30, 180));
+            } while (hasConflict && attempts++ < 5);
+
+            var isFinished = s_rand.NextDouble() < 0.7;
+            DateTime? endTime = isFinished ? startTime.AddMinutes(s_rand.Next(10, 120)) : null;
+
+            DeliveryEndType? endType = null;
+            if (isFinished)
+            {
+                var roll = s_rand.NextDouble();
+                endType = roll switch
+                {
+                    < 0.65 => DeliveryEndType.Supplied,
+                    < 0.75 => DeliveryEndType.RefusedByCustomer,
+                    < 0.85 => DeliveryEndType.Cancelled,
+                    < 0.95 => DeliveryEndType.CustomerNotFound,
+                    _ => DeliveryEndType.Failed
+                };
+            }
+
+            var actualDistance = courier.MaximumDistance is null
+                ? s_rand.Next(1, 80)
+                : Math.Min(courier.MaximumDistance.Value, s_rand.Next(1, (int)(courier.MaximumDistance.Value + 1)));
 
             s_dalDelivery?.Create(new Delivery(
                 Id: 0,
                 OrderId: order.Id,
                 CourierId: courier.Id,
-                ShipmentType: (ShipmentType)s_rand.Next(Enum.GetValues(typeof(ShipmentType)).Length),
+                ShipmentType: (ShipmentType)courier.TypeOfShipment,
                 StartTime: startTime,
-                ActualDistance: s_rand.NextDouble() * 100,
-                DeliveryEndType: endTime != null ? (DeliveryEndType)s_rand.Next(Enum.GetValues(typeof(DeliveryEndType)).Length) : null,
-                EndTime: endTime
+                EndTime: endTime,
+                ActualDistance: actualDistance,
+                DeliveryEndType: endType
             ));
+
+            // רושמים את טווח הזמנים של השליח לשמירה על אי־חפיפה
+            courierDeliveries[courier.Id].Add((startTime, endTime));
+
+            // אם המשלוח פתוח או סגור בהצלחה – נוריד את ההזמנה מהרשימה
+            if (!isFinished || endType == DeliveryEndType.Supplied)
+                orders.Remove(order);
+
+            // אם "נפתח מחדש" – ניצור שוב את אותה הזמנה אחר כך (5% מהסיכוי)
+            if (isFinished && s_rand.NextDouble() < 0.05)
+                orders.Add(order);
         }
     }
+
 }
