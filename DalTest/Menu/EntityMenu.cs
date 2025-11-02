@@ -27,7 +27,7 @@ internal static class EntityMenu
             Console.WriteLine(@"0. Return (חזרה)");
             Console.Write(@"Select option: (בחר אפשרות) ");
 
-            if (!int.TryParse(Console.ReadLine(), out int menuChoice))
+            if (!int.TryParse(Console.ReadLine(), out var menuChoice))
                 menuChoice = 0;
 
             choice = (EntityMenuOption)menuChoice;
@@ -66,8 +66,6 @@ internal static class EntityMenu
             if (choice == EntityMenuOption.Exit) continue;
             Console.WriteLine(@"\nPress any key to continue...");
             Console.ReadKey();
-
         } while (choice != EntityMenuOption.Exit);
     }
 }
-

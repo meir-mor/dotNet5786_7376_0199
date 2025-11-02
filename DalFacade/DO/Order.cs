@@ -1,5 +1,4 @@
-﻿
-namespace DO;
+﻿namespace DO;
 
 /// <summary>
 /// Represents a customer order with delivery and item details.
@@ -15,21 +14,21 @@ namespace DO;
 /// <param name="IsFragile">Indicates whether the package is fragile.</param>
 /// <param name="CreatedAt">Date and time when the order was created.</param>
 /// <param name="Status">Order status.</param>
-public record Order
-(
+public record Order(
     int Id,
     OrderType Type,
     string? Description,
     string Address,
     string CustomerName,
     string CustomerPhone,
-    bool IsFragile,//אולי לשנות להאם דחוף או לא, יותר שימושי...
+    bool IsFragile, //אולי לשנות להאם דחוף או לא, יותר שימושי...
     DateTime CreatedAt,
     OrderStatus Status,
     double Latitude,
     double Longitude
 )
 {
-    
-public Order(): this(0, default, null, "", "", "", false, DateTime.Now, OrderStatus.Open, 0.0, 0.0) { }
+    public Order() : this(0, default, null, "", "", "", false, DateTime.Now, OrderStatus.Open, 0.0, 0.0)
+    {
+    }
 }

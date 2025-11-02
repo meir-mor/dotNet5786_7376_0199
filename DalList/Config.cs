@@ -2,17 +2,16 @@
 
 internal static class Config
 {
-
     // Initial ID for Delivery entity
     private const int StartDeliveryId = 0;
     private static int _nextDeliveryId = StartDeliveryId;
-    internal static int NextDeliveryId { get => ++_nextDeliveryId; }
+    internal static int NextDeliveryId => ++_nextDeliveryId;
 
 
     // Initial ID for Order entity
     private const int StartOrderId = 0;
     private static int _nextOrderId = StartOrderId;
-    internal static int NextOrderId { get => ++_nextOrderId;}
+    internal static int NextOrderId => ++_nextOrderId;
 
     // Additional configuration fields
 
@@ -20,15 +19,15 @@ internal static class Config
     internal static int ManagerId { get; set; }
     internal static string ManagerPassword { get; set; } = "0";
     internal static string? ComponyAddress { get; set; }
-    internal static double? Latitude { get; }// = ourFunctionToCalculate();
-    internal static double? Longitude { get; }// = ourFunctionToCalculate();
+    internal static double? Latitude { get; } // = ourFunctionToCalculate();
+    internal static double? Longitude { get; } // = ourFunctionToCalculate();
     internal static double? MaxDistance { get; set; } = 100;
     internal static double AverageCarSpeed { get; set; }
     internal static double AverageBikeSpeedBike { get; set; }
     internal static double AverageBicycleSpeed { get; set; }
     internal static double AverageWalkSpeed { get; set; }
     internal static TimeSpan MaxDeliveryTime { get; set; }
-    internal static TimeSpan RiskRange { get; set; } = TimeSpan.FromMinutes(30); 
+    internal static TimeSpan RiskRange { get; set; } = TimeSpan.FromMinutes(30);
     internal static TimeSpan TimeToBeDispose { get; set; }
 
 

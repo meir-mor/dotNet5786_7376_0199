@@ -20,7 +20,7 @@ internal static class ConfigMenu
             Console.WriteLine(@"0. Return");
             Console.Write(@"Select option: ");
 
-            if (!int.TryParse(Console.ReadLine(), out int menuChoice))
+            if (!int.TryParse(Console.ReadLine(), out var menuChoice))
                 menuChoice = 0;
 
             choice = (ConfigMenuOption)menuChoice;
@@ -50,6 +50,7 @@ internal static class ConfigMenu
                     {
                         Console.WriteLine(@"Invalid format.");
                     }
+
                     break;
                 case ConfigMenuOption.Reset:
                     s_dalConfig?.Reset();
@@ -60,7 +61,6 @@ internal static class ConfigMenu
             if (choice != ConfigMenuOption.Exit) continue;
             Console.WriteLine(@"\nPress any key to continue...");
             Console.ReadKey();
-
         } while (choice != ConfigMenuOption.Exit);
     }
 }

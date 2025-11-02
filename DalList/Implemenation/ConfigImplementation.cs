@@ -1,19 +1,21 @@
 ﻿namespace Dal;
+
 using DalApi;
 
 public class ConfigImplementation : IConfig
 {
-    
     public int ManagerId
     {
         get => Config.ManagerId;
         set => Config.ManagerId = value;
     }
+
     public DateTime Clock
     {
         get => Config.Clock;
         set => Config.Clock = value;
     }
+
     public TimeSpan RiskRange
     {
         get => Config.RiskRange;
@@ -32,15 +34,9 @@ public class ConfigImplementation : IConfig
         set => Config.ManagerPassword = value;
     }
 
-    public double? Latitude
-    {
-        get => Config.Latitude;
-    }
+    public double? Latitude => Config.Latitude;
 
-    public double? Longitude
-    {
-        get => Config.Longitude;
-    }
+    public double? Longitude => Config.Longitude;
 
     public double? MaxDistance
     {
@@ -92,5 +88,4 @@ public class ConfigImplementation : IConfig
     {
         Config.Reset();
     }
-    
 }

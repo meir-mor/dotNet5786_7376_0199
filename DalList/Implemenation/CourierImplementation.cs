@@ -1,8 +1,8 @@
 ﻿namespace Dal;
+
 using DalApi;
 using DO;
 using static DataSource;
-
 
 public class CourierImplementation : ICourier
 {
@@ -16,7 +16,7 @@ public class CourierImplementation : ICourier
 
     public Courier? Read(int id)
     {
-        return Couriers.FirstOrDefault(c => c.Id == id, defaultValue:null);
+        return Couriers.FirstOrDefault(c => c.Id == id, null);
     }
 
     public List<Courier> ReadAll()
@@ -35,7 +35,7 @@ public class CourierImplementation : ICourier
 
     public void Delete(int id)
     {
-        Courier? courier = Couriers.FirstOrDefault(c => c.Id == id);
+        var courier = Couriers.FirstOrDefault(c => c.Id == id);
         if (courier == null)
             throw new KeyNotFoundException($"Courier with ID {id} not found.");
 

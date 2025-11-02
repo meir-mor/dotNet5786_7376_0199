@@ -1,6 +1,4 @@
-﻿
-namespace DO;
-
+﻿namespace DO;
 
 /// <summary>
 /// Represents a delivery entity linking an order and the courier who accepted it.
@@ -13,8 +11,7 @@ namespace DO;
 /// <param name="ActualDistance">Actual distance (in km) between company and delivery address. Null until calculated.</param>
 /// <param name="DeliveryEndType">Indicates how the delivery was completed (null if still in progress).</param>
 /// <param name="EndTime">Date and time when the delivery ended (null if still active).</param>
-public record Delivery
-(
+public record Delivery(
     int Id,
     int OrderId,
     int CourierId,
@@ -25,5 +22,7 @@ public record Delivery
     DateTime? EndTime
 )
 {
-    public Delivery() : this(0, 0, 0, default, DateTime.MinValue, null, null, null) { }
+    public Delivery() : this(0, 0, 0, default, DateTime.MinValue, null, null, null)
+    {
+    }
 }

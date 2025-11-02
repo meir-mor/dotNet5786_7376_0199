@@ -11,7 +11,7 @@ internal class Program
     internal static IDelivery? s_dalDelivery = new DeliveryImplementation();
     internal static IOrder? s_dalOrder = new OrderImplementation();
 
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         try
         {
