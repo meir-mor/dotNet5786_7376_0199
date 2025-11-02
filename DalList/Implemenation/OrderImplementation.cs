@@ -7,7 +7,7 @@ public class OrderImplementation : IOrder
 {
     public void Create(Order item)
     {
-        var id = Config.NextOrderId;
+        var id = Config.NextOrderId;//בדיקה האם קיים!!!
         Orders.Add(item with { Id = id, CreatedAt = Config.Clock });
     }
 
