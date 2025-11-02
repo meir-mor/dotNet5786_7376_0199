@@ -156,16 +156,12 @@ public static class Initialization
             var email = $"{name.Replace(" ", ".").ToLower()}@gmail.com";
             var phone = $"052-{s_rand.Next(1000000, 9999999)}";
 
-            // סוג שילוח — הסתברות שווה לכל סוג
             var shipmentType = (typeOfShipment)s_rand.Next(Enum.GetValues(typeof(typeOfShipment)).Length);
 
-            // הסתברות פעילות (לרוב פעילים, חלק לא)
-            bool isActive = s_rand.NextDouble() > 0.25;
+            var isActive = s_rand.NextDouble() > 0.25;
 
-            // תאריך תחילת עבודה (בין עכשיו ל-5 שנים אחורה)
-            DateTime startDate = s_dalConfig!.Clock.AddDays(-s_rand.Next(30, 5 * 365));
+            var startDate = s_dalConfig!.Clock.AddDays(-s_rand.Next(30, 5 * 365));
 
-            // טווח מרחק הגיוני לפי סוג השילוח
             double? maxDistance = shipmentType switch
             {
                 typeOfShipment.foot => s_rand.Next(1, 6),
