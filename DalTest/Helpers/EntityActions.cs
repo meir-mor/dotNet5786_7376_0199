@@ -172,7 +172,7 @@ internal static class EntityActions
         Console.Write("Is Fragile? (true/false): ");
         var isFragile = bool.TryParse(Console.ReadLine(), out var tmpFragile) && tmpFragile;
 
-        return new Order(orderId, type, description, address, customerName, customerPhone, isFragile, ConfigImplementation.Clock);
+        return new Order(orderId, type, description, address, customerName, customerPhone, isFragile, ConfigImplementation.Clock, OrderStatus.Open);
     }
 
     private static Delivery CreateDelivery()

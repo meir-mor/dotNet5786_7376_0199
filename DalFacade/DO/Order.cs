@@ -14,6 +14,7 @@ namespace DO;
 /// <param name="CustomerPhone">Customer phone number.</param>
 /// <param name="IsFragile">Indicates whether the package is fragile.</param>
 /// <param name="CreatedAt">Date and time when the order was created.</param>
+/// <param name="Status">Order status.</param>
 public record Order
 (
     int Id,
@@ -27,13 +28,8 @@ public record Order
     OrderStatus Status
 )
 {
-    public double Latitude
-    {
-        get => 0;//ourFunctionToCalculate()
-    }
-    public double Longitude
-    {
-        get => 0;//ourFunctionToCalculate()
-    }
+    public double Latitude => 0;//ourFunctionToCalculate()
+    public double Longitude => 0;//ourFunctionToCalculate()
+    
 public Order(): this(0, default, null, "", "", "", false, DateTime.Now, OrderStatus.Open) { }
 }
