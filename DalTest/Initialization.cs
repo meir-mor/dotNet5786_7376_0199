@@ -1,6 +1,7 @@
 ﻿using DalTest;
 
 namespace Dal;
+
 using DalApi;
 using DO;
 
@@ -10,42 +11,40 @@ public static class Initialization
     private static IOrder? s_dalOrder;
     private static ICourier? s_dalCourier;
     private static IDelivery? s_dalDelivery;
-    
+
     private static readonly Random s_rand = new();
-    
+
     public static void Do(IConfig dalConfig, IOrder dalOrder, ICourier dalCourier, IDelivery dalDelivery)
     {
         s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL object can not be null!");
         s_dalOrder = dalOrder ?? throw new NullReferenceException("DAL object can not be null!");
         s_dalCourier = dalCourier ?? throw new NullReferenceException("DAL object can not be null!");
         s_dalDelivery = dalDelivery ?? throw new NullReferenceException("DAL object can not be null!");
-        
+
         Console.WriteLine("Reset Configuration values and List values...");
         s_dalConfig.Reset();
         s_dalOrder.DeleteAll();
         s_dalCourier.DeleteAll();
         s_dalDelivery.DeleteAll();
-        
+
         Console.WriteLine("Initializing Students list ...");
         CreateOrder();
         CreateCourier();
         CreateDelivery();
-
     }
 
     private static void CreateOrder(int count = 50)
     {
         for (var i = 0; i < count; i++)
         {
-            var (address, lat, lon, dis) = Mock.Addresses[i % Mock.Addresses.Length];
-            OrderStatus status;
+            var (address, lat, lon, _, _) = Mock.Addresses[i % Mock.Addresses.Length];
 
-            if (i < 20)
-                status = OrderStatus.Open;
-            else if (i < 30)
-                status = OrderStatus.InProgress;
-            else
-                status = OrderStatus.Closed;
+            var status = i switch
+            {
+                < 20 => OrderStatus.Open,
+                < 30 => OrderStatus.InProgress,
+                _ => OrderStatus.Closed
+            };
 
             s_dalOrder?.Create(new Order(
                 Id: 0,
@@ -59,20 +58,12 @@ public static class Initialization
                 Status: status,
                 Latitude: lat,
                 Longitude: lon
-                ));
+            ));
         }
     }
 
     private static void CreateCourier(int count = 20)
     {
-        string[] courierNames =
-        [
-            "Ori Zigi", "Itay Blum", "Amit Grossman", "Tal Shapiro", "Yossi Mizrachi",
-            "Shira Ben-David", "Sarah Cohen", "Michal Avraham", "Nir Carmi", "Gal Noy",
-            "Ronen Fisher", "Yael Katz", "Hila Raz", "Noam Peretz", "Maya Solomon",
-            "Erez Ben-Yosef", "Avital Ashkenazi", "Ariel Ben-Ami", "Tzvika Mor", "Lior Shani"
-        ];
-
         for (var i = 0; i < count; i++)
         {
             int id;
@@ -80,11 +71,11 @@ public static class Initialization
                 id = s_rand.Next(10000000, 99999999);
             while (s_dalCourier?.Read(id) != null);
 
-            var name = courierNames[i % courierNames.Length];
+            var name = Mock.CourierNames[i % Mock.CourierNames.Length];
             var email = $"{name.Replace(" ", ".").ToLower()}@gmail.com";
             var phone = $"052-{s_rand.Next(1000000, 9999999)}";
 
-            var shipmentType = (typeOfShipment)s_rand.Next(Enum.GetValues(typeof(typeOfShipment)).Length);
+            var shipmentType = (ShipmentType)s_rand.Next(Enum.GetValues(typeof(ShipmentType)).Length);
 
             var isActive = s_rand.NextDouble() > 0.25;
 
@@ -92,10 +83,10 @@ public static class Initialization
 
             double? maxDistance = shipmentType switch
             {
-                typeOfShipment.foot => s_rand.Next(1, 6),
-                typeOfShipment.bike => s_rand.Next(3, 16),
-                typeOfShipment.motorcycle => s_rand.Next(10, 41),
-                typeOfShipment.car => s_rand.Next(30, 101),
+                ShipmentType.Walk => s_rand.Next(1, 6),
+                ShipmentType.Bicycle => s_rand.Next(3, 16),
+                ShipmentType.Motorcycle => s_rand.Next(10, 41),
+                ShipmentType.Car => s_rand.Next(30, 101),
                 _ => null
             };
 
@@ -109,7 +100,7 @@ public static class Initialization
                 Email: email,
                 Password: "1234",
                 IsActive: isActive,
-                TypeOfShipment: shipmentType,
+                ShipmentType: shipmentType,
                 StartingWork: startDate,
                 MaximumDistance: maxDistance
             ));
@@ -169,17 +160,16 @@ public static class Initialization
                 };
             }
 
-            var actualDistance = Mock.Addresses.FirstOrDefault(a =>
+            var (_, _, _, actualDistance, shipmentType) = Mock.Addresses.FirstOrDefault(a =>
                 a.Address == order.Address &&
                 a.Latitude == order.Latitude &&
-                a.Longitude == order.Longitude)
-                .DistanceFromBarCochvaKm;
- 
+                a.Longitude == order.Longitude);
+
             s_dalDelivery?.Create(new Delivery(
                 Id: 0,
                 OrderId: order.Id,
                 CourierId: courier.Id,
-                ShipmentType: (ShipmentType)courier.TypeOfShipment,
+                ShipmentShipmentType: shipmentType,
                 StartTime: startTime,
                 EndTime: endTime,
                 ActualDistance: actualDistance,
@@ -198,5 +188,4 @@ public static class Initialization
                 orders.Add(order);
         }
     }
-
 }

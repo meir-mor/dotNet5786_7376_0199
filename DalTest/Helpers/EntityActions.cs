@@ -143,7 +143,7 @@ internal static class EntityActions
         double? maxDistance = double.TryParse(Console.ReadLine(), out var tmpDist) ? tmpDist : null;
 
         Console.Write("Enter Type of Shipment (number): ");
-        var type = Enum.TryParse<typeOfShipment>(Console.ReadLine(), out var tmpType) ? tmpType : default;
+        var type = Enum.TryParse<ShipmentType>(Console.ReadLine(), out var tmpType) ? tmpType : default;
 
         Console.Write("Enter Starting Work Date (yyyy-MM-dd): ");
 

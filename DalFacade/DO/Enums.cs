@@ -2,21 +2,21 @@
 namespace DO;
 
 
-public enum typeOfShipment
+public enum ShipmentType
 { 
-    foot,
-    bike,
-    motorcycle,
-    car
+    Walk,
+    Bicycle,
+    Motorcycle,
+    Car
 }
 
 public enum OrderType
 {
-    food,
-    flowers,
-    clothing,
-    dishes,
-    general
+    Food,
+    Flowers,
+    Clothing,
+    Dishes,
+    General
 }
 
 public enum DeliveryEndType
@@ -26,14 +26,6 @@ public enum DeliveryEndType
     Cancelled,
     CustomerNotFound,
     Failed
-}
-
-public enum ShipmentType
-{
-    foot,
-    bike,
-    motorcycle,
-    car
 }
 
 public enum MainMenuOption
