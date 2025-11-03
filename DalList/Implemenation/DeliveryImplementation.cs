@@ -17,9 +17,9 @@ internal class DeliveryImplementation : IDelivery
         return Deliveries.FirstOrDefault(d => d.Id == id);
     }
 
-    public List<Delivery> ReadAll()
+    public IEnumerable<Delivery> ReadAll(Func<Delivery, bool>? filter = null)
     {
-        return Deliveries.ToList();
+        return Deliveries.Where(c => filter != null && filter(c));
     }
 
     public void Update(Delivery item)

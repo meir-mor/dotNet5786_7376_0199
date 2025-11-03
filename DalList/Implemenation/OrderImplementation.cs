@@ -17,9 +17,9 @@ internal class OrderImplementation : IOrder
         return Orders.FirstOrDefault(o => o.Id == id);
     }
 
-    public List<Order> ReadAll()
+    public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
     {
-        return Orders.ToList();
+        return Orders.Where(c => filter != null && filter(c));
     }
 
     public void Update(Order item)

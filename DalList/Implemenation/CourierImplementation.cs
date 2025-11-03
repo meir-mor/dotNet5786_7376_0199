@@ -19,9 +19,9 @@ internal class CourierImplementation : ICourier
         return Couriers.FirstOrDefault(c => c.Id == id, null);
     }
 
-    public List<Courier> ReadAll()
+    public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null)
     {
-        return Couriers.ToList();
+        return Couriers.Where(c => filter != null && filter(c));
     }
 
     public void Update(Courier item)
