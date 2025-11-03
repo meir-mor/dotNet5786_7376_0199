@@ -1,27 +1,30 @@
 ﻿using Dal;
+using DalApi;
 using DO;
-using static DalTest.Program;
 
 namespace DalTest.Helpers;
 
 internal static class EntityActions
 {
-    private static readonly ConfigImplementation ConfigImplementation = new ConfigImplementation();
-    
     /// <summary>
     /// Creates a new entity from console input and adds it to the DAL.
     /// </summary>
-    public static void CreateEntity(dynamic dalEntity, string entityName)
+    public static void CreateEntity<T>(ICrud<T> dalEntity, string entityName, IDal dal) where T : class
     {
-        var newEntity = GetFromConsole(entityName);
+        if (GetFromConsole(dal, entityName) is not T newEntity)
+        {
+            Console.WriteLine($"Failed to create {entityName}: invalid input.");
+            return;
+        }
+
         dalEntity.Create(newEntity);
-        Console.WriteLine($@"{entityName} added successfully.");
+        Console.WriteLine($@"{newEntity} added successfully.");
     }
 
     /// <summary>
     /// Updates an existing entity by reading its ID and new data from console.
     /// </summary>
-    public static void UpdateEntity(dynamic dalEntity, string entityName)
+    public static void UpdateEntity<T>(ICrud<T> dalEntity, string entityName, IDal dal) where T : class
     {
         Console.Write($@"Enter ID for {entityName}: ");
         if (!int.TryParse(Console.ReadLine(), out var id))
@@ -30,23 +33,28 @@ internal static class EntityActions
             return;
         }
 
-        var newEntity = dalEntity.Read(id);
-        if (newEntity is null)
+        var existingEntity = dalEntity.Read(id);
+        if (existingEntity is null)
         {
             Console.WriteLine($@"{entityName} not found.");
             return;
         }
 
-        Console.WriteLine($@"Update {newEntity}.");
-        var EntityFronConsole = GetFromConsole(newEntity);
-        dalEntity.Update(EntityFronConsole);
-        Console.WriteLine($@"{EntityFronConsole} updated successfully.");
+        Console.WriteLine($@"Update {existingEntity}.");
+        if (GetFromConsole(dal, entityName) is not T updatedEntity)
+        {
+            Console.WriteLine("Invalid data. Update cancelled.");
+            return;
+        }
+
+        dalEntity.Update(updatedEntity);
+        Console.WriteLine($@"{updatedEntity} updated successfully.");
     }
 
     /// <summary>
     /// Reads and displays an entity by ID from the DAL.
     /// </summary>
-    public static void ReadEntity(dynamic dalEntity)
+    public static void ReadEntity<T>(ICrud<T> dalEntity) where T : class
     {
         Console.Write(@"Enter ID: ");
         if (!int.TryParse(Console.ReadLine(), out var id))
@@ -56,13 +64,13 @@ internal static class EntityActions
         }
 
         var entity = dalEntity.Read(id);
-        Console.WriteLine(entity ?? "Not found.");
+        Console.WriteLine(entity is null ? "Not found." : entity);
     }
 
     /// <summary>
     /// Reads and displays all entities from the DAL.
     /// </summary>
-    public static void ReadAllEntities(dynamic dalEntity)
+    public static void ReadAllEntities<T>(ICrud<T> dalEntity) where T : class
     {
         var list = dalEntity.ReadAll();
         foreach (var item in list)
@@ -72,7 +80,7 @@ internal static class EntityActions
     /// <summary>
     /// Deletes an entity by ID from the DAL.
     /// </summary>
-    public static void DeleteEntity(dynamic dalEntity)
+    public static void DeleteEntity<T>(ICrud<T> dalEntity) where T : class
     {
         Console.Write(@"Enter ID to delete: ");
         if (!int.TryParse(Console.ReadLine(), out var id))
@@ -85,45 +93,32 @@ internal static class EntityActions
         Console.WriteLine("Entity deleted.");
     }
 
-    public static void ShowAllData()
+    public static void ShowAllData(IDal dal)
     {
         Console.WriteLine(@"=== All Data ===");
         Console.WriteLine("Couriers:");
-        ReadAllEntities(s_dalCourier);
+        ReadAllEntities(dal.Courier);
         Console.WriteLine("\nDeliveries:");
-        ReadAllEntities(s_dalDelivery);
+        ReadAllEntities(dal.Delivery);
         Console.WriteLine("\nOrders:");
-        ReadAllEntities(s_dalOrder);
-    }
-
-    public static void ResetAll()
-    {
-        s_dalCourier?.DeleteAll();
-        s_dalDelivery?.DeleteAll();
-        s_dalOrder?.DeleteAll();
-        s_dalConfig?.Reset();
-        Console.WriteLine(@"All data reset successfully.");
+        ReadAllEntities(dal.Order);
     }
 
     /// <summary>
     /// Gets entity data from console based on entity name.
     /// </summary>
-    private static dynamic? GetFromConsole(string entityName)
+    private static object? GetFromConsole(IDal dal, string entityName)
     {
-        switch (entityName)
+        return entityName switch
         {
-            case "Courier":
-                return CreateCourier();
-            case "Order":
-                return CreateOrder();
-            case "Delivery":
-                return CreateDelivery();
-            default:
-                return null;
-        }
+            "Courier" => CreateCourier(dal),
+            "Order" => CreateOrder(dal),
+            "Delivery" => CreateDelivery(dal),
+            _ => null
+        };
     }
 
-    private static Courier CreateCourier()
+    private static Courier CreateCourier(IDal dal)
     {
         Console.Write("Enter Courier ID: ");
         var id = int.TryParse(Console.ReadLine(), out var tmpId) ? tmpId : 0;
@@ -149,14 +144,12 @@ internal static class EntityActions
         Console.Write("Enter Type of Shipment (number): ");
         var type = Enum.TryParse<ShipmentType>(Console.ReadLine(), out var tmpType) ? tmpType : default;
 
-        Console.Write("Enter Starting Work Date (yyyy-MM-dd): ");
-
-        return new Courier(id, name, phone, email, password, isActive, maxDistance, type, ConfigImplementation.Clock);
+        return new Courier(id, name, phone, email, password, isActive, maxDistance, type, dal.Config.Clock);
     }
 
-    private static Order CreateOrder()
+    private static Order CreateOrder(IDal dal)
     {
-        var orderId = ConfigImplementation.NextOrderId;
+        var orderId = dal.Config.NextOrderId;
 
         Console.Write("Enter Order Type (number): ");
         var type = Enum.TryParse<OrderType>(Console.ReadLine(), out var tmpType) ? tmpType : default;
@@ -183,12 +176,12 @@ internal static class EntityActions
         double.TryParse(Console.ReadLine(), out var lat);
 
         return new Order(orderId, type, description, address, customerName, customerPhone, isFragile,
-            ConfigImplementation.Clock, OrderStatus.Open, lat, lon);
+            dal.Config.Clock, OrderStatus.Open, lat, lon);
     }
 
-    private static Delivery CreateDelivery()
+    private static Delivery CreateDelivery(IDal dal)
     {
-        var deliveryId = ConfigImplementation.NextDeliveryId;
+        var deliveryId = dal.Config.NextDeliveryId;
 
         Console.Write("Enter Order ID: ");
         var orderId = int.TryParse(Console.ReadLine(), out var tmpOrderId) ? tmpOrderId : 0;
@@ -202,7 +195,7 @@ internal static class EntityActions
         Console.Write("Enter Actual Distance (or leave empty): ");
         double? actualDistance = double.TryParse(Console.ReadLine(), out var tmpDist) ? tmpDist : null;
 
-        return new Delivery(deliveryId, orderId, courierId, shipmentType, ConfigImplementation.Clock, actualDistance,
+        return new Delivery(deliveryId, orderId, courierId, shipmentType, dal.Config.Clock, actualDistance,
             null, DateTime.MinValue);
     }
 }

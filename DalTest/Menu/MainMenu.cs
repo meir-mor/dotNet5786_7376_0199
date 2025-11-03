@@ -1,13 +1,14 @@
 ﻿using Dal;
+using DalApi;
 using DalTest.Helpers;
+using dalTest.Menu;
 using DO;
-using static DalTest.Program;
 
 namespace DalTest.Menu;
 
 internal static class MainMenu
 {
-    public static void RunMainMenu()
+    public static void RunMainMenu(IDal dal)
     {
         MainMenuOption choice;
         do
@@ -33,26 +34,26 @@ internal static class MainMenu
             switch (choice)
             {
                 case MainMenuOption.CourierMenu:
-                    EntityMenu.RunEntityMenu("Courier", s_dal.Courier);
+                    EntityMenu.RunEntityMenu("Courier", dal.Courier, dal);
                     break;
                 case MainMenuOption.DeliveryMenu:
-                    EntityMenu.RunEntityMenu("Delivery", s_dal.Delivery);
+                    EntityMenu.RunEntityMenu("Delivery", dal.Delivery, dal);
                     break;
                 case MainMenuOption.OrderMenu:
-                    EntityMenu.RunEntityMenu("Order", s_dal.Order);
+                    EntityMenu.RunEntityMenu("Order", dal.Order, dal);
                     break;
                 case MainMenuOption.ConfigMenu:
-                    ConfigMenu.RunConfigMenu();
+                    ConfigMenu.RunConfigMenu(dal);
                     break;
                 case MainMenuOption.Initialization:
-                    Initialization.Do(s_dal);
+                    Initialization.Do(dal);
                     Console.WriteLine(@"Data reset and initialized successfully! (אתחול)");
                     break;
                 case MainMenuOption.ShowAllData:
-                    EntityActions.ShowAllData();
+                    EntityActions.ShowAllData(dal);
                     break;
                 case MainMenuOption.ResetAll:
-                    EntityActions.ResetAll();
+                    dal.ResetDB();
                     break;
             }
 

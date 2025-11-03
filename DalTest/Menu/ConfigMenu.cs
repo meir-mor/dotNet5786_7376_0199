@@ -1,11 +1,11 @@
-﻿using DO;
-using static DalTest.Program;
+﻿using DalApi;
+using DO;
 
-namespace DalTest.Menu;
+namespace dalTest.Menu;
 
 internal static class ConfigMenu
 {
-    public static void RunConfigMenu()
+    public static void RunConfigMenu(IDal? dal)
     {
         ConfigMenuOption choice;
         do
@@ -29,21 +29,21 @@ internal static class ConfigMenu
             switch (choice)
             {
                 case ConfigMenuOption.AdvanceMinute:
-                    s_dalConfig!.Clock = s_dalConfig.Clock.AddMinutes(1);
+                    dal!.Config?.Clock = dal!.Config.Clock.AddMinutes(1);
                     Console.WriteLine(@"Clock advanced by one minute.");
                     break;
                 case ConfigMenuOption.AdvanceHour:
-                    s_dalConfig!.Clock = s_dalConfig.Clock.AddHours(1);
+                    dal!.Config?.Clock = dal!.Config.Clock.AddHours(1);
                     Console.WriteLine(@"Clock advanced by one hour.");
                     break;
                 case ConfigMenuOption.ShowClock:
-                    Console.WriteLine($@"Current time: {s_dalConfig?.Clock}");
+                    Console.WriteLine($@"Current time: {dal!.Config?.Clock}");
                     break;
                 case ConfigMenuOption.SetClock:
                     Console.Write(@"Enter new time (yyyy-MM-dd HH:mm): ");
                     if (DateTime.TryParse(Console.ReadLine(), out var newTime))
                     {
-                        s_dalConfig!.Clock = newTime;
+                        dal!.Config!.Clock = newTime;
                         Console.WriteLine(@"Clock updated.");
                     }
                     else
@@ -53,7 +53,7 @@ internal static class ConfigMenu
 
                     break;
                 case ConfigMenuOption.Reset:
-                    s_dalConfig?.Reset();
+                    dal!.Config?.Reset();
                     Console.WriteLine(@"Configuration reset.");
                     break;
             }

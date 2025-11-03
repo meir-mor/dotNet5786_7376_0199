@@ -1,6 +1,6 @@
-﻿
-namespace Dal;
+﻿namespace Dal;
 using DalApi;
+
 sealed public class DalList : IDal
 {
     public IConfig Config { get; } =  new ConfigImplementation();
@@ -17,7 +17,6 @@ sealed public class DalList : IDal
         Order?.DeleteAll();
         Config?.Reset();
         Console.WriteLine(@"All data reset successfully.");//לבדיקה אפשר להוריד
-
     }
 }
 

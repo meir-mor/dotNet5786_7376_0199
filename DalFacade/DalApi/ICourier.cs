@@ -1,4 +1,4 @@
 ﻿namespace DalApi;
 
 using DO;
-public interface ICourier : ICrud<Courier> { }
+public interface ICourier : ICrud<Courier>;

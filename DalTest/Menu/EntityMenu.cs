@@ -1,13 +1,14 @@
-﻿using DO;
+﻿using DalApi;
+using DO;
 using static DalTest.Helpers.EntityActions;
 
 namespace DalTest.Menu;
 
 internal static class EntityMenu
 {
-    public static void RunEntityMenu(string entityName, dynamic dalEntity)
+    public static void RunEntityMenu<T>(string entityName, ICrud<T>? dalEntity, IDal dal) where T : class
     {
-        if (dalEntity == null)
+        if (dalEntity is null)
         {
             Console.WriteLine($@"No implementation for {entityName} (אין יישום)");
             return;
@@ -38,7 +39,7 @@ internal static class EntityMenu
                 switch (choice)
                 {
                     case EntityMenuOption.Create:
-                        CreateEntity(dalEntity, entityName);
+                        CreateEntity(dalEntity, entityName, dal);
                         break;
                     case EntityMenuOption.Read:
                         ReadEntity(dalEntity);
@@ -47,7 +48,7 @@ internal static class EntityMenu
                         ReadAllEntities(dalEntity);
                         break;
                     case EntityMenuOption.Update:
-                        UpdateEntity(dalEntity, entityName);
+                        UpdateEntity(dalEntity, entityName, dal);
                         break;
                     case EntityMenuOption.Delete:
                         DeleteEntity(dalEntity);
