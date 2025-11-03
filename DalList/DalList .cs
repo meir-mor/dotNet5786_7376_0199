@@ -3,17 +3,21 @@ namespace Dal;
 using DalApi;
 sealed public class DalList : IDal
 {
-    public IConfig Config => throw new NotImplementedException();
+    public IConfig Config { get; } =  new ConfigImplementation();
+    public ICourier Courier { get; } =  new CourierImplementation();
 
-    public ICourier Courier => throw new NotImplementedException();
+    public IDelivery Delivery { get; } = new DeliveryImplementation();
 
-    public IDelivery Delivery => throw new NotImplementedException();
-
-    public IOrder Order => throw new NotImplementedException();
+    public IOrder Order { get; } =  new OrderImplementation();
 
     public void ResetDB()
     {
-        throw new NotImplementedException();
+        Courier?.DeleteAll();
+        Delivery?.DeleteAll();
+        Order?.DeleteAll();
+        Config?.Reset();
+        Console.WriteLine(@"All data reset successfully.");//לבדיקה אפשר להוריד
+
     }
 }
 

@@ -33,19 +33,19 @@ internal static class MainMenu
             switch (choice)
             {
                 case MainMenuOption.CourierMenu:
-                    EntityMenu.RunEntityMenu("Courier", s_dalCourier);
+                    EntityMenu.RunEntityMenu("Courier", s_dal.Courier);
                     break;
                 case MainMenuOption.DeliveryMenu:
-                    EntityMenu.RunEntityMenu("Delivery", s_dalDelivery);
+                    EntityMenu.RunEntityMenu("Delivery", s_dal.Delivery);
                     break;
                 case MainMenuOption.OrderMenu:
-                    EntityMenu.RunEntityMenu("Order", s_dalOrder);
+                    EntityMenu.RunEntityMenu("Order", s_dal.Order);
                     break;
                 case MainMenuOption.ConfigMenu:
                     ConfigMenu.RunConfigMenu();
                     break;
                 case MainMenuOption.Initialization:
-                    Initialization.Do(s_dalConfig, s_dalOrder, s_dalCourier, s_dalDelivery);
+                    Initialization.Do(s_dal);
                     Console.WriteLine(@"Data reset and initialized successfully! (אתחול)");
                     break;
                 case MainMenuOption.ShowAllData:

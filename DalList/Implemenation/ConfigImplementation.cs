@@ -2,7 +2,7 @@
 
 using DalApi;
 
-public class ConfigImplementation : IConfig
+internal class ConfigImplementation : IConfig
 {
     public int ManagerId
     {
