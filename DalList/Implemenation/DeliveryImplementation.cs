@@ -4,7 +4,7 @@ using DalApi;
 using DO;
 using static DataSource;
 
-internal class DeliveryImplementation : IDelivery
+internal class DeliveryImplementation : ICrud<Delivery>
 {
     public void Create(Delivery item)
     {   

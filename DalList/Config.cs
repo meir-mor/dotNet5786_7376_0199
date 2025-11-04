@@ -1,6 +1,4 @@
-﻿using DO;
-
-namespace Dal;
+﻿namespace Dal;
 
 internal static class Config
 {
