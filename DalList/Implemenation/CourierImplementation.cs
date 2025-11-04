@@ -9,8 +9,7 @@ internal class CourierImplementation : ICrud<Courier>
     public void Create(Courier item)
     {
         if (Couriers.Any(c => c.Id == item.Id))
-            throw new InvalidOperationException($"Courier with ID {item.Id} already exists");
-
+            throw new DalAlreadyExistsException($"Courier with ID={item.Id} already exists");
         Couriers.Add(item);
     }
 
@@ -28,7 +27,7 @@ internal class CourierImplementation : ICrud<Courier>
     {
         var index = Couriers.FindIndex(c => c.Id == item.Id);
         if (index == -1)
-            throw new KeyNotFoundException($"Courier with ID {item.Id} not found.");
+            throw new DalDoesNotExistException($"Courier with ID {item.Id} not found.");
 
         Couriers[index] = item;
     }
@@ -37,7 +36,7 @@ internal class CourierImplementation : ICrud<Courier>
     {
         var courier = Couriers.FirstOrDefault(c => c.Id == id);
         if (courier == null)
-            throw new KeyNotFoundException($"Courier with ID {id} not found.");
+            throw new DalDoesNotExistException($"Courier with ID {id} not found.");
 
         Couriers.Remove(courier);
     }

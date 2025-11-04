@@ -26,7 +26,7 @@ internal class OrderImplementation : ICrud<Order>
     {
         var index = Orders.FindIndex(o => o.Id == item.Id);
         if (index == -1)
-            throw new KeyNotFoundException($"Order with ID {item.Id} not found.");
+            throw new DalDoesNotExistException($"Order with ID {item.Id} not found.");
 
         Orders[index] = item;
     }
@@ -35,7 +35,7 @@ internal class OrderImplementation : ICrud<Order>
     {
         var order = Orders.FirstOrDefault(o => o.Id == id);
         if (order == null)
-            throw new KeyNotFoundException($"Order with ID {id} not found.");
+            throw new DalDoesNotExistException($"Order with ID {id} not found.");
 
         Orders.Remove(order);
     }

@@ -26,7 +26,7 @@ internal class DeliveryImplementation : ICrud<Delivery>
     {
         var index = Deliveries.FindIndex(d => d.Id == item.Id);
         if (index == -1)
-            throw new KeyNotFoundException($"Delivery with ID {item.Id} not found.");
+            throw new DalDoesNotExistException($"Delivery with ID {item.Id} not found.");
 
         Deliveries[index] = item;
     }
@@ -35,7 +35,7 @@ internal class DeliveryImplementation : ICrud<Delivery>
     {
         var delivery = Deliveries.FirstOrDefault(d => d.Id == id);
         if (delivery == null)
-            throw new KeyNotFoundException($"Delivery with ID {id} not found.");
+            throw new DalDoesNotExistException($"Delivery with ID {id} not found.");
 
         Deliveries.Remove(delivery);
     }
