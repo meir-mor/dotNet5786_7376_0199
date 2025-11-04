@@ -21,7 +21,7 @@ public record Courier(
     double? MaximumDistance,
     ShipmentType ShipmentType,
     DateTime StartingWork
-)
+) : Entity(Id)
 {
     public Courier() : this(0, "", "", "", "", false, null, default, DateTime.MinValue)
     {

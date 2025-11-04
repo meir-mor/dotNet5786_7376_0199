@@ -12,14 +12,14 @@ internal class DeliveryImplementation : IDelivery
         Deliveries.Add(item with { Id = id });
     }
 
-    public Delivery? Read(int id)
-    {
-        return Deliveries.FirstOrDefault(d => d.Id == id);
-    }
-
     public IEnumerable<Delivery> ReadAll(Func<Delivery, bool>? filter = null)
     {
-        return Deliveries.Where(c => filter != null && filter(c));
+        return Deliveries.Where(filter ?? (o => true));
+    }
+
+    public Delivery? Read(Func<Delivery, bool> filter)
+    {
+        return Deliveries.FirstOrDefault(filter);
     }
 
     public void Update(Delivery item)

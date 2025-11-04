@@ -67,7 +67,7 @@ public static class Initialization
             do
             {
                 id = s_rand.Next(10000000, 99999999);
-            } while (s_dal?.Courier?.Read(id) != null);
+            } while (s_dal.Courier?.Read(c => c.Id == id) != null);
 
             var name = Mock.CourierNames[i % Mock.CourierNames.Length];
             var email = $"{name.Replace(" ", ".").ToLower()}@gmail.com";
@@ -77,7 +77,7 @@ public static class Initialization
 
             var isActive = s_rand.NextDouble() > 0.25;
 
-            var startDate = s_dal!.Config!.Clock.AddDays(-s_rand.Next(30, 5 * 365));
+            var startDate = s_dal.Config.Clock.AddDays(-s_rand.Next(30, 5 * 365));
 
             double? maxDistance = shipmentType switch
             {

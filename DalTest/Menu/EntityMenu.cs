@@ -6,7 +6,7 @@ namespace DalTest.Menu;
 
 internal static class EntityMenu
 {
-    public static void RunEntityMenu<T>(string entityName, ICrud<T>? dalEntity, IDal dal) where T : class
+    public static void RunEntityMenu<T>(string entityName, ICrud<T>? dalEntity, IDal dal) where T : Entity
     {
         if (dalEntity is null)
         {

@@ -14,14 +14,14 @@ internal class CourierImplementation : ICourier
         Couriers.Add(item);
     }
 
-    public Courier? Read(int id)
-    {
-        return Couriers.FirstOrDefault(c => c.Id == id, null);
-    }
-
     public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null)
     {
-        return Couriers.Where(c => filter != null && filter(c));
+        return Couriers.Where(filter ?? (o => true));
+    }
+
+    public Courier? Read(Func<Courier, bool> filter)
+    {
+        return Couriers.FirstOrDefault(filter);
     }
 
     public void Update(Courier item)

@@ -12,14 +12,14 @@ internal class OrderImplementation : IOrder
         Orders.Add(item with { Id = id });
     }
 
-    public Order? Read(int id)
-    {
-        return Orders.FirstOrDefault(o => o.Id == id);
-    }
-
     public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
     {
-        return Orders.Where(c => filter != null && filter(c));
+        return Orders.Where(filter ?? (o => true));
+    }
+
+    public Order? Read(Func<Order, bool> filter)
+    {
+        return Orders.FirstOrDefault(filter);
     }
 
     public void Update(Order item)
