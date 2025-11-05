@@ -4,7 +4,7 @@ using DalApi;
 using DO;
 using static DataSource;
 
-internal class CourierImplementation : ICrud<Courier>
+internal class CourierImplementation : ICourier
 {
     public void Create(Courier item)
     {

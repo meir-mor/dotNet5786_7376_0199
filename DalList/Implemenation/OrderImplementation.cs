@@ -4,7 +4,7 @@ using DalApi;
 using DO;
 using static DataSource;
 
-internal class OrderImplementation : ICrud<Order>
+internal class OrderImplementation : IOrder
 {
     public void Create(Order item)
     {

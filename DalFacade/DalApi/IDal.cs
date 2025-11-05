@@ -1,16 +1,14 @@
-﻿using DO;
-
-namespace DalApi;
+﻿namespace DalApi;
 
 public interface IDal
 {
     IConfig Config { get; }
 
-    ICrud<Courier> Courier { get; }
+    ICourier Courier { get; }
 
-    ICrud<Delivery> Delivery { get; }
+    IDelivery Delivery { get; }
 
-    ICrud<Order> Order { get; }
+    IOrder Order { get; }
 
     void ResetDB();
 

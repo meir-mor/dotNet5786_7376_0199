@@ -1,16 +1,14 @@
-﻿using DO;
-
-namespace Dal;
+﻿namespace Dal;
 using DalApi;
 
 sealed public class DalList : IDal
 {
     public IConfig Config { get; } =  new ConfigImplementation();
-    public ICrud<Courier> Courier { get; } =  new CourierImplementation();
+    public ICourier Courier { get; } =  new CourierImplementation();
 
-    public ICrud<Delivery> Delivery { get; } = new DeliveryImplementation();
+    public IDelivery Delivery { get; } = new DeliveryImplementation();
 
-    public ICrud<Order> Order { get; } =  new OrderImplementation();
+    public IOrder Order { get; } =  new OrderImplementation();
 
     public void ResetDB()
     {
