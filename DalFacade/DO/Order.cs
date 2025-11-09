@@ -26,7 +26,7 @@ public record Order(
     OrderStatus Status,
     double Latitude,
     double Longitude
-) : Entity(Id)
+)
 {
     public Order() : this(0, default, null, "", "", "", false, DateTime.Now, OrderStatus.Open, 0.0, 0.0)
     {

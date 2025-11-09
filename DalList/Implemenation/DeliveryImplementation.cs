@@ -21,6 +21,11 @@ internal class DeliveryImplementation : IDelivery
     {
         return Deliveries.FirstOrDefault(filter);
     }
+    
+    public Delivery? Read(int id)
+    {
+        return Deliveries.FirstOrDefault(d => d.Id == id);
+    }
 
     public void Update(Delivery item)
     {

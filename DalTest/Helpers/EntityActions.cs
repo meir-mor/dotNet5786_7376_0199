@@ -9,7 +9,7 @@ internal static class EntityActions
     /// <summary>
     /// Creates a new entity from console input and adds it to the DAL.
     /// </summary>
-    public static void CreateEntity<T>(ICrud<T> dalEntity, string entityName, IDal dal) where T : Entity
+    public static void CreateEntity<T>(ICrud<T> dalEntity, string entityName, IDal dal) where T : class
     {
         if (GetFromConsole(dal, entityName) is not T newEntity)
         {
@@ -24,7 +24,7 @@ internal static class EntityActions
     /// <summary>
     /// Updates an existing entity by reading its ID and new data from console.
     /// </summary>
-    public static void UpdateEntity<T>(ICrud<T> dalEntity, string entityName, IDal dal) where T : Entity
+    public static void UpdateEntity<T>(ICrud<T> dalEntity, string entityName, IDal dal) where T : class
     {
         Console.Write($@"Enter ID for {entityName}: ");
         if (!int.TryParse(Console.ReadLine(), out var id))
@@ -33,7 +33,7 @@ internal static class EntityActions
             return;
         }
 
-        var existingEntity = dalEntity.Read(c => c.Id == id);
+        var existingEntity = dalEntity.Read(id);
         if (existingEntity is null)
         {
             Console.WriteLine($@"{entityName} not found.");
@@ -54,7 +54,7 @@ internal static class EntityActions
     /// <summary>
     /// Reads and displays an entity by ID from the DAL.
     /// </summary>
-    public static void ReadEntity<T>(ICrud<T> dalEntity) where T : Entity
+    public static void ReadEntity<T>(ICrud<T> dalEntity) where T : class
     {
         Console.Write(@"Enter ID: ");
         if (!int.TryParse(Console.ReadLine(), out var id))
@@ -63,14 +63,14 @@ internal static class EntityActions
             return;
         }
 
-        var entity = dalEntity.Read(c => c.Id == id);
+        var entity = dalEntity.Read(id);
         Console.WriteLine(entity is null ? "Not found." : entity);
     }
 
     /// <summary>
     /// Reads and displays all entities from the DAL.
     /// </summary>
-    public static void ReadAllEntities<T>(ICrud<T> dalEntity) where T : Entity
+    public static void ReadAllEntities<T>(ICrud<T> dalEntity) where T : class
     {
         var list = dalEntity.ReadAll();
         foreach (var item in list)
@@ -80,7 +80,7 @@ internal static class EntityActions
     /// <summary>
     /// Deletes an entity by ID from the DAL.
     /// </summary>
-    public static void DeleteEntity<T>(ICrud<T> dalEntity) where T : Entity
+    public static void DeleteEntity<T>(ICrud<T> dalEntity) where T : class
     {
         Console.Write(@"Enter ID to delete: ");
         if (!int.TryParse(Console.ReadLine(), out var id))

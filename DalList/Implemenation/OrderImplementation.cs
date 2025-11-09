@@ -21,6 +21,11 @@ internal class OrderImplementation : IOrder
     {
         return Orders.FirstOrDefault(filter);
     }
+    
+    public Order? Read(int id)
+    {
+        return Orders.FirstOrDefault(o => o.Id == id);
+    }
 
     public void Update(Order item)
     {

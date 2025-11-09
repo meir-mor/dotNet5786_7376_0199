@@ -20,7 +20,7 @@ public record Delivery(
     double? ActualDistance,
     DeliveryEndType? DeliveryEndType,
     DateTime? EndTime
-) : Entity(Id)
+)
 {
     public Delivery() : this(0, 0, 0, default, DateTime.MinValue, null, null, null)
     {
