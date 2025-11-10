@@ -1,4 +1,5 @@
 ﻿namespace DO;
+
 using System;
 
 /// <summary>
@@ -8,8 +9,13 @@ using System;
 [Serializable]
 public class DalDoesNotExistException : Exception
 {
-    public DalDoesNotExistException(string? message) : base(message) { }
-    public DalDoesNotExistException(string? message, Exception? inner) : base(message, inner) { }
+    public DalDoesNotExistException(string? message) : base(message)
+    {
+    }
+
+    public DalDoesNotExistException(string? message, Exception? inner) : base(message, inner)
+    {
+    }
 }
 
 /// <summary>
@@ -18,8 +24,13 @@ public class DalDoesNotExistException : Exception
 [Serializable]
 public class DalAlreadyExistsException : Exception
 {
-    public DalAlreadyExistsException(string? message) : base(message) { }
-    public DalAlreadyExistsException(string? message, Exception? inner) : base(message, inner) { }
+    public DalAlreadyExistsException(string? message) : base(message)
+    {
+    }
+
+    public DalAlreadyExistsException(string? message, Exception? inner) : base(message, inner)
+    {
+    }
 }
 
 /// <summary>
@@ -28,8 +39,13 @@ public class DalAlreadyExistsException : Exception
 [Serializable]
 public class DalNullException : Exception
 {
-    public DalNullException(string? message) : base(message) { }
-    public DalNullException(string? message, Exception? inner) : base(message, inner) { }
+    public DalNullException(string? message) : base(message)
+    {
+    }
+
+    public DalNullException(string? message, Exception? inner) : base(message, inner)
+    {
+    }
 }
 
 /// <summary>
@@ -38,6 +54,11 @@ public class DalNullException : Exception
 [Serializable]
 public class DalXMLFileLoadCreateException : Exception
 {
-    public DalXMLFileLoadCreateException(string? message) : base(message) { }
-    public DalXMLFileLoadCreateException(string? message, Exception? inner) : base(message, inner) { }
+    public DalXMLFileLoadCreateException(string? message) : base(message)
+    {
+    }
+
+    public DalXMLFileLoadCreateException(string? message, Exception? inner) : base(message, inner)
+    {
+    }
 }

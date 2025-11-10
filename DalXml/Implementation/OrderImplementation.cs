@@ -11,7 +11,7 @@ internal class OrderImplementation : IOrder
     public void Create(Order item)
     {
         var ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
-        
+
         var orderElement = new XElement("Order",
             new XElement("Id", Config.NextOrderId),
             new XElement("Type", item.Type),
@@ -35,7 +35,7 @@ internal class OrderImplementation : IOrder
         var ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
 
         var orderElement = ordersRoot.Elements("Order")
-                                           .FirstOrDefault(o => (int?)o.Element("Id") == id);
+            .FirstOrDefault(o => (int?)o.Element("Id") == id);
 
         if (orderElement == null)
             throw new DalDoesNotExistException($"Order with ID={id} not found.");
@@ -60,7 +60,7 @@ internal class OrderImplementation : IOrder
         var ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
 
         var orderElement = ordersRoot.Elements("Order")
-                                           .FirstOrDefault(o => (int?)o.Element("Id") == id);
+            .FirstOrDefault(o => (int?)o.Element("Id") == id);
 
         return orderElement == null ? null : ConvertXElementToOrder(orderElement);
     }
@@ -70,7 +70,7 @@ internal class OrderImplementation : IOrder
         var ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
 
         var orders = from order in ordersRoot.Elements("Order")
-                     select ConvertXElementToOrder(order);
+            select ConvertXElementToOrder(order);
 
         return filter == null ? orders : orders.Where(filter);
     }
@@ -80,7 +80,7 @@ internal class OrderImplementation : IOrder
         var ordersRoot = XMLTools.LoadListFromXMLElement(Config.s_orders_xml);
 
         var existingOrder = ordersRoot.Elements("Order")
-                                            .FirstOrDefault(o => (int?)o.Element("Id") == item.Id);
+            .FirstOrDefault(o => (int?)o.Element("Id") == item.Id);
 
         if (existingOrder == null)
             throw new DalDoesNotExistException($"Order with ID={item.Id} does not exist");
@@ -90,8 +90,9 @@ internal class OrderImplementation : IOrder
         XMLTools.SaveListToXMLElement(ordersRoot, Config.s_orders_xml);
     }
 
-    public static XElement CreateOrderElement(Order o) =>
-        new XElement("Order",
+    public static XElement CreateOrderElement(Order o)
+    {
+        return new XElement("Order",
             new XElement("Id", o.Id),
             new XElement("Type", o.Type),
             new XElement("Description", o.Description),
@@ -104,19 +105,22 @@ internal class OrderImplementation : IOrder
             new XElement("Latitude", o.Latitude),
             new XElement("Longitude", o.Longitude)
         );
+    }
 
-    public static Order ConvertXElementToOrder(XElement o) =>
-        new Order(
-            Id: (int?)o.Element("Id") ?? 0,
-            Type:Enum.Parse<OrderType>((string)o.Element("Type")!),
-            Description: (string?)o.Element("Description"),
-            Address: (string?)o.Element("Address") ?? "",
-            CustomerName: (string?)o.Element("CustomerName") ?? "",
-            CustomerPhone: (string?)o.Element("CustomerPhone") ?? "",
-            IsFragile: (bool?)o.Element("IsFragile") ?? false,
-            CreatedAt: (DateTime?)o.Element("CreatedAt") ?? DateTime.Now,
-            Status: o.ToEnumNullable<OrderStatus>("Status") ?? OrderStatus.Open,
-            Latitude: (double?)o.Element("Latitude") ?? 0.0,
-            Longitude: (double?)o.Element("Longitude") ?? 0.0
+    public static Order ConvertXElementToOrder(XElement o)
+    {
+        return new Order(
+            (int?)o.Element("Id") ?? 0,
+            Enum.Parse<OrderType>((string)o.Element("Type")!),
+            (string?)o.Element("Description"),
+            (string?)o.Element("Address") ?? "",
+            (string?)o.Element("CustomerName") ?? "",
+            (string?)o.Element("CustomerPhone") ?? "",
+            (bool?)o.Element("IsFragile") ?? false,
+            (DateTime?)o.Element("CreatedAt") ?? DateTime.Now,
+            o.ToEnumNullable<OrderStatus>("Status") ?? OrderStatus.Open,
+            (double?)o.Element("Latitude") ?? 0.0,
+            (double?)o.Element("Longitude") ?? 0.0
         );
+    }
 }

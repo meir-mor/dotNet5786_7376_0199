@@ -1,8 +1,8 @@
-﻿
-using DalApi;
+﻿using DalApi;
+
 namespace Dal;
 
-sealed public class DalXml : IDal
+public sealed class DalXml : IDal
 {
     public IConfig Config { get; } = new ConfigImplementation();
     public ICourier Courier { get; } = new CourierImplementation();

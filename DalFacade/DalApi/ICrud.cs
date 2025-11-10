@@ -1,7 +1,8 @@
 ﻿using DO;
 
 namespace DalApi;
-public interface ICrud <T> where T : class
+
+public interface ICrud<T> where T : class
 {
     void Create(T item); //Creates new entity object in DAL
     IEnumerable<T> ReadAll(Func<T, bool>? filter = null); //stage 1 only, Reads all entity objects
