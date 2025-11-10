@@ -14,7 +14,6 @@ internal class DeliveryImplementation : IDelivery
         var nextId = Config.NextDeliveryId;
         deliveries.Add(item with { Id = nextId });
 
-        deliveries.Add(item);
         XMLTools.SaveListToXMLSerializer(deliveries, xmlFileName);
     }
 

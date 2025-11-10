@@ -2,9 +2,6 @@
 
 using DalApi;
 using DO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 internal class CourierImplementation : ICourier
 {
