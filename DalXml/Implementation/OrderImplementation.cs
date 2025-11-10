@@ -84,7 +84,7 @@ internal class OrderImplementation : IOrder
         return filter == null ? orders : orders.Where(filter);
     }
 
-    public static void Update(Order item)
+    public  void Update(Order item)
     {
         XElement ordersRoot = XMLTools.LoadListFromXMLElement(Config.s_orders_xml);
 
