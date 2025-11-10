@@ -24,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xml", "xml", "{02EA681E-C7D
 		xml\data-config.xml = xml\data-config.xml
 		xml\deliveries.xml = xml\deliveries.xml
 		xml\orders.xml = xml\orders.xml
+		xml\couriers.xml = xml\couriers.xml
 	EndProjectSection
 EndProject
 Global
