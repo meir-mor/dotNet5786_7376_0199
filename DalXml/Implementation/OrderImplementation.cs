@@ -1,8 +1,5 @@
 ﻿using DO;
 using DalApi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Linq;
 
 namespace Dal;
@@ -13,13 +10,10 @@ internal class OrderImplementation : IOrder
 
     public void Create(Order item)
     {
-        XElement ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
-
-        int id = Config.NextOrderId;
-        item = item with { Id = id }; 
-
-        XElement orderElement = new XElement("Order",
-            new XElement("Id", item.Id),
+        var ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
+        
+        var orderElement = new XElement("Order",
+            new XElement("Id", Config.NextOrderId),
             new XElement("Type", item.Type),
             new XElement("Description", item.Description),
             new XElement("Address", item.Address),
@@ -38,9 +32,9 @@ internal class OrderImplementation : IOrder
 
     public void Delete(int id)
     {
-        XElement ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
+        var ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
 
-        XElement? orderElement = ordersRoot.Elements("Order")
+        var orderElement = ordersRoot.Elements("Order")
                                            .FirstOrDefault(o => (int?)o.Element("Id") == id);
 
         if (orderElement == null)
@@ -57,26 +51,23 @@ internal class OrderImplementation : IOrder
 
     public Order? Read(Func<Order, bool> filter)
     {
-        IEnumerable<Order> orders = ReadAll();
+        var orders = ReadAll();
         return orders.FirstOrDefault(filter);
     }
 
     public Order? Read(int id)
     {
-        XElement ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
+        var ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
 
-        XElement? orderElement = ordersRoot.Elements("Order")
+        var orderElement = ordersRoot.Elements("Order")
                                            .FirstOrDefault(o => (int?)o.Element("Id") == id);
 
-        if (orderElement == null)
-            return null;
-
-        return ConvertXElementToOrder(orderElement);
+        return orderElement == null ? null : ConvertXElementToOrder(orderElement);
     }
 
     public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
     {
-        XElement ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
+        var ordersRoot = XMLTools.LoadListFromXMLElement(xmlFileName);
 
         var orders = from order in ordersRoot.Elements("Order")
                      select ConvertXElementToOrder(order);
@@ -84,11 +75,11 @@ internal class OrderImplementation : IOrder
         return filter == null ? orders : orders.Where(filter);
     }
 
-    public  void Update(Order item)
+    public void Update(Order item)
     {
-        XElement ordersRoot = XMLTools.LoadListFromXMLElement(Config.s_orders_xml);
+        var ordersRoot = XMLTools.LoadListFromXMLElement(Config.s_orders_xml);
 
-        XElement? existingOrder = ordersRoot.Elements("Order")
+        var existingOrder = ordersRoot.Elements("Order")
                                             .FirstOrDefault(o => (int?)o.Element("Id") == item.Id);
 
         if (existingOrder == null)

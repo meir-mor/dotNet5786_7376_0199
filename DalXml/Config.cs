@@ -56,7 +56,7 @@ internal static class Config
     internal static double? MaxDistance
     {
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "MaxDistance");
-        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "MaxDistance", value);
+        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "MaxDistance", value ?? 0);
     }
     internal static double AverageCarSpeed
     {
