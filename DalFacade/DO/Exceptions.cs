@@ -31,3 +31,13 @@ public class DalNullException : Exception
     public DalNullException(string? message) : base(message) { }
     public DalNullException(string? message, Exception? inner) : base(message, inner) { }
 }
+
+/// <summary>
+/// נזרקת כאשר יש שגיאה ביצירת או טעינת קובץ XML.
+/// </summary>
+[Serializable]
+public class DalXMLFileLoadCreateException : Exception
+{
+    public DalXMLFileLoadCreateException(string? message) : base(message) { }
+    public DalXMLFileLoadCreateException(string? message, Exception? inner) : base(message, inner) { }
+}

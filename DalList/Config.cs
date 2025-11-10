@@ -19,8 +19,8 @@ internal static class Config
 
     internal static DateTime Clock { get; set; } = DateTime.Now;
     internal static int ManagerId { get; set; }
-    internal static string ManagerPassword { get; set; } = "0";
-    internal static string? ComponyAddress { get; set; }
+    internal static string ManagerPassword { get; set; } = "";
+    internal static string ComponyAddress { get; set; } = "";
     internal static double? Latitude { get; } // = ourFunctionToCalculate();
     internal static double? Longitude { get; } // = ourFunctionToCalculate();
     internal static double? MaxDistance { get; set; } = 100;
