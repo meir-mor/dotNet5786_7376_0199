@@ -1,64 +1,116 @@
 ﻿using DO;
 using DalApi;
+using System.Xml.Linq;
+using static System.Enum;
 
 namespace Dal;
 
 internal class OrderImplementation : IOrder
 {
-    private readonly string xmlFileName = Config.s_orders_xml;
+    private const string XMLFileName = Config.s_orders_xml;
 
     public void Create(Order item)
     {
-        var orders = XMLTools.LoadListFromXMLSerializer<Order>(xmlFileName);
+        var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
 
-        var nextId = Config.NextOrderId;
-        orders.Add(item with { Id = nextId });
+        var orderElement = CreateOrderElement(item with { Id = Config.NextOrderId });
 
-        XMLTools.SaveListToXMLSerializer(orders, xmlFileName);
+        ordersRoot.Add(orderElement);
+        XMLTools.SaveListToXMLElement(ordersRoot, XMLFileName);
     }
 
     public void Delete(int id)
     {
-        var orders = XMLTools.LoadListFromXMLSerializer<Order>(xmlFileName);
-        var order = orders.FirstOrDefault(o => o.Id == id);
-        if (order == null)
+        var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
+
+        var orderElement = ordersRoot.Elements("Order")
+            .FirstOrDefault(o => (int?)o.Element("Id") == id);
+
+        if (orderElement == null)
             throw new DalDoesNotExistException($"Order with ID={id} not found.");
 
-        orders.Remove(order);
-        XMLTools.SaveListToXMLSerializer(orders, xmlFileName);
+        orderElement.Remove();
+        XMLTools.SaveListToXMLElement(ordersRoot, XMLFileName);
     }
 
     public void DeleteAll()
     {
-        XMLTools.SaveListToXMLSerializer(new List<Order>(), xmlFileName);
+        XMLTools.SaveListToXMLElement(new XElement("Orders"), XMLFileName);
     }
 
     public Order? Read(Func<Order, bool> filter)
     {
-        var orders = XMLTools.LoadListFromXMLSerializer<Order>(xmlFileName);
+        var orders = ReadAll();
         return orders.FirstOrDefault(filter);
     }
 
     public Order? Read(int id)
     {
-        var orders = XMLTools.LoadListFromXMLSerializer<Order>(xmlFileName);
-        return orders.FirstOrDefault(o => o.Id == id);
+        var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
+
+        var orderElement = ordersRoot.Elements("Order")
+            .FirstOrDefault(o => (int?)o.Element("Id") == id);
+
+        return orderElement == null ? null : ConvertXElementToOrder(orderElement);
     }
 
     public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
     {
-        var orders = XMLTools.LoadListFromXMLSerializer<Order>(xmlFileName);
+        var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
+
+        var orders = from order in ordersRoot.Elements("Order")
+            select ConvertXElementToOrder(order);
+
         return filter == null ? orders : orders.Where(filter);
     }
 
     public void Update(Order item)
     {
-        var orders = XMLTools.LoadListFromXMLSerializer<Order>(xmlFileName);
+        var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
 
-        if (orders.RemoveAll(o => o.Id == item.Id) == 0)
-            throw new DalDoesNotExistException($"Order with ID={item.Id} does not exist.");
+        var existingOrder = ordersRoot.Elements("Order")
+            .FirstOrDefault(o => (int?)o.Element("Id") == item.Id);
 
-        orders.Add(item);
-        XMLTools.SaveListToXMLSerializer(orders, xmlFileName);
+        if (existingOrder == null)
+            throw new DalDoesNotExistException($"Order with ID={item.Id} does not exist");
+
+        existingOrder.ReplaceWith(CreateOrderElement(item));
+
+        XMLTools.SaveListToXMLElement(ordersRoot, Config.s_orders_xml);
+    }
+
+    private static XElement CreateOrderElement(Order o)
+    {
+        return new XElement("Order",
+            new XElement("Id", o.Id),
+            new XElement("Type", o.Type),
+            new XElement("Description", o.Description),
+            new XElement("Address", o.Address),
+            new XElement("CustomerName", o.CustomerName),
+            new XElement("CustomerPhone", o.CustomerPhone),
+            new XElement("IsFragile", o.IsFragile),
+            new XElement("CreatedAt", o.CreatedAt),
+            new XElement("Status", o.Status),
+            new XElement("Latitude", o.Latitude),
+            new XElement("Longitude", o.Longitude)
+        );
+    }
+
+    private static Order ConvertXElementToOrder(XElement o)
+    {
+        TryParse((string?)o.Element("Type"), out OrderType type);
+        return new Order(
+            (int?)o.Element("Id") ?? 0,
+            type,
+            (string?)o.Element("Description"),
+            (string?)o.Element("Address") ?? "",
+            (string?)o.Element("CustomerName") ?? "",
+            (string?)o.Element("CustomerPhone") ?? "",
+            (bool?)o.Element("IsFragile") ?? false,
+            (DateTime?)o.Element("CreatedAt") ?? DateTime.Now,
+            o.ToEnumNullable<OrderStatus>("Status") ?? OrderStatus.Open,
+            (double?)o.Element("Latitude") ?? 0.0,
+            (double?)o.Element("Longitude") ?? 0.0
+        );
     }
 }
