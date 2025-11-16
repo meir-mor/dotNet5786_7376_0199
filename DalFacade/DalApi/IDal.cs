@@ -11,5 +11,4 @@ public interface IDal
     IOrder Order { get; }
 
     void ResetDB();
-
 }

@@ -1,4 +1,5 @@
 ﻿namespace Dal;
+
 using DalTest;
 using DalApi;
 using DO;
@@ -25,7 +26,7 @@ public static class Initialization
     private static void CreateOrder(int count = 50)
     {
         if (s_dal is null) return;
-        
+
         for (var i = 0; i < count; i++)
         {
             var (address, lat, lon, _, _) = Mock.Addresses[i % Mock.Addresses.Length];
@@ -36,7 +37,7 @@ public static class Initialization
                 < 30 => OrderStatus.InProgress,
                 _ => OrderStatus.Closed
             };
-            
+
             var randomMinutes = s_rand.Next(0, 7 * 24 * 60); // 0 to 10079 minutes (last 7 days)
             var randomSeconds = s_rand.Next(0, 60); // 0 to 59 seconds
             var randomPastTime = s_dal.Config.Clock.AddMinutes(-randomMinutes).AddSeconds(-randomSeconds);
@@ -60,7 +61,7 @@ public static class Initialization
     private static void CreateCourier(int count = 20)
     {
         if (s_dal == null) return;
-        
+
         for (var i = 0; i < count; i++)
         {
             int id;
@@ -108,7 +109,7 @@ public static class Initialization
     private static void CreateDelivery(int count = 15)
     {
         if (s_dal is null) return;
-        
+
         var orders = s_dal.Order.ReadAll()?.ToList() ?? [];
         var couriers = s_dal.Courier?.ReadAll()?.ToList() ?? [];
         if (orders.Count == 0 || couriers.Count == 0) return;

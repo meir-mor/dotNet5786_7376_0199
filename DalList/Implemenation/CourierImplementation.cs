@@ -22,7 +22,7 @@ internal class CourierImplementation : ICourier
     {
         return Couriers.FirstOrDefault(filter);
     }
-    
+
     public Courier? Read(int id)
     {
         return Couriers.FirstOrDefault(c => c.Id == id);

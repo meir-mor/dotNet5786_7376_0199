@@ -1,11 +1,12 @@
 using DalApi;
 using DalTest.Menu;
+
 namespace Dal;
 
 internal class Program
 {
-    static readonly IDal s_dal = new DalXml(); //stage 3
-    //static readonly IDal s_dal = new DalList();
+    //static readonly IDal s_dal = new DalList(); //stage 2
+    private static readonly IDal s_dal = new DalXml(); //stage 3
 
     private static void Main(string[] args)
     {

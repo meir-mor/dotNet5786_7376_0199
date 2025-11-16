@@ -7,7 +7,7 @@ using static DataSource;
 internal class DeliveryImplementation : IDelivery
 {
     public void Create(Delivery item)
-    {   
+    {
         var id = Config.NextDeliveryId;
         Deliveries.Add(item with { Id = id });
     }
@@ -21,7 +21,7 @@ internal class DeliveryImplementation : IDelivery
     {
         return Deliveries.FirstOrDefault(filter);
     }
-    
+
     public Delivery? Read(int id)
     {
         return Deliveries.FirstOrDefault(d => d.Id == id);
