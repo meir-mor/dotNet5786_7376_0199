@@ -1,12 +1,14 @@
 using DalApi;
 using DalTest.Menu;
+using System.Data.SqlTypes;
 
 namespace Dal;
 
 internal class Program
 {
     //static readonly IDal s_dal = new DalList(); //stage 2
-    private static readonly IDal s_dal = new DalXml(); //stage 3
+    //private static readonly IDal s_dal = new DalXml(); //stage 3
+    private static readonly IDal s_dal = Factory.Get;
 
     private static void Main(string[] args)
     {

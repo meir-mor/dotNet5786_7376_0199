@@ -8,7 +8,7 @@ namespace DalTest.Menu;
 
 internal static class MainMenu
 {
-    public static void RunMainMenu(IDal dal)
+    public static void RunMainMenu(IDal dal)////?????????
     {
         MainMenuOption choice;
         do
@@ -46,7 +46,7 @@ internal static class MainMenu
                     ConfigMenu.RunConfigMenu(dal);
                     break;
                 case MainMenuOption.Initialization:
-                    Initialization.Do(dal);
+                    Initialization.Do();
                     Console.WriteLine(@"Data reset and initialized successfully! (אתחול)");
                     break;
                 case MainMenuOption.ShowAllData:

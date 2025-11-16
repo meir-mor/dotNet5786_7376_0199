@@ -10,9 +10,9 @@ public static class Initialization
 
     private static readonly Random s_rand = new();
 
-    public static void Do(IDal dal)
+    public static void Do()
     {
-        s_dal = dal ?? throw new DalNullException("DAL object can not be null!");
+        s_dal = DalApi.Factory.Get;
 
         Console.WriteLine("Reset Configuration values and List values...");
         s_dal.ResetDB();
