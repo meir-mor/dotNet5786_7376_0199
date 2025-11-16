@@ -2,7 +2,7 @@
 using DalApi;
 namespace Dal;
 
-internal class DalXml : IDal
+sealed internal class DalXml : IDal
 {
     public IConfig Config { get; } = new ConfigImplementation();
     public ICourier Courier { get; } = new CourierImplementation();

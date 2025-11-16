@@ -161,6 +161,11 @@ static class XMLTools
         double.TryParse((string?)element.Element(name), out var result) ? (double?)result : null;
     public static int? ToIntNullable(this XElement element, string name) =>
         int.TryParse((string?)element.Element(name), out var result) ? (int?)result : null;
+
+    internal static void SetConfigDoubleVal(string s_data_config_xml, string v, double? value)
+    {
+        throw new NotImplementedException();
+    }
     #endregion
 
 }
