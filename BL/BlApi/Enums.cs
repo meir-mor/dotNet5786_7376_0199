@@ -64,27 +64,3 @@ public enum TimeUnit
     Month,
     Year
 }
-
-/// <summary>
-/// Filter keys for GetDeliveriesList.
-/// Implementations map these keys to properties of BO.DeliveryPerOrderInList.
-/// </summary>
-public enum DeliveryListFilterBy
-{
-    None,
-    OrderId,
-    CourierId,
-    DeliveryType,
-    DeliveryEndType
-}
-
-/// <summary>
-/// Sort keys for GetDeliveriesList.
-/// </summary>
-public enum DeliveryListSortBy
-{
-    StartTime,
-    EndTime,
-    DeliveryType,
-    CourierId
-}
