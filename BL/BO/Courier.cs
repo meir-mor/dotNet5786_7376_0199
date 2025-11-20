@@ -25,7 +25,7 @@ public class Courier
     public string? Password { get; set; } = null;
     public bool IsActive { get; set; } = true;
     public double? MaxDistance { get; set; } = null;
-    public DeliveryType DeliveryType { get; set; }//להוסיף בקובץ האינומרציות!!!
+    public DeliveryEndType deliveryEndType { get; set; }
     public DateTime StartWorkTime { get; set; }
     public int TotalDeliveredOnTime { get; set; }
     public int TotalDeliveredLate { get; set; }

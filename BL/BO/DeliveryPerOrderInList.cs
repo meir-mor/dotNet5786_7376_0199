@@ -21,7 +21,7 @@ public class DeliveryPerOrderInList
     public int DeliveryId { get; init; }
     public int? CourierId { get; set; } = null;
     public string CourierName { get; set; } = string.Empty;
-    public DeliveryType DeliveryType { get; set; }
+    public ShipmentType shipmentType { get; set; }
     public DateTime DeliveryStartTime { get; set; }
     public DeliveryEndType? DeliveryEndType { get; set; } = null;
     public DateTime? DeliveryEndTime { get; set; } = null;

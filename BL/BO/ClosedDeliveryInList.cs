@@ -23,7 +23,7 @@ public class ClosedDeliveryInList
     public int OrderId { get; init; }
     public OrderType OrderType { get; set; }
     public string FullAddress { get; set; } = string.Empty;
-    public DeliveryType DeliveryType { get; set; }
+    public ShipmentType shipmentType { get; set; }
     public double? ActualDistance { get; set; } = null;
     public TimeSpan TotalHandlingTime { get; set; }
     public DeliveryEndType? DeliveryEndType { get; set; } = null;
