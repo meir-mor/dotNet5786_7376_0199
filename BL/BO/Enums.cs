@@ -1,12 +1,5 @@
-﻿
+
 namespace BO;
-public enum ShipmentType
-{
-    Walk,
-    Bicycle,
-    Motorcycle,
-    Car
-}
 
 public enum OrderType
 {
@@ -15,6 +8,13 @@ public enum OrderType
     Clothing,
     Dishes,
     General
+}
+
+public enum OrderStatus
+{
+    Open,
+    InProgress,
+    Closed
 }
 
 public enum DeliveryEndType
@@ -26,50 +26,9 @@ public enum DeliveryEndType
     Failed
 }
 
-public enum MainMenuOption
-{
-    Exit = 0,
-    CourierMenu = 1,
-    DeliveryMenu,
-    OrderMenu,
-    ConfigMenu,
-    Initialization,
-    ShowAllData,
-    ResetAll
-}
-
-public enum EntityMenuOption
-{
-    Exit = 0,
-    Create,
-    Read,
-    ReadAll,
-    Update,
-    Delete,
-    DeleteAll
-}
-
-public enum ConfigMenuOption
-{
-    Exit = 0,
-    AdvanceMinute,
-    AdvanceHour,
-    ShowClock,
-    SetClock,
-    Reset
-}
-
-public enum OrderStatus
-{
-    Open,
-    InProgress,
-    Closed
-}
-
 public enum ScheduleStatus
 {
     OnTime,
     AtRisk,
     Late
 }
-

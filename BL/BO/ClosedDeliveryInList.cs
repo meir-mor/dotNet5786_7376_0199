@@ -1,7 +1,4 @@
-﻿
-using DO;
-using Helpers;
-using System;
+﻿using Helpers;
 
 namespace BO;
 
@@ -31,5 +28,6 @@ public class ClosedDeliveryInList
     /// <summary>
     /// Debug friendly string representation.
     /// </summary>
+
     public override string ToString() => this.ToStringProperty();
 }

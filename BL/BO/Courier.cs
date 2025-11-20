@@ -1,5 +1,7 @@
 ﻿
-using BO;
+using Helpers;
+
+namespace BO;
 
 /// <summary>
 /// Logical entity representing a courier (שליח), including personal details and current order in progress (if any).
