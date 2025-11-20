@@ -36,7 +36,7 @@ public class Order
     public string? Volume { get; set; } = null; // free-form: volume/weight/fragile notes
     public DateTime OrderOpenTime { get; set; }
     public DateTime ExpectedDeliveryTime { get; set; }
-    public DateTime MaxDeliveryTime { get; set; }
+    public TimeSpan MaxDeliveryTime { get; set; }
     public OrderStatus OrderStatus { get; set; }
     public ScheduleStatus ScheduleStatus { get; set; }
     public TimeSpan TimeRemaining { get; set; }
