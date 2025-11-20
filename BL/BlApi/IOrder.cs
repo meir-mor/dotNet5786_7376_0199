@@ -7,8 +7,6 @@ namespace BlApi;
 /// </summary>
 public interface IOrder
 {
-   
-
     /// <summary>
     /// Summary matrix of order counts by (OrderStatus x ScheduleStatus).
     /// Returned value is a 2D array int[orderStatusCount, scheduleStatusCount].
