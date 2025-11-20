@@ -7,8 +7,8 @@ public class Config
     public TimeSpan RiskRange { get; set; }
     public string ComponyAddress { get; set; }
     public string ManagerPassword { get; set; }
-    public double? Latitude { get; }
-    public double? Longitude { get; }
+    public double? Latitude { get; init; }
+    public double? Longitude { get; init; }
     public double? MaxDistance { get; set; }
     public double AverageCarSpeed { get; set; }
     public double AverageBikeSpeedBike { get; set; }
@@ -16,5 +16,4 @@ public class Config
     public double AverageWalkSpeed { get; set; }
     public TimeSpan MaxDeliveryTime { get; set; }
     public TimeSpan TimeToBeDispose { get; set; }
-    
 }

@@ -56,10 +56,20 @@ internal static class AdminManager //stage 4
     internal static BO.Config GetConfig() //stage 4
     => new BO.Config()
     {
-        MaxRange = s_dal.Config.MaxRange
-        //TO_DO: //stage 4
-        //add an assignment for each configuration property
-        //...
+        ManagerId = s_dal.Config.ManagerId,
+        Clock = s_dal.Config.Clock,
+        RiskRange = s_dal.Config.RiskRange,
+        ComponyAddress = s_dal.Config.ComponyAddress,
+        ManagerPassword = s_dal.Config.ManagerPassword,
+        Latitude = s_dal.Config.Latitude,
+        Longitude = s_dal.Config.Longitude,
+        MaxDistance = s_dal.Config.MaxDistance,
+        AverageCarSpeed = s_dal.Config.AverageCarSpeed,
+        AverageBikeSpeedBike = s_dal.Config.AverageBikeSpeedBike,
+        AverageBicycleSpeed = s_dal.Config.AverageBicycleSpeed,
+        AverageWalkSpeed = s_dal.Config.AverageWalkSpeed,
+        MaxDeliveryTime = s_dal.Config.MaxDeliveryTime,
+        TimeToBeDispose = s_dal.Config.TimeToBeDispose
     };
 
     /// <summary>
@@ -68,16 +78,21 @@ internal static class AdminManager //stage 4
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     internal static void SetConfig(BO.Config configuration) //stage 4
     {
-        bool configChanged = false; // stage 5
+        var configChanged = false; // stage 5
 
-        if (s_dal.Config.MaxRange != configuration.MaxRange) //stage 4
+        var props = s_dal.Config.GetType()
+            .GetProperties()
+            .Where(p => p.CanRead && p.CanWrite); // רק פרופרטיז שאפשר גם לקרוא וגם לכתוב
+
+        foreach (var prop in props)
         {
-            s_dal.Config.MaxRange = configuration.MaxRange;
+            var oldValue = prop.GetValue(s_dal.Config);
+            var newValue = prop.GetValue(configuration);
+
+            if (Equals(oldValue, newValue)) continue;
+            prop.SetValue(s_dal.Config, newValue);
             configChanged = true;
         }
-        //TO_DO: //stage 4
-        //add a condition+assignment for each configuration property
-        //...
 
         //Calling all the observers of configuration update
         if (configChanged) // stage 5

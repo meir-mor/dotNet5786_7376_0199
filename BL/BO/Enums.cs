@@ -1,6 +1,13 @@
 
 namespace BO;
 
+public enum ShipmentType
+{
+    Walk,
+    Bicycle,
+    Motorcycle,
+    Car
+}
 public enum OrderType
 {
     Food,
