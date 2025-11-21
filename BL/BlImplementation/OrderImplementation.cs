@@ -49,7 +49,7 @@ internal class OrderImplementation : IOrder
             TimeRemaining = o.TimeRemaining,
             DeliveryId = o.Deliveries?.FirstOrDefault()?.DeliveryId,
             OrderId = o.Id,
-            TotalDeliveriesCount = o.Deliveries?.Count() ?? 0,
+            TotalDeliveriesCount = o.Deliveries?.Count ?? 0,
             TotalHandlingTime = TimeSpan.Zero
         });
     }
