@@ -28,7 +28,7 @@ public class Courier
     public string? Password { get; set; } = null;
     public bool IsActive { get; set; } = true;
     public double? MaxDistance { get; set; } = null;
-    public DeliveryEndType deliveryEndType { get; set; }
+    public ShipmentType ShipmentType { get; set; }
     public DateTime StartWorkTime { get; set; }
     public int TotalDeliveredOnTime { get; set; }
     public int TotalDeliveredLate { get; set; }

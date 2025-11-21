@@ -1,5 +1,4 @@
 ﻿using DalApi;
-using DO;
 
 namespace Helpers;
 
@@ -17,6 +16,8 @@ internal static class CourierManager
     {
         try
         {
+            var deliveries = s_dal.Delivery.ReadAll();
+            var config = s_dal.Config;
             // ReadAll from DAL (returns IEnumerable&lt;DO.Courier&gt;)
             var result = s_dal.Courier.ReadAll()
                 .Where(c => c != null)                             // extension method 1 (Where)
@@ -25,12 +26,13 @@ internal static class CourierManager
                     Id = c.Id,
                     FullName = c.Name,
                     IsActive = c.IsActive,
-                    shipmentType = (ShipmentType)Enum.Parse(typeof(ShipmentType), c.ShipmentType.ToString()),
+                    shipmentType = c.ShipmentType,
                     StartWorkTime = c.StartingWork,
-                    // totals are computed in BL (here we default to 0; other BL helpers could compute them)
-                    TotalDeliveredOnTime = 0,
-                    TotalDeliveredLate = 0,
-                    CurrentDeliveryId = null
+                    TotalDeliveredOnTime = deliveries.Count(d => d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
+                                                                           d.EndTime - d.StartTime <= config.MaxDeliveryTime),
+                    TotalDeliveredLate = deliveries.Count(d => d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
+                                                                         d.EndTime - d.StartTime > config.MaxDeliveryTime),
+                    CurrentDeliveryId = deliveries.Count(d => d.CourierId == c.Id && d.EndTime == null) 
                 })
                 .OrderBy(c => c.FullName)                          // extension method 3 (OrderBy)
                 .ToList();                                         // extension method 4 (ToList)
@@ -81,6 +83,7 @@ internal static class CourierManager
                 Password = d.Password,
                 IsActive = d.IsActive,
                 MaxDistance = d.MaximumDistance ?? null,
+                ShipmentType = d.ShipmentType,
                 StartWorkTime = d.StartingWork,
                 TotalDeliveredOnTime = 0,
                 TotalDeliveredLate = 0,
@@ -93,10 +96,6 @@ internal static class CourierManager
         {
             throw new BO.DalException($"DAL: courier with id {id} does not exist", ex);
         }
-        catch (Exception ex)
-        {
-            throw new BO.DalException("DAL: unexpected error while reading courier", ex);
-        }
     }
 
     /// <summary>
@@ -104,7 +103,7 @@ internal static class CourierManager
     /// Receives BO.Courier and explicit DO.ShipmentType (BO.Courier doesn't contain shipment type in current model).
     /// Maps BO -> DO and calls DAL Create.
     /// </summary>
-    internal static void CreateCourier(BO.Courier boCourier, DO.ShipmentType shipmentType)
+    internal static void CreateCourier(BO.Courier boCourier)
     {
         try
         {
@@ -116,7 +115,7 @@ internal static class CourierManager
                 boCourier.Password ?? string.Empty,
                 boCourier.IsActive,
                 boCourier.MaxDistance,
-                shipmentType,
+                boCourier.ShipmentType,
                 boCourier.StartWorkTime
             );
 
@@ -135,31 +134,31 @@ internal static class CourierManager
     /// <summary>
     /// Update an existing courier via DAL.
     /// </summary>
-    internal static void UpdateCourier(BO.Courier boCourier, DO.ShipmentType shipmentType)
+    internal static void UpdateCourier(BO.Courier courier, UserRole userRole)
     {
+        var oldCourier = s_dal.Courier.Read(c => c.Id == courier.Id);
+        if(oldCourier is null) 
+            throw new BO.DalException($"DAL: courier with id {courier.Id} not found for update");
         try
         {
+
             var doCourier = new DO.Courier(
-                boCourier.Id,
-                boCourier.FullName,
-                boCourier.PhoneNumber,
-                boCourier.Email,
-                boCourier.Password ?? string.Empty,
-                boCourier.IsActive,
-                boCourier.MaxDistance,
-                shipmentType,
-                boCourier.StartWorkTime
-            );
+                oldCourier.Id,
+                courier.FullName,
+                courier.PhoneNumber,
+                courier.Email,
+                courier.Password ?? string.Empty,
+                userRole == UserRole.Manager ? courier.IsActive : oldCourier.IsActive,
+                courier.MaxDistance,
+                courier.ShipmentType,
+                oldCourier.StartingWork
+                );
 
             s_dal.Courier.Update(doCourier);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.DalException($"DAL: courier with id {boCourier.Id} not found for update", ex);
-        }
-        catch (Exception ex)
-        {
-            throw new BO.DalException("DAL: unexpected error while updating courier", ex);
+            throw new BO.DalException($"DAL: courier with id {courier.Id} not found for update", ex);
         }
     }
 
@@ -171,10 +170,12 @@ internal static class CourierManager
     {
         try
         {
-            // ensure exists using extension method Any()
             var exists = s_dal.Courier.ReadAll().Any(c => c.Id == id);
             if (!exists)
                 throw new BO.DalException($"DAL: courier with id {id} not found");
+            var canDelete = s_dal.Delivery.Read(c => c.CourierId == id) is null;
+            if (!canDelete)
+                throw new BO.DalException($"DAL: courier with id {id} cannot be deleted");
 
             s_dal.Courier.Delete(id);
         }
@@ -255,7 +256,7 @@ internal static class CourierManager
                     Id = c.Id,
                     FullName = c.Name,
                     IsActive = c.IsActive,
-                    shipmentType = (ShipmentType)Enum.Parse(typeof(ShipmentType), c.ShipmentType.ToString()),
+                    shipmentType = c.ShipmentType,
                     StartWorkTime = c.StartingWork,
                     TotalDeliveredOnTime = 0,
                     TotalDeliveredLate = 0,

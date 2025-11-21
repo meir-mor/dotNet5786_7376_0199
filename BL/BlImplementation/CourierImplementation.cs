@@ -1,5 +1,3 @@
-using BO;
-
 namespace BlImplementation;
 
 using System;
@@ -31,8 +29,10 @@ internal class CourierImplementation : ICourier
         throw new BO.DalException("Invalid username or password");
     }
 
-    public IEnumerable<CourierInList> GetCouriersList(int requesterId, bool? isActiveFilter = null, CourierListSortBy? sortBy = null)
+    public IEnumerable<BO.CourierInList> GetCouriersList(int requesterId, bool? isActiveFilter = null, CourierListSortBy? sortBy = null)
     {
+        if (AdminManager.GetConfig().ManagerId != requesterId)
+            throw new BO.InvalidRequestException("Invalid user");
         // build predicate from isActiveFilter
         Func<BO.CourierInList, bool>? predicate = null;
         if (isActiveFilter.HasValue)
@@ -57,10 +57,12 @@ internal class CourierImplementation : ICourier
 
     public void UpdateCourier(int requesterId, BO.Courier courier)
     {
-        // Helper expects a DO.ShipmentType parameter in current implementation.
-        // Try to preserve existing shipment type by reading the DO entry via Helpers (if needed in the future).
-        // For now use a sensible default (Motorcycle) � adjust if you add shipment type to BO.Courier or to helper overloads.
-        CourierManager.UpdateCourier(courier, DO.ShipmentType.Motorcycle);
+        if(AdminManager.GetConfig().ManagerId == requesterId)
+            CourierManager.UpdateCourier(courier, UserRole.Manager);
+        else if(courier.Id == requesterId)
+            CourierManager.UpdateCourier(courier, UserRole.Courier);
+        else
+            throw new BO.InvalidRequestException("Invalid user");
     }
 
     public void DeleteCourier(int requesterId, int courierId)
@@ -68,7 +70,6 @@ internal class CourierImplementation : ICourier
 
     public void AddCourier(int requesterId, BO.Courier courier)
     {
-        // As with Update, we don't have shipment type in BO at the moment; supply default.
-        CourierManager.CreateCourier(courier, DO.ShipmentType.Motorcycle);
+        CourierManager.CreateCourier(courier);
     }
 }

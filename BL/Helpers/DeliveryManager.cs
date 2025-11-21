@@ -145,11 +145,11 @@ internal static class DeliveryManager
         => new()
         {
             DeliveryId = d.Id,
-            CourierId = d.CourierId == 0 ? null : (int?)d.CourierId,
+            CourierId = d.CourierId == 0 ? null : d.CourierId,
             CourierName = s_dal.Courier.Read(d.CourierId) is DO.Courier c ? c.Name : string.Empty,
             shipmentType = (ShipmentType)Enum.Parse(typeof(ShipmentType), d.ShipmentType.ToString()),
             DeliveryStartTime = d.StartTime,
-            DeliveryEndType = d.DeliveryEndType is null ? null : (DeliveryEndType?)Enum.Parse(typeof(DeliveryEndType), d.DeliveryEndType.ToString()),
+            DeliveryEndType = d.DeliveryEndType,
             DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
         };
 }
