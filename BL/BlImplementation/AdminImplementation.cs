@@ -6,13 +6,19 @@ using Helpers;
 internal class AdminImplementation : IAdmin
 {
     public void ResetDB()
-        => AdminManager.ResetDB();
+    {
+        AdminManager.ResetDB();
+    }
 
     public void InitializeDB()
-        => AdminManager.InitializeDB();
+    {
+        AdminManager.InitializeDB();
+    }
 
     public DateTime GetClock()
-        => AdminManager.Now;
+    {
+        return AdminManager.Now;
+    }
 
     public void ForwardClock(TimeUnit unit)
     {
@@ -31,8 +37,12 @@ internal class AdminImplementation : IAdmin
     }
 
     public BO.Config GetConfig()
-        => AdminManager.GetConfig();
+    {
+        return AdminManager.GetConfig();
+    }
 
     public void SetConfig(BO.Config config)
-        => AdminManager.SetConfig(config);
+    {
+        AdminManager.SetConfig(config);
+    }
 }

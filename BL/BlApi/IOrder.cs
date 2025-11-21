@@ -22,7 +22,8 @@ public interface IOrder
     /// - filterValue: nullable object - the value to compare with the selected filter property (ignored when filterBy is null).
     /// - sortBy: nullable enum - if null sort by OrderStatus; otherwise sort by the chosen property.
     /// </summary>
-    IEnumerable<BO.OrderInList> GetOrdersList(int requesterId, OrderListFilterBy? filterBy = null, object? filterValue = null, OrderListSortBy? sortBy = null);
+    IEnumerable<BO.OrderInList> GetOrdersList(int requesterId, OrderListFilterBy? filterBy = null,
+        object? filterValue = null, OrderListSortBy? sortBy = null);
 
     /// <summary>
     /// Read detailed order (BO.Order) including deliveries (if any).
@@ -71,7 +72,8 @@ public interface IOrder
     /// - typeFilter: nullable to filter by BO.ShipmentType
     /// - sortBy: nullable sort key; if null sort by timeliness (ScheduleStatus)
     /// </summary>
-    IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId, ShipmentType? typeFilter = null, ClosedDeliverySortBy? sortBy = null);
+    IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId,
+        ShipmentType? typeFilter = null, ClosedDeliverySortBy? sortBy = null);
 
     /// <summary>
     /// Return open orders available for selection by a courier.
@@ -79,6 +81,6 @@ public interface IOrder
     /// - typeFilter: nullable BO.OrderType
     /// - sortBy: nullable; if null sort by timeliness (ScheduleStatus)
     /// </summary>
-    IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId, OrderType? typeFilter = null, OpenOrderSortBy? sortBy = null);
+    IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId,
+        OrderType? typeFilter = null, OpenOrderSortBy? sortBy = null);
 }
-

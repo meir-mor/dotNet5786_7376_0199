@@ -29,7 +29,8 @@ internal class CourierImplementation : ICourier
         throw new BO.DalException("Invalid username or password");
     }
 
-    public IEnumerable<BO.CourierInList> GetCouriersList(int requesterId, bool? isActiveFilter = null, CourierListSortBy? sortBy = null)
+    public IEnumerable<BO.CourierInList> GetCouriersList(int requesterId, bool? isActiveFilter = null,
+        CourierListSortBy? sortBy = null)
     {
         if (AdminManager.GetConfig().ManagerId != requesterId)
             throw new BO.InvalidRequestException("Invalid user");
@@ -52,21 +53,25 @@ internal class CourierImplementation : ICourier
     }
 
     public BO.Courier GetCourierDetails(int requesterId, int courierId)
-        => CourierManager.GetCourierById(courierId)
-           ?? throw new BO.DalException($"Courier with id {courierId} not found");
+    {
+        return CourierManager.GetCourierById(courierId)
+               ?? throw new BO.DalException($"Courier with id {courierId} not found");
+    }
 
     public void UpdateCourier(int requesterId, BO.Courier courier)
     {
-        if(AdminManager.GetConfig().ManagerId == requesterId)
+        if (AdminManager.GetConfig().ManagerId == requesterId)
             CourierManager.UpdateCourier(courier, UserRole.Manager);
-        else if(courier.Id == requesterId)
+        else if (courier.Id == requesterId)
             CourierManager.UpdateCourier(courier, UserRole.Courier);
         else
             throw new BO.InvalidRequestException("Invalid user");
     }
 
     public void DeleteCourier(int requesterId, int courierId)
-        => CourierManager.DeleteCourier(courierId);
+    {
+        CourierManager.DeleteCourier(courierId);
+    }
 
     public void AddCourier(int requesterId, BO.Courier courier)
     {

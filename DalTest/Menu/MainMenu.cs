@@ -8,7 +8,7 @@ namespace DalTest.Menu;
 
 internal static class MainMenu
 {
-    public static void RunMainMenu(IDal dal)////?????????
+    public static void RunMainMenu(IDal dal) ////?????????
     {
         MainMenuOption choice;
         do

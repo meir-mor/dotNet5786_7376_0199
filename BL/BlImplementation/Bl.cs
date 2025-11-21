@@ -2,7 +2,7 @@
 
 namespace BlImplementation;
 
-internal class Bl: IBl
+internal class Bl : IBl
 {
     public ICourier Courier { get; } = new CourierImplementation();
     public IOrder Order { get; } = new OrderImplementation();

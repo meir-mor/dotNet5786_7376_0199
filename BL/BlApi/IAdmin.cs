@@ -30,7 +30,7 @@ public interface IAdmin
     /// Returns the current business clock value.
     /// </summary>
     /// <returns>DateTime - current system clock used across the system (BL-level clock)</returns>
-    System.DateTime GetClock();
+    DateTime GetClock();
 
     /// <summary>
     /// Advance the business clock by one unit.
@@ -58,4 +58,3 @@ public interface IAdmin
     /// <param name="config">BO.Config containing new configuration values from UI.</param>
     void SetConfig(BO.Config config);
 }
-

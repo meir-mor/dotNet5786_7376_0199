@@ -1,6 +1,7 @@
 ﻿using BO;
 using DalApi;
 using DO;
+using Order = BO.Order;
 
 namespace Helpers;
 
@@ -22,14 +23,16 @@ internal static class OrderManager
                     var bo = MapDoToBo(o); // extension 2 usage in chain
                     // populate deliveries for each order (extension 3 + 4 below)
                     bo.Deliveries = s_dal.Delivery.ReadAll(d => d.OrderId == o.Id)
-                        .Select(d => new BO.DeliveryPerOrderInList
+                        .Select(d => new DeliveryPerOrderInList
                         {
                             DeliveryId = d.Id,
                             CourierId = d.CourierId == 0 ? null : (int?)d.CourierId,
                             CourierName = s_dal.Courier.Read(d.CourierId) is DO.Courier c ? c.Name : string.Empty,
                             shipmentType = (ShipmentType)Enum.Parse(typeof(ShipmentType), d.ShipmentType.ToString()),
                             DeliveryStartTime = d.StartTime,
-                            DeliveryEndType = d.DeliveryEndType is null ? null : (DeliveryEndType?)Enum.Parse(typeof(DeliveryEndType), d.DeliveryEndType.ToString()),
+                            DeliveryEndType = d.DeliveryEndType is null
+                                ? null
+                                : (DeliveryEndType?)Enum.Parse(typeof(DeliveryEndType), d.DeliveryEndType.ToString()),
                             DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
                         })
                         .ToList(); // extension ToList
@@ -40,7 +43,10 @@ internal static class OrderManager
 
             return filter == null ? orders : orders.Where(filter);
         }
-        catch (Exception ex) { throw new BO.DalException("DAL: error while reading orders", ex); }
+        catch (Exception ex)
+        {
+            throw new DalException("DAL: error while reading orders", ex);
+        }
     }
 
     /// <summary>
@@ -59,19 +65,22 @@ internal static class OrderManager
             var deliveries =
                 from d in s_dal.Delivery.ReadAll()
                 where d.OrderId == id
-                group d by d.CourierId into g // grouping
+                group d by d.CourierId
+                into g // grouping
                 orderby g.Key
                 select new
                 {
                     CourierId = g.Key,
-                    Items = g.Select(x => new BO.DeliveryPerOrderInList
+                    Items = g.Select(x => new DeliveryPerOrderInList
                     {
                         DeliveryId = x.Id,
                         CourierId = x.CourierId == 0 ? null : (int?)x.CourierId,
                         CourierName = s_dal.Courier.Read(x.CourierId) is DO.Courier c ? c.Name : string.Empty,
                         shipmentType = (ShipmentType)Enum.Parse(typeof(ShipmentType), x.ShipmentType.ToString()),
                         DeliveryStartTime = x.StartTime,
-                        DeliveryEndType = x.DeliveryEndType is null ? null : (DeliveryEndType?)Enum.Parse(typeof(DeliveryEndType), x.DeliveryEndType.ToString()),
+                        DeliveryEndType = x.DeliveryEndType is null
+                            ? null
+                            : (DeliveryEndType?)Enum.Parse(typeof(DeliveryEndType), x.DeliveryEndType.ToString()),
                         DeliveryEndTime = x.EndTime is DateTime time && time != DateTime.MinValue ? x.EndTime : null
                     }).ToList()
                 };
@@ -81,7 +90,10 @@ internal static class OrderManager
 
             return bo;
         }
-        catch (DalException ex) { throw new BO.DalException($"DAL: error while reading order {id}", ex); }
+        catch (DalException ex)
+        {
+            throw new DalException($"DAL: error while reading order {id}", ex);
+        }
     }
 
     /// <summary>
@@ -107,8 +119,14 @@ internal static class OrderManager
 
             s_dal.Order.Create(doOrder);
         }
-        catch (DO.DalAlreadyExistsException ex) { throw new BO.DalException("DAL: order already exists", ex); }
-        catch (Exception ex) { throw new BO.DalException("DAL: unexpected error while creating order", ex); }
+        catch (DalAlreadyExistsException ex)
+        {
+            throw new DalException("DAL: order already exists", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new DalException("DAL: unexpected error while creating order", ex);
+        }
     }
 
     /// <summary>
@@ -134,7 +152,10 @@ internal static class OrderManager
 
             s_dal.Order.Update(doOrder);
         }
-        catch (DO.DalDoesNotExistException ex) { throw new BO.DalException($"DAL: order {bo.Id} not found", ex); }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new DalException($"DAL: order {bo.Id} not found", ex);
+        }
     }
 
     /// <summary>
@@ -145,19 +166,23 @@ internal static class OrderManager
         try
         {
             var exists = s_dal.Order.ReadAll().Any(o => o.Id == id);
-            if (!exists) throw new BO.DalException($"DAL: order {id} not found");
+            if (!exists) throw new DalException($"DAL: order {id} not found");
 
             s_dal.Order.Delete(id);
         }
-        catch (DO.DalDoesNotExistException ex) { throw new BO.DalException($"DAL: order {id} does not exist", ex); }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new DalException($"DAL: order {id} does not exist", ex);
+        }
     }
-    
+
     internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
     }
 
     private static BO.Order MapDoToBo(DO.Order o)
-        => new()
+    {
+        return new Order
         {
             Id = o.Id,
             OrderType = (OrderType)Enum.Parse(typeof(OrderType), o.Type.ToString()),
@@ -175,8 +200,9 @@ internal static class OrderManager
             OrderStatus = (OrderStatus)Enum.Parse(typeof(OrderStatus), o.Status.ToString()),
             ScheduleStatus = ScheduleStatus.OnTime,
             TimeRemaining = TimeSpan.Zero,
-            Deliveries = new List<BO.DeliveryPerOrderInList>()
+            Deliveries = new List<DeliveryPerOrderInList>()
         };
+    }
 
     public static int[,] GetOrdersCountsSummary(int requesterId)
     {
@@ -210,14 +236,14 @@ internal static class OrderManager
 
             var result = new int[orderStatusCount, scheduleCount];
 
-            foreach (var g in groups)
-            {
-                result[(int)g.OrderStatus, (int)g.Schedule] = g.Count;
-            }
+            foreach (var g in groups) result[(int)g.OrderStatus, (int)g.Schedule] = g.Count;
 
             return result;
         }
-        catch (Exception ex) { throw new BO.DalException("DAL: error while computing orders summary", ex); }
+        catch (Exception ex)
+        {
+            throw new DalException("DAL: error while computing orders summary", ex);
+        }
     }
 
     public static void CancelOrder(int orderId)
@@ -225,40 +251,52 @@ internal static class OrderManager
         try
         {
             var now = AdminManager.Now;
-            var order = s_dal.Order.Read(orderId) ?? throw new BO.DalException($"Order {orderId} not found");
+            var order = s_dal.Order.Read(orderId) ?? throw new DalException($"Order {orderId} not found");
 
             var status = order.Status;
-            if (status == DO.OrderStatus.Open)
+            if (status == OrderStatus.Open)
             {
                 // create dummy delivery with start==end == now, cancelled, courier 0
-                var dummy = new DO.Delivery(
+                var dummy = new Delivery(
                     0,
                     orderId,
                     0,
-                    DO.ShipmentType.Motorcycle,
+                    ShipmentType.Motorcycle,
                     now,
-                    ActualDistance: null,
-                    DeliveryEndType: DO.DeliveryEndType.Cancelled,
-                    EndTime: now
+                    null,
+                    DeliveryEndType.Cancelled,
+                    now
                 );
                 s_dal.Delivery.Create(dummy);
             }
-            else if (status == DO.OrderStatus.InProgress)
+            else if (status == OrderStatus.InProgress)
             {
                 // find active delivery for this order (EndTime null)
-                var delivery = s_dal.Delivery.ReadAll(d => d.OrderId == orderId && (d.EndTime == null || d.DeliveryEndType == null)).FirstOrDefault()
-                               ?? throw new BO.DalException($"No active delivery found for order {orderId}");
-                var updated = delivery with { EndTime = now, DeliveryEndType = DO.DeliveryEndType.Cancelled };
+                var delivery = s_dal.Delivery
+                                   .ReadAll(d =>
+                                       d.OrderId == orderId && (d.EndTime == null || d.DeliveryEndType == null))
+                                   .FirstOrDefault()
+                               ?? throw new DalException($"No active delivery found for order {orderId}");
+                var updated = delivery with { EndTime = now, DeliveryEndType = DeliveryEndType.Cancelled };
                 s_dal.Delivery.Update(updated);
             }
             else
             {
-                throw new BO.DalException($"Order {orderId} cannot be cancelled (status {status})");
+                throw new DalException($"Order {orderId} cannot be cancelled (status {status})");
             }
         }
-        catch (DO.DalDoesNotExistException ex) { throw new BO.DalException("DAL: entity not found", ex); }
-        catch (DO.DalNullException ex) { throw new BO.DalException("DAL: null", ex); }
-        catch (DO.DalXMLFileLoadCreateException ex) { throw new BO.DalException("DAL: xml", ex); }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new DalException("DAL: entity not found", ex);
+        }
+        catch (DalNullException ex)
+        {
+            throw new DalException("DAL: null", ex);
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            throw new DalException("DAL: xml", ex);
+        }
     }
 
     public static void CompleteDelivery(int requesterId, int courierId, int deliveryId)
@@ -266,16 +304,20 @@ internal static class OrderManager
         try
         {
             var now = AdminManager.Now;
-            var delivery = s_dal.Delivery.Read(deliveryId) ?? throw new BO.DalException($"Delivery {deliveryId} not found");
+            var delivery = s_dal.Delivery.Read(deliveryId) ??
+                           throw new DalException($"Delivery {deliveryId} not found");
 
             if (delivery.CourierId != courierId)
-                throw new BO.DalException("Requester is not the courier of this delivery");
+                throw new DalException("Requester is not the courier of this delivery");
 
             // update delivery end and type
-            var updated = delivery with { EndTime = now, DeliveryEndType = DO.DeliveryEndType.Supplied };
+            var updated = delivery with { EndTime = now, DeliveryEndType = DeliveryEndType.Supplied };
             s_dal.Delivery.Update(updated);
         }
-        catch (DO.DalDoesNotExistException ex) { throw new BO.DalException("DAL: entity not found", ex); }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new DalException("DAL: entity not found", ex);
+        }
     }
 
     public static void AssignOrderToCourier(int requesterId, int courierId, int orderId)
@@ -283,39 +325,48 @@ internal static class OrderManager
         try
         {
             var now = AdminManager.Now;
-            var order = s_dal.Order.Read(orderId) ?? throw new BO.DalException($"Order {orderId} not found");
+            var order = s_dal.Order.Read(orderId) ?? throw new DalException($"Order {orderId} not found");
 
-            if (order.Status != DO.OrderStatus.Open)
-                throw new BO.DalException("Order is not open for assignment");
+            if (order.Status != OrderStatus.Open)
+                throw new DalException("Order is not open for assignment");
 
             // ensure no active delivery exists for this order
-            var active = s_dal.Delivery.ReadAll(d => d.OrderId == orderId && (d.EndTime == null || d.DeliveryEndType == null)).FirstOrDefault();
+            var active = s_dal.Delivery
+                .ReadAll(d => d.OrderId == orderId && (d.EndTime == null || d.DeliveryEndType == null))
+                .FirstOrDefault();
             if (active != null)
-                throw new BO.DalException("Order already has an active delivery");
+                throw new DalException("Order already has an active delivery");
 
             // create delivery (use default ShipmentType - can be improved)
-            var delivery = new DO.Delivery(
+            var delivery = new Delivery(
                 0,
                 orderId,
                 courierId,
-                DO.ShipmentType.Motorcycle,
+                ShipmentType.Motorcycle,
                 now,
-                ActualDistance: null,
-                DeliveryEndType: null,
-                EndTime: null
+                null,
+                null,
+                null
             );
 
             s_dal.Delivery.Create(delivery);
 
             // Optionally update order status to InProgress
-            var updatedOrder = order with { Status = DO.OrderStatus.InProgress };
+            var updatedOrder = order with { Status = OrderStatus.InProgress };
             s_dal.Order.Update(updatedOrder);
         }
-        catch (DO.DalDoesNotExistException ex) { throw new BO.DalException("DAL: entity not found", ex); }
-        catch (DO.DalAlreadyExistsException ex) { throw new BO.DalException("DAL: already exists", ex); }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new DalException("DAL: entity not found", ex);
+        }
+        catch (DalAlreadyExistsException ex)
+        {
+            throw new DalException("DAL: already exists", ex);
+        }
     }
 
-    public static IEnumerable<ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId, ShipmentType? typeFilter, ClosedDeliverySortBy? sortBy)
+    public static IEnumerable<ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId,
+        ShipmentType? typeFilter, ClosedDeliverySortBy? sortBy)
     {
         try
         {
@@ -330,12 +381,14 @@ internal static class OrderManager
                 .Select(d =>
                 {
                     var order = s_dal.Order.Read(d.OrderId);
-                    var orderType = order is null ? OrderType.General : (OrderType)Enum.Parse(typeof(OrderType), order.Type.ToString());
+                    var orderType = order is null
+                        ? OrderType.General
+                        : (OrderType)Enum.Parse(typeof(OrderType), order.Type.ToString());
                     var fullAddress = order is null ? string.Empty : order.Address;
                     var handling = d.EndTime is { } end && end != DateTime.MinValue ? end - d.StartTime : TimeSpan.Zero;
                     return new
                     {
-                        Item = new BO.ClosedDeliveryInList
+                        Item = new ClosedDeliveryInList
                         {
                             DeliveryId = d.Id,
                             OrderId = d.OrderId,
@@ -347,8 +400,10 @@ internal static class OrderManager
                             DeliveryEndType = d.DeliveryEndType
                         },
                         // compute schedule status for sorting if needed
-                        Schedule = (order is null) ? ScheduleStatus.OnTime :
-                            ComputeScheduleStatus(((order.CreatedAt + cfg.MaxDeliveryTime) - (d.EndTime ?? now)), riskRange),
+                        Schedule = order is null
+                            ? ScheduleStatus.OnTime
+                            : ComputeScheduleStatus(order.CreatedAt + cfg.MaxDeliveryTime - (d.EndTime ?? now),
+                                riskRange),
                         EndTime = d.EndTime ?? DateTime.MinValue,
                         Type = d.ShipmentType
                     };
@@ -367,10 +422,22 @@ internal static class OrderManager
 
             return sorted.Select(x => x.Item as ClosedDeliveryInList);
         }
-        catch (DO.DalDoesNotExistException ex) { throw new BO.DalException("DAL: entity not found", ex); }
-        catch (DO.DalNullException ex) { throw new BO.DalException("DAL: null", ex); }
-        catch (DO.DalAlreadyExistsException ex) { throw new BO.DalException("DAL: already exists", ex); }
-        catch (DO.DalXMLFileLoadCreateException ex) { throw new BO.DalException("DAL: xml", ex); }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new DalException("DAL: entity not found", ex);
+        }
+        catch (DalNullException ex)
+        {
+            throw new DalException("DAL: null", ex);
+        }
+        catch (DalAlreadyExistsException ex)
+        {
+            throw new DalException("DAL: already exists", ex);
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            throw new DalException("DAL: xml", ex);
+        }
     }
 
     /// <summary>
@@ -382,7 +449,8 @@ internal static class OrderManager
     /// - If typeFilter provided filter by order type.
     /// - Default sort (when sortBy == null) is by ScheduleStatus.
     /// </summary>
-    public static IEnumerable<OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId, OrderType? typeFilter, OpenOrderSortBy? sortBy)
+    public static IEnumerable<OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId,
+        OrderType? typeFilter, OpenOrderSortBy? sortBy)
     {
         try
         {
@@ -395,22 +463,22 @@ internal static class OrderManager
             // get courier DO to read maximum distance
             var courierDo = s_dal.Courier.Read(courierId);
             if (courierDo == null)
-                throw new BO.DalException($"Courier with id {courierId} not found");
+                throw new DalException($"Courier with id {courierId} not found");
 
             var courierMaxDistance = courierDo.MaximumDistance; // km, nullable
 
             // read open orders (DO.Order) and project to (OpenOrderInList + createdAt) for sorting
             var candidates =
-                s_dal.Order.ReadAll(o => o.Status == DO.OrderStatus.Open)
+                s_dal.Order.ReadAll(o => o.Status == OrderStatus.Open)
                     .Where(o => o != null)
                     .Select(o =>
                     {
                         var aerialKm = ComputeAerialDistance(companyLat, companyLon, o.Latitude, o.Longitude);
-                        var maxDeliveryDate = o.CreatedAt + (cfg.MaxDeliveryTime);
+                        var maxDeliveryDate = o.CreatedAt + cfg.MaxDeliveryTime;
                         var timeRemaining = maxDeliveryDate - now;
                         var scheduleStatus = ComputeScheduleStatus(timeRemaining, riskRange);
 
-                        var open = new BO.OpenOrderInList
+                        var open = new OpenOrderInList
                         {
                             OrderId = o.Id,
                             OrderType = (OrderType)Enum.Parse(typeof(OrderType), o.Type.ToString()),
@@ -445,10 +513,22 @@ internal static class OrderManager
 
             return sorted.Select(t => t.Open).ToList();
         }
-        catch (DO.DalDoesNotExistException ex) { throw new BO.DalException("DAL: entity not found", ex); }
-        catch (DO.DalNullException ex) { throw new BO.DalException("DAL: null", ex); }
-        catch (DO.DalAlreadyExistsException ex) { throw new BO.DalException("DAL: already exists", ex); }
-        catch (DO.DalXMLFileLoadCreateException ex) { throw new BO.DalException("DAL: xml", ex); }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new DalException("DAL: entity not found", ex);
+        }
+        catch (DalNullException ex)
+        {
+            throw new DalException("DAL: null", ex);
+        }
+        catch (DalAlreadyExistsException ex)
+        {
+            throw new DalException("DAL: already exists", ex);
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            throw new DalException("DAL: xml", ex);
+        }
     }
 
     /// <summary>
@@ -466,7 +546,10 @@ internal static class OrderManager
         return R * c;
     }
 
-    private static double DegreesToRadians(double deg) => deg * (Math.PI / 180.0);
+    private static double DegreesToRadians(double deg)
+    {
+        return deg * (Math.PI / 180.0);
+    }
 
     /// <summary>
     /// Compute schedule status from remaining time and risk range.

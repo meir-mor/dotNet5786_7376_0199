@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
-  <NextOrderId>0</NextOrderId>
-  <NextDeliveryId>0</NextDeliveryId>
-  <Clock>11/11/2025 08:30:31</Clock>
-  <ManagerId>0</ManagerId>
-  <ManagerPassword>1234</ManagerPassword>
-  <ComponyAddress>Bar Cochva 2 BneiBrak Israel</ComponyAddress>
-  <Latitude>32.0853</Latitude>
-  <Longitude>34.7818</Longitude>
-  <MaxDistance>50</MaxDistance>
-  <AverageCarSpeed>40</AverageCarSpeed>
-  <AverageBikeSpeedBike>25</AverageBikeSpeedBike>
-  <AverageBicycleSpeed>15</AverageBicycleSpeed>
-  <AverageWalkSpeed>5</AverageWalkSpeed>
-  <RiskRange>00:30:00</RiskRange>
-  <MaxDeliveryTime>02:00:00</MaxDeliveryTime>
-  <TimeToBeDispose>00:15:00</TimeToBeDispose>
+    <NextOrderId>0</NextOrderId>
+    <NextDeliveryId>0</NextDeliveryId>
+    <Clock>11/11/2025 08:30:31</Clock>
+    <ManagerId>0</ManagerId>
+    <ManagerPassword>1234</ManagerPassword>
+    <ComponyAddress>Bar Cochva 2 BneiBrak Israel</ComponyAddress>
+    <Latitude>32.0853</Latitude>
+    <Longitude>34.7818</Longitude>
+    <MaxDistance>50</MaxDistance>
+    <AverageCarSpeed>40</AverageCarSpeed>
+    <AverageBikeSpeedBike>25</AverageBikeSpeedBike>
+    <AverageBicycleSpeed>15</AverageBicycleSpeed>
+    <AverageWalkSpeed>5</AverageWalkSpeed>
+    <RiskRange>00:30:00</RiskRange>
+    <MaxDeliveryTime>02:00:00</MaxDeliveryTime>
+    <TimeToBeDispose>00:15:00</TimeToBeDispose>
 </config>

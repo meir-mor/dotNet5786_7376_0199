@@ -1,4 +1,5 @@
 ﻿//using BO;
+
 using System.Runtime.CompilerServices;
 
 namespace Helpers;
@@ -9,12 +10,13 @@ namespace Helpers;
 internal static class AdminManager //stage 4
 {
     #region Stage 4-7
+
     private static readonly DalApi.IDal s_dal = DalApi.Factory.Get; //stage 4
-    
+
     /// <summary>
     /// Property for providing current application's clock value for any BL class that may need it
     /// </summary>
-    internal static DateTime Now { get => s_dal.Config.Clock; } //stage 4
+    internal static DateTime Now => s_dal.Config.Clock; //stage 4
 
     internal static event Action? ConfigUpdatedObservers; //stage 5 - for config update observers
     internal static event Action? ClockUpdatedObservers; //stage 5 - for clock update observers
@@ -29,7 +31,7 @@ internal static class AdminManager //stage 4
     {
         var oldClock = s_dal.Config.Clock; //stage 4
         s_dal.Config.Clock = newClock; //stage 4
-        
+
         //Add calls here to any logic method that should be called periodically,
         //after each clock update
         //for example, Periodic students' updates:
@@ -37,9 +39,12 @@ internal static class AdminManager //stage 4
         // - (students become not active after 5 years etc.)
 
         //TO_DO: //stage 4
-        CourierManager.PeriodicCouriersUpdates(oldClock, newClock); //stage 4. to be removed in stage 7 and replaced as below
-        DeliveryManager.PeriodicDeliveriesUpdates(oldClock, newClock); //stage 4. to be removed in stage 7 and replaced as below
-        OrderManager.PeriodicOrdersUpdates(oldClock, newClock); //stage 4. to be removed in stage 7 and replaced as below
+        CourierManager.PeriodicCouriersUpdates(oldClock,
+            newClock); //stage 4. to be removed in stage 7 and replaced as below
+        DeliveryManager.PeriodicDeliveriesUpdates(oldClock,
+            newClock); //stage 4. to be removed in stage 7 and replaced as below
+        OrderManager.PeriodicOrdersUpdates(oldClock,
+            newClock); //stage 4. to be removed in stage 7 and replaced as below
         //...
 
         //TO_DO: //stage 7
@@ -56,7 +61,8 @@ internal static class AdminManager //stage 4
     /// </summary>
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     internal static BO.Config GetConfig() //stage 4
-    => new BO.Config()
+    {
+    return new BO.Config
     {
         ManagerId = s_dal.Config.ManagerId,
         Clock = s_dal.Config.Clock,
@@ -73,6 +79,7 @@ internal static class AdminManager //stage 4
         MaxDeliveryTime = s_dal.Config.MaxDeliveryTime,
         TimeToBeDispose = s_dal.Config.TimeToBeDispose
     };
+    }
 
     /// <summary>
     /// Method for setting current configuration variables values for any BL class that may need it
@@ -106,8 +113,8 @@ internal static class AdminManager //stage 4
         lock (BlMutex) //stage 7
         {
             s_dal.ResetDB(); //stage 4
-            AdminManager.UpdateClock(AdminManager.Now); //stage 5 - needed since we want the label on Pl to be updated
-            AdminManager.SetConfig(AdminManager.GetConfig()); //stage 5 - needed to update PL 
+            UpdateClock(Now); //stage 5 - needed since we want the label on Pl to be updated
+            SetConfig(GetConfig()); //stage 5 - needed to update PL 
         }
     }
 
@@ -116,8 +123,8 @@ internal static class AdminManager //stage 4
         lock (BlMutex) //stage 7
         {
             DalTest.Initialization.Do(); //stage 4
-            AdminManager.UpdateClock(AdminManager.Now);  //stage 5 - needed since we want the label on Pl to be updated           
-            AdminManager.SetConfig(AdminManager.GetConfig()); //stage 5 - needed for update the PL
+            UpdateClock(Now); //stage 5 - needed since we want the label on Pl to be updated           
+            SetConfig(GetConfig()); //stage 5 - needed for update the PL
         }
     }
 
@@ -128,16 +135,20 @@ internal static class AdminManager //stage 4
     /// <summary>    
     /// Mutex to use from BL methods to get mutual exclusion while the simulator is running
     /// </summary>
-    internal static readonly object BlMutex = new(); // BlMutex = s_dal; // This field is actually the same as s_dal - it is defined for readability of locks
+    internal static readonly object
+        BlMutex = new(); // BlMutex = s_dal; // This field is actually the same as s_dal - it is defined for readability of locks
+
     /// <summary>
     /// The thread of the simulator
     /// </summary>
     private static volatile Thread? s_thread;
+
     /// <summary>
     /// The Interval for clock updating
     /// in minutes by second (default value is 1, will be set on Start())    
     /// </summary>
     private static int s_interval = 1;
+
     /// <summary>
     /// The flag that signs whether simulator is running
     /// 
@@ -157,7 +168,7 @@ internal static class AdminManager //stage 4
         {
             s_interval = interval;
             s_stop = false;
-            s_thread = new(clockRunner) { Name = "ClockRunner" };
+            s_thread = new Thread(clockRunner) { Name = "ClockRunner" };
             s_thread.Start();
         }
     }
@@ -194,7 +205,9 @@ internal static class AdminManager //stage 4
             {
                 Thread.Sleep(1000); // 1 second
             }
-            catch (ThreadInterruptedException) { }
+            catch (ThreadInterruptedException)
+            {
+            }
         }
     }
 

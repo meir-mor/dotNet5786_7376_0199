@@ -25,7 +25,8 @@ public interface ICourier
     /// - sortBy: if null sort by Id; otherwise sort by chosen property.
     /// Returns collection of BO.CourierInList.
     /// </summary>
-    IEnumerable<BO.CourierInList> GetCouriersList(int requesterId, bool? isActiveFilter = null, CourierListSortBy? sortBy = null);
+    IEnumerable<BO.CourierInList> GetCouriersList(int requesterId, bool? isActiveFilter = null,
+        CourierListSortBy? sortBy = null);
 
     /// <summary>
     /// Request detailed courier data (BO.Courier), includes current order-in-progress if exists.

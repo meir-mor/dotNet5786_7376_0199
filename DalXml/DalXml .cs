@@ -3,10 +3,13 @@ using System.Diagnostics;
 
 namespace Dal;
 
-sealed internal class DalXml : IDal
+internal sealed class DalXml : IDal
 {
     public static IDal Instance { get; } = new DalXml();
-    private DalXml() { }
+
+    private DalXml()
+    {
+    }
 
     public IConfig Config { get; } = new ConfigImplementation();
     public ICourier Courier { get; } = new CourierImplementation();

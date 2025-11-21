@@ -12,24 +12,28 @@ using Helpers;
 internal class OrderImplementation : IOrder
 {
     public int[,] GetOrdersCountsSummary(int requesterId)
-        => OrderManager.GetOrdersCountsSummary(requesterId);
+    {
+        return OrderManager.GetOrdersCountsSummary(requesterId);
+    }
 
-    public IEnumerable<BO.OrderInList> GetOrdersList(int requesterId, OrderListFilterBy? filterBy = null, object? filterValue = null, OrderListSortBy? sortBy = null)
+    public IEnumerable<OrderInList> GetOrdersList(int requesterId, OrderListFilterBy? filterBy = null,
+        object? filterValue = null, OrderListSortBy? sortBy = null)
     {
         // start from all orders
         var orders = OrderManager.GetAllOrders().ToList();
 
         // filter
         if (filterBy.HasValue && filterBy.Value != OrderListFilterBy.None && filterValue is not null)
-        {
             orders = filterBy.Value switch
             {
                 OrderListFilterBy.OrderType => orders.Where(o => o.OrderType.Equals((OrderType)filterValue)).ToList(),
-                OrderListFilterBy.CustomerFullName => orders.Where(o => o.CustomerFullName.Contains(filterValue.ToString() ?? string.Empty, StringComparison.OrdinalIgnoreCase)).ToList(),
-                OrderListFilterBy.OrderStatus => orders.Where(o => o.OrderStatus.Equals((OrderStatus)filterValue)).ToList(),
+                OrderListFilterBy.CustomerFullName => orders.Where(o =>
+                    o.CustomerFullName.Contains(filterValue.ToString() ?? string.Empty,
+                        StringComparison.OrdinalIgnoreCase)).ToList(),
+                OrderListFilterBy.OrderStatus => orders.Where(o => o.OrderStatus.Equals((OrderStatus)filterValue))
+                    .ToList(),
                 _ => orders
             };
-        }
 
         // sort
         orders = sortBy switch
@@ -40,7 +44,7 @@ internal class OrderImplementation : IOrder
             _ => orders.OrderBy(o => o.OrderStatus).ToList()
         };
 
-        return orders.Select(o => new BO.OrderInList
+        return orders.Select(o => new OrderInList
         {
             OrderType = o.OrderType,
             OrderStatus = o.OrderStatus,
@@ -55,8 +59,10 @@ internal class OrderImplementation : IOrder
     }
 
     public BO.Order GetOrderDetails(int requesterId, int orderId)
-        => OrderManager.GetOrderById(orderId)
-           ?? throw new BO.DalException($"Order with id {orderId} not found");
+    {
+        return OrderManager.GetOrderById(orderId)
+               ?? throw new BO.DalException($"Order with id {orderId} not found");
+    }
 
     public void UpdateOrder(int requesterId, BO.Order order)
     {
@@ -74,17 +80,29 @@ internal class OrderImplementation : IOrder
     }
 
     public void AddOrder(int requesterId, BO.Order order)
-        => OrderManager.CreateOrder(order);
+    {
+        OrderManager.CreateOrder(order);
+    }
 
     public void CompleteDelivery(int requesterId, int courierId, int deliveryId)
-        => OrderManager.CompleteDelivery(requesterId, courierId, deliveryId);
+    {
+        OrderManager.CompleteDelivery(requesterId, courierId, deliveryId);
+    }
 
     public void AssignOrderToCourier(int requesterId, int courierId, int orderId)
-        => OrderManager.AssignOrderToCourier(requesterId, courierId, orderId);
+    {
+        OrderManager.AssignOrderToCourier(requesterId, courierId, orderId);
+    }
 
-    public IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId, ShipmentType? typeFilter = null, ClosedDeliverySortBy? sortBy = null)
-        => OrderManager.GetClosedDeliveriesForCourier(requesterId, courierId, typeFilter, sortBy);
+    public IEnumerable<ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId,
+        ShipmentType? typeFilter = null, ClosedDeliverySortBy? sortBy = null)
+    {
+        return OrderManager.GetClosedDeliveriesForCourier(requesterId, courierId, typeFilter, sortBy);
+    }
 
-    public IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId, OrderType? typeFilter = null, OpenOrderSortBy? sortBy = null)
-        => OrderManager.GetOpenOrdersForCourier(requesterId, courierId, typeFilter, sortBy);
+    public IEnumerable<OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId,
+        OrderType? typeFilter = null, OpenOrderSortBy? sortBy = null)
+    {
+        return OrderManager.GetOpenOrdersForCourier(requesterId, courierId, typeFilter, sortBy);
+    }
 }

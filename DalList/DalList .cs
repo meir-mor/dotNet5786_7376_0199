@@ -2,10 +2,13 @@
 
 using DalApi;
 
-sealed internal class DalList : IDal
+internal sealed class DalList : IDal
 {
     public static IDal Instance { get; } = new DalList();
-    private DalList() { }
+
+    private DalList()
+    {
+    }
 
     public IConfig Config { get; } = new ConfigImplementation();
     public ICourier Courier { get; } = new CourierImplementation();

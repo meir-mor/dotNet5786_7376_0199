@@ -11,7 +11,7 @@ public static class Initialization
 
     public static void Do()
     {
-        s_dal = DalApi.Factory.Get;
+        s_dal = Factory.Get;
 
         Console.WriteLine("Reset Configuration values and List values...");
         s_dal.ResetDB();

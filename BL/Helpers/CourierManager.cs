@@ -20,22 +20,24 @@ internal static class CourierManager
             var config = s_dal.Config;
             // ReadAll from DAL (returns IEnumerable&lt;DO.Courier&gt;)
             var result = s_dal.Courier.ReadAll()
-                .Where(c => c != null)                             // extension method 1 (Where)
-                .Select(c => new BO.CourierInList                  // extension method 2 (Select)
+                .Where(c => c != null) // extension method 1 (Where)
+                .Select(c => new BO.CourierInList // extension method 2 (Select)
                 {
                     Id = c.Id,
                     FullName = c.Name,
                     IsActive = c.IsActive,
                     shipmentType = c.ShipmentType,
                     StartWorkTime = c.StartingWork,
-                    TotalDeliveredOnTime = deliveries.Count(d => d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
-                                                                           d.EndTime - d.StartTime <= config.MaxDeliveryTime),
-                    TotalDeliveredLate = deliveries.Count(d => d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
-                                                                         d.EndTime - d.StartTime > config.MaxDeliveryTime),
-                    CurrentDeliveryId = deliveries.Count(d => d.CourierId == c.Id && d.EndTime == null) 
+                    TotalDeliveredOnTime = deliveries.Count(d =>
+                        d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
+                        d.EndTime - d.StartTime <= config.MaxDeliveryTime),
+                    TotalDeliveredLate = deliveries.Count(d =>
+                        d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
+                        d.EndTime - d.StartTime > config.MaxDeliveryTime),
+                    CurrentDeliveryId = deliveries.Count(d => d.CourierId == c.Id && d.EndTime == null)
                 })
-                .OrderBy(c => c.FullName)                          // extension method 3 (OrderBy)
-                .ToList();                                         // extension method 4 (ToList)
+                .OrderBy(c => c.FullName) // extension method 3 (OrderBy)
+                .ToList(); // extension method 4 (ToList)
 
             return filter == null ? result : result.Where(filter);
         }
@@ -137,11 +139,10 @@ internal static class CourierManager
     internal static void UpdateCourier(BO.Courier courier, UserRole userRole)
     {
         var oldCourier = s_dal.Courier.Read(c => c.Id == courier.Id);
-        if(oldCourier is null) 
+        if (oldCourier is null)
             throw new BO.DalException($"DAL: courier with id {courier.Id} not found for update");
         try
         {
-
             var doCourier = new DO.Courier(
                 oldCourier.Id,
                 courier.FullName,
@@ -152,7 +153,7 @@ internal static class CourierManager
                 courier.MaxDistance,
                 courier.ShipmentType,
                 oldCourier.StartingWork
-                );
+            );
 
             s_dal.Courier.Update(doCourier);
         }
@@ -202,11 +203,12 @@ internal static class CourierManager
         {
             var q =
                 from c in s_dal.Courier.ReadAll()
-                group c by c.ShipmentType into g                       // grouping
+                group c by c.ShipmentType
+                into g // grouping
                 orderby g.Key
-                select new { Type = g.Key, Cnt = g.Count() };          // select new
+                select new { Type = g.Key, Cnt = g.Count() }; // select new
 
-            return q.Select(x => (x.Type, x.Cnt));                    // extension Select to convert anonymous -> tuple
+            return q.Select(x => (x.Type, x.Cnt)); // extension Select to convert anonymous -> tuple
         }
         catch (Exception ex)
         {
@@ -225,9 +227,9 @@ internal static class CourierManager
             var q =
                 from c in s_dal.Courier.ReadAll()
                 where c.IsActive
-                let nameLen = c.Name.Length                                   // let usage
+                let nameLen = c.Name.Length // let usage
                 orderby nameLen
-                select new { c.Name, Len = nameLen };                         // select new
+                select new { c.Name, Len = nameLen }; // select new
 
             // extension method Select to get string list
             return q.Select(x => x.Name);
@@ -271,7 +273,7 @@ internal static class CourierManager
             throw new BO.DalException("DAL: error while reading couriers started this year", ex);
         }
     }
-    
+
     internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
     {
     }

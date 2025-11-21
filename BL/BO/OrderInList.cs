@@ -30,5 +30,8 @@ public class OrderInList
     /// <summary>
     /// Debug friendly string representation.
     /// </summary>
-    public override string ToString() => this.ToStringProperty();
+    public override string ToString()
+    {
+        return this.ToStringProperty();
+    }
 }
