@@ -1,4 +1,5 @@
 ﻿using DalApi;
+using DO;
 
 namespace Helpers;
 
@@ -46,9 +47,9 @@ internal static class DeliveryManager
                     DeliveryId = d.Id,
                     CourierId = d.CourierId == 0 ? null : (int?)d.CourierId,
                     CourierName = courier is null ? string.Empty : courier.Name,
-                    shipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentShipmentType.ToString()),
+                    shipmentType = (ShipmentType)Enum.Parse(typeof(ShipmentType), d.ShipmentType.ToString()),
                     DeliveryStartTime = d.StartTime,
-                    DeliveryEndType = d.DeliveryEndType is null ? null : (BO.DeliveryEndType?)Enum.Parse(typeof(BO.DeliveryEndType), d.DeliveryEndType.ToString()),
+                    DeliveryEndType = d.DeliveryEndType is null ? null : (DeliveryEndType?)Enum.Parse(typeof(DeliveryEndType), d.DeliveryEndType.ToString()),
                     DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
                 };
 
@@ -146,9 +147,9 @@ internal static class DeliveryManager
             DeliveryId = d.Id,
             CourierId = d.CourierId == 0 ? null : (int?)d.CourierId,
             CourierName = s_dal.Courier.Read(d.CourierId) is DO.Courier c ? c.Name : string.Empty,
-            shipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentShipmentType.ToString()),
+            shipmentType = (ShipmentType)Enum.Parse(typeof(ShipmentType), d.ShipmentType.ToString()),
             DeliveryStartTime = d.StartTime,
-            DeliveryEndType = d.DeliveryEndType is null ? null : (BO.DeliveryEndType?)Enum.Parse(typeof(BO.DeliveryEndType), d.DeliveryEndType.ToString()),
+            DeliveryEndType = d.DeliveryEndType is null ? null : (DeliveryEndType?)Enum.Parse(typeof(DeliveryEndType), d.DeliveryEndType.ToString()),
             DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
         };
 }

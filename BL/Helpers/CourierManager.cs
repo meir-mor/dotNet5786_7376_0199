@@ -1,4 +1,5 @@
 ﻿using DalApi;
+using DO;
 
 namespace Helpers;
 
@@ -24,7 +25,7 @@ internal static class CourierManager
                     Id = c.Id,
                     FullName = c.Name,
                     IsActive = c.IsActive,
-                    shipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), c.ShipmentType.ToString()),
+                    shipmentType = (ShipmentType)Enum.Parse(typeof(ShipmentType), c.ShipmentType.ToString()),
                     StartWorkTime = c.StartingWork,
                     // totals are computed in BL (here we default to 0; other BL helpers could compute them)
                     TotalDeliveredOnTime = 0,
@@ -254,7 +255,7 @@ internal static class CourierManager
                     Id = c.Id,
                     FullName = c.Name,
                     IsActive = c.IsActive,
-                    shipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), c.ShipmentType.ToString()),
+                    shipmentType = (ShipmentType)Enum.Parse(typeof(ShipmentType), c.ShipmentType.ToString()),
                     StartWorkTime = c.StartingWork,
                     TotalDeliveredOnTime = 0,
                     TotalDeliveredLate = 0,

@@ -1,3 +1,5 @@
+using DO;
+
 namespace BlApi;
 
 /// <summary>
@@ -69,7 +71,7 @@ public interface IOrder
     /// - typeFilter: nullable to filter by BO.ShipmentType
     /// - sortBy: nullable sort key; if null sort by timeliness (ScheduleStatus)
     /// </summary>
-    IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId, BO.ShipmentType? typeFilter = null, ClosedDeliverySortBy? sortBy = null);
+    IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId, ShipmentType? typeFilter = null, ClosedDeliverySortBy? sortBy = null);
 
     /// <summary>
     /// Return open orders available for selection by a courier.
@@ -77,6 +79,6 @@ public interface IOrder
     /// - typeFilter: nullable BO.OrderType
     /// - sortBy: nullable; if null sort by timeliness (ScheduleStatus)
     /// </summary>
-    IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId, BO.OrderType? typeFilter = null, OpenOrderSortBy? sortBy = null);
+    IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId, OrderType? typeFilter = null, OpenOrderSortBy? sortBy = null);
 }
 
