@@ -53,7 +53,7 @@ internal class CourierImplementation : ICourier
         };
     }
 
-    public BO.Courier GetCourierDetails(int requesterId, int courierId)
+    public BO.Courier GetCourierDetails(int courierId)
     {
         return CourierManager.GetCourierById(courierId)
                ?? throw new BO.BlException($"Courier with id {courierId} not found");
@@ -74,7 +74,7 @@ internal class CourierImplementation : ICourier
         CourierManager.DeleteCourier(courierId);
     }
 
-    public void AddCourier(int requesterId, BO.Courier courier)
+    public void AddCourier(BO.Courier courier)
     {
         CourierManager.CreateCourier(courier);
     }

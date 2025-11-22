@@ -3,6 +3,22 @@
     Manager,
     Courier
 }
+public enum OrderType
+{
+    Food,
+    Flowers,
+    Clothing,
+    Dishes,
+    General
+}
+
+public enum ShipmentType
+{
+    Walk,
+    Bicycle,
+    Motorcycle,
+    Car
+}
 
 public enum CourierListSortBy
 {

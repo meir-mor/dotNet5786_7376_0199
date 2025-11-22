@@ -31,7 +31,7 @@ public interface ICourier
     /// <summary>
     /// Request detailed courier data (BO.Courier), includes current order-in-progress if exists.
     /// </summary>
-    BO.Courier GetCourierDetails(int requesterId, int courierId);
+    BO.Courier GetCourierDetails(int courierId);
 
     /// <summary>
     /// Update courier data. The BO.Courier parameter is full and replaces existing values.
@@ -47,5 +47,5 @@ public interface ICourier
     /// <summary>
     /// Add a new courier (BO.Courier). Caller must be authorized.
     /// </summary>
-    void AddCourier(int requesterId, BO.Courier courier);
+    void AddCourier(BO.Courier courier);
 }
