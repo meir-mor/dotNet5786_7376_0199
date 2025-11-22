@@ -43,23 +43,23 @@ internal static class CourierManager
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.DalException("DAL: requested courier does not exist", ex);
+            throw new BO.BlDoesNotExistException("DAL: requested courier does not exist", ex);
         }
         catch (DO.DalAlreadyExistsException ex)
         {
-            throw new BO.DalException("DAL: entity already exists", ex);
+            throw new BO.BlAlreadyExistsException("DAL: entity already exists", ex);
         }
         catch (DO.DalNullException ex)
         {
-            throw new BO.DalException("DAL: null encountered", ex);
+            throw new BO.BlInvalidOperationException("DAL: null encountered", ex);
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new BO.DalException("DAL: XML file load/create error", ex);
+            throw new BO.BlDalFileException("DAL: XML file load/create error", ex);
         }
-        catch (Exception ex) // fallback - wrap any other unexpected exception
+        catch (Exception ex)
         {
-            throw new BO.DalException("DAL: unexpected error while reading couriers", ex);
+            throw new BO.BlUnexpectedException("DAL: unexpected error while reading couriers", ex);
         }
     }
 
@@ -96,7 +96,7 @@ internal static class CourierManager
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.DalException($"DAL: courier with id {id} does not exist", ex);
+            throw new BO.BlDoesNotExistException($"DAL: courier with id {id} does not exist", ex);
         }
     }
 
@@ -125,11 +125,11 @@ internal static class CourierManager
         }
         catch (DO.DalAlreadyExistsException ex)
         {
-            throw new BO.DalException($"DAL: courier with id {boCourier.Id} already exists", ex);
+            throw new BO.BlAlreadyExistsException($"DAL: courier with id {boCourier.Id} already exists", ex);
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: unexpected error while creating courier", ex);
+            throw new BO.BlUnexpectedException("DAL: unexpected error while creating courier", ex);
         }
     }
 
@@ -140,7 +140,7 @@ internal static class CourierManager
     {
         var oldCourier = s_dal.Courier.Read(c => c.Id == courier.Id);
         if (oldCourier is null)
-            throw new BO.DalException($"DAL: courier with id {courier.Id} not found for update");
+            throw new BO.BlDoesNotExistException($"DAL: courier with id {courier.Id} not found for update");
         try
         {
             var doCourier = new DO.Courier(
@@ -159,7 +159,7 @@ internal static class CourierManager
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.DalException($"DAL: courier with id {courier.Id} not found for update", ex);
+            throw new BO.BlDoesNotExistException($"DAL: courier with id {courier.Id} not found for update", ex);
         }
     }
 
@@ -173,20 +173,20 @@ internal static class CourierManager
         {
             var exists = s_dal.Courier.ReadAll().Any(c => c.Id == id);
             if (!exists)
-                throw new BO.DalException($"DAL: courier with id {id} not found");
+                throw new BO.BlDoesNotExistException($"DAL: courier with id {id} not found");
             var canDelete = s_dal.Delivery.Read(c => c.CourierId == id) is null;
             if (!canDelete)
-                throw new BO.DalException($"DAL: courier with id {id} cannot be deleted");
+                throw new BO.BlInvalidOperationException($"DAL: courier with id {id} cannot be deleted");
 
             s_dal.Courier.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.DalException($"DAL: courier with id {id} does not exist", ex);
+            throw new BO.BlDoesNotExistException($"DAL: courier with id {id} does not exist", ex);
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: unexpected error while deleting courier", ex);
+            throw new BO.BlUnexpectedException("DAL: unexpected error while deleting courier", ex);
         }
     }
 
@@ -212,7 +212,7 @@ internal static class CourierManager
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: error while computing courier counts by shipment type", ex);
+            throw new BO.BlUnexpectedException("DAL: error while computing courier counts by shipment type", ex);
         }
     }
 
@@ -236,7 +236,7 @@ internal static class CourierManager
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: error while computing active courier names", ex);
+            throw new BO.BlUnexpectedException("DAL: error while computing active courier names", ex);
         }
     }
 
@@ -270,7 +270,7 @@ internal static class CourierManager
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: error while reading couriers started this year", ex);
+            throw new BO.BlUnexpectedException("DAL: error while reading couriers started this year", ex);
         }
     }
 

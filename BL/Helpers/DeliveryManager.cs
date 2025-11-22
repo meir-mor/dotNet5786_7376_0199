@@ -26,25 +26,25 @@ internal static class DeliveryManager
 
             return filter == null ? list : list.Where(filter);
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.DalException("DAL: delivery not found", ex);
+            throw new BO.BlDoesNotExistException("DAL: delivery not found", ex);
         }
-        catch (DalAlreadyExistsException ex)
+        catch (DO.DalAlreadyExistsException ex)
         {
-            throw new BO.DalException("DAL: already exists", ex);
+            throw new BO.BlAlreadyExistsException("DAL: delivery already exists", ex);
         }
-        catch (DalNullException ex)
+        catch (DO.DalNullException ex)
         {
-            throw new BO.DalException("DAL: null", ex);
+            throw new BO.BlInvalidOperationException("DAL: null encountered in delivery", ex);
         }
-        catch (DalXMLFileLoadCreateException ex)
+        catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new BO.DalException("DAL: xml error", ex);
+            throw new BO.BlDalFileException("DAL: XML file load/create error for deliveries", ex);
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: unexpected error while reading deliveries", ex);
+            throw new BO.BlUnexpectedException("DAL: unexpected error while reading deliveries", ex);
         }
     }
 
@@ -77,7 +77,7 @@ internal static class DeliveryManager
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: error while getting deliveries for order", ex);
+            throw new BO.BlUnexpectedException("DAL: error while getting deliveries for order", ex);
         }
     }
 
@@ -91,13 +91,13 @@ internal static class DeliveryManager
             var d = s_dal.Delivery.Read(id);
             return d is null ? null : MapDoToBo(d);
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.DalException($"DAL: delivery {id} does not exist", ex);
+            throw new BO.BlDoesNotExistException($"DAL: delivery {id} does not exist", ex);
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: unexpected error while reading delivery", ex);
+            throw new BO.BlUnexpectedException("DAL: unexpected error while reading delivery", ex);
         }
     }
 
@@ -123,13 +123,13 @@ internal static class DeliveryManager
 
             s_dal.Delivery.Create(doDelivery);
         }
-        catch (DalAlreadyExistsException ex)
+        catch (DO.DalAlreadyExistsException ex)
         {
-            throw new BO.DalException("DAL: delivery already exists", ex);
+            throw new BO.BlAlreadyExistsException("DAL: delivery already exists", ex);
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: unexpected error while creating delivery", ex);
+            throw new BO.BlUnexpectedException("DAL: unexpected error while creating delivery", ex);
         }
     }
 
@@ -155,13 +155,13 @@ internal static class DeliveryManager
 
             s_dal.Delivery.Update(doDelivery);
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.DalException($"DAL: delivery {bo.DeliveryId} not found", ex);
+            throw new BO.BlDoesNotExistException($"DAL: delivery {bo.DeliveryId} not found", ex);
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: unexpected error while updating delivery", ex);
+            throw new BO.BlUnexpectedException("DAL: unexpected error while updating delivery", ex);
         }
     }
 
@@ -174,17 +174,17 @@ internal static class DeliveryManager
         try
         {
             var exists = s_dal.Delivery.ReadAll().Any(d => d.Id == id);
-            if (!exists) throw new BO.DalException($"DAL: delivery {id} not found");
+            if (!exists) throw new BO.BlException($"DAL: delivery {id} not found");
 
             s_dal.Delivery.Delete(id);
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.DalException($"DAL: delivery {id} does not exist", ex);
+            throw new BO.BlDoesNotExistException($"DAL: delivery {id} does not exist", ex);
         }
         catch (Exception ex)
         {
-            throw new BO.DalException("DAL: unexpected error while deleting delivery", ex);
+            throw new BO.BlUnexpectedException("DAL: unexpected error while deleting delivery", ex);
         }
     }
 

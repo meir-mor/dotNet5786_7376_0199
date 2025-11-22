@@ -45,7 +45,7 @@ internal static class OrderManager
         }
         catch (Exception ex)
         {
-            throw new DalException("DAL: error while reading orders", ex);
+            throw new BO.BlUnexpectedException("DAL: error while reading orders", ex);
         }
     }
 
@@ -90,9 +90,9 @@ internal static class OrderManager
 
             return bo;
         }
-        catch (DalException ex)
+        catch (BlException ex)
         {
-            throw new DalException($"DAL: error while reading order {id}", ex);
+            throw new BO.BlUnexpectedException($"DAL: error while reading order {id}", ex);
         }
     }
 
@@ -119,13 +119,13 @@ internal static class OrderManager
 
             s_dal.Order.Create(doOrder);
         }
-        catch (DalAlreadyExistsException ex)
+        catch (DO.DalAlreadyExistsException ex)
         {
-            throw new DalException("DAL: order already exists", ex);
+            throw new BO.BlAlreadyExistsException("DAL: order already exists", ex);
         }
         catch (Exception ex)
         {
-            throw new DalException("DAL: unexpected error while creating order", ex);
+            throw new BO.BlUnexpectedException("DAL: unexpected error while creating order", ex);
         }
     }
 
@@ -152,9 +152,9 @@ internal static class OrderManager
 
             s_dal.Order.Update(doOrder);
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new DalException($"DAL: order {bo.Id} not found", ex);
+            throw new BO.BlDoesNotExistException($"DAL: order {bo.Id} not found", ex);
         }
     }
 
@@ -166,13 +166,13 @@ internal static class OrderManager
         try
         {
             var exists = s_dal.Order.ReadAll().Any(o => o.Id == id);
-            if (!exists) throw new DalException($"DAL: order {id} not found");
+            if (!exists) throw new BlException($"DAL: order {id} not found");
 
             s_dal.Order.Delete(id);
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new DalException($"DAL: order {id} does not exist", ex);
+            throw new BO.BlDoesNotExistException($"DAL: order {id} does not exist", ex);
         }
     }
 
@@ -242,7 +242,7 @@ internal static class OrderManager
         }
         catch (Exception ex)
         {
-            throw new DalException("DAL: error while computing orders summary", ex);
+            throw new BO.BlUnexpectedException("DAL: error while computing orders summary", ex);
         }
     }
 
@@ -251,7 +251,7 @@ internal static class OrderManager
         try
         {
             var now = AdminManager.Now;
-            var order = s_dal.Order.Read(orderId) ?? throw new DalException($"Order {orderId} not found");
+            var order = s_dal.Order.Read(orderId) ?? throw new BlException($"Order {orderId} not found");
 
             var status = order.Status;
             if (status == OrderStatus.Open)
@@ -276,26 +276,26 @@ internal static class OrderManager
                                    .ReadAll(d =>
                                        d.OrderId == orderId && (d.EndTime == null || d.DeliveryEndType == null))
                                    .FirstOrDefault()
-                               ?? throw new DalException($"No active delivery found for order {orderId}");
+                               ?? throw new BlException($"No active delivery found for order {orderId}");
                 var updated = delivery with { EndTime = now, DeliveryEndType = DeliveryEndType.Cancelled };
                 s_dal.Delivery.Update(updated);
             }
             else
             {
-                throw new DalException($"Order {orderId} cannot be cancelled (status {status})");
+                throw new BO.BlInvalidOperationException($"Order {orderId} cannot be cancelled (status {status})");
             }
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new DalException("DAL: entity not found", ex);
+            throw new BO.BlDoesNotExistException("DAL: entity not found", ex);
         }
-        catch (DalNullException ex)
+        catch (DO.DalNullException ex)
         {
-            throw new DalException("DAL: null", ex);
+            throw new BO.BlInvalidOperationException("DAL: null", ex);
         }
-        catch (DalXMLFileLoadCreateException ex)
+        catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new DalException("DAL: xml", ex);
+            throw new BO.BlDalFileException("DAL: xml", ex);
         }
     }
 
@@ -305,18 +305,18 @@ internal static class OrderManager
         {
             var now = AdminManager.Now;
             var delivery = s_dal.Delivery.Read(deliveryId) ??
-                           throw new DalException($"Delivery {deliveryId} not found");
+                           throw new BO.BlDoesNotExistException($"Delivery {deliveryId} not found");
 
             if (delivery.CourierId != courierId)
-                throw new DalException("Requester is not the courier of this delivery");
+                throw new BO.BlInvalidOperationException("Requester is not the courier of this delivery");
 
             // update delivery end and type
             var updated = delivery with { EndTime = now, DeliveryEndType = DeliveryEndType.Supplied };
             s_dal.Delivery.Update(updated);
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new DalException("DAL: entity not found", ex);
+            throw new BO.BlDoesNotExistException("DAL: entity not found", ex);
         }
     }
 
@@ -325,17 +325,17 @@ internal static class OrderManager
         try
         {
             var now = AdminManager.Now;
-            var order = s_dal.Order.Read(orderId) ?? throw new DalException($"Order {orderId} not found");
+            var order = s_dal.Order.Read(orderId) ?? throw new BlException($"Order {orderId} not found");
 
             if (order.Status != OrderStatus.Open)
-                throw new DalException("Order is not open for assignment");
+                throw new BlException("Order is not open for assignment");
 
             // ensure no active delivery exists for this order
             var active = s_dal.Delivery
                 .ReadAll(d => d.OrderId == orderId && (d.EndTime == null || d.DeliveryEndType == null))
                 .FirstOrDefault();
             if (active != null)
-                throw new DalException("Order already has an active delivery");
+                throw new BlException("Order already has an active delivery");
 
             // create delivery (use default ShipmentType - can be improved)
             var delivery = new Delivery(
@@ -355,13 +355,13 @@ internal static class OrderManager
             var updatedOrder = order with { Status = OrderStatus.InProgress };
             s_dal.Order.Update(updatedOrder);
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new DalException("DAL: entity not found", ex);
+            throw new BO.BlDoesNotExistException("DAL: entity not found", ex);
         }
-        catch (DalAlreadyExistsException ex)
+        catch (DO.DalAlreadyExistsException ex)
         {
-            throw new DalException("DAL: already exists", ex);
+            throw new BO.BlAlreadyExistsException("DAL: already exists", ex);
         }
     }
 
@@ -422,21 +422,21 @@ internal static class OrderManager
 
             return sorted.Select(x => x.Item as ClosedDeliveryInList);
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new DalException("DAL: entity not found", ex);
+            throw new BO.BlDoesNotExistException("DAL: entity not found", ex);
         }
-        catch (DalNullException ex)
+        catch (DO.DalNullException ex)
         {
-            throw new DalException("DAL: null", ex);
+            throw new BO.BlInvalidOperationException("DAL: null", ex);
         }
-        catch (DalAlreadyExistsException ex)
+        catch (DO.DalAlreadyExistsException ex)
         {
-            throw new DalException("DAL: already exists", ex);
+            throw new BO.BlAlreadyExistsException("DAL: already exists", ex);
         }
-        catch (DalXMLFileLoadCreateException ex)
+        catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new DalException("DAL: xml", ex);
+            throw new BO.BlDalFileException("DAL: xml", ex);
         }
     }
 
@@ -463,7 +463,7 @@ internal static class OrderManager
             // get courier DO to read maximum distance
             var courierDo = s_dal.Courier.Read(courierId);
             if (courierDo == null)
-                throw new DalException($"Courier with id {courierId} not found");
+                throw new BO.BlDoesNotExistException($"Courier with id {courierId} not found");
 
             var courierMaxDistance = courierDo.MaximumDistance; // km, nullable
 
@@ -513,21 +513,21 @@ internal static class OrderManager
 
             return sorted.Select(t => t.Open).ToList();
         }
-        catch (DalDoesNotExistException ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new DalException("DAL: entity not found", ex);
+            throw new BO.BlDoesNotExistException("DAL: entity not found", ex);
         }
-        catch (DalNullException ex)
+        catch (DO.DalNullException ex)
         {
-            throw new DalException("DAL: null", ex);
+            throw new BO.BlInvalidOperationException("DAL: null", ex);
         }
-        catch (DalAlreadyExistsException ex)
+        catch (DO.DalAlreadyExistsException ex)
         {
-            throw new DalException("DAL: already exists", ex);
+            throw new BO.BlAlreadyExistsException("DAL: already exists", ex);
         }
-        catch (DalXMLFileLoadCreateException ex)
+        catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new DalException("DAL: xml", ex);
+            throw new BO.BlDalFileException("DAL: xml", ex);
         }
     }
 

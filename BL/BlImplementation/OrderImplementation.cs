@@ -61,7 +61,7 @@ internal class OrderImplementation : IOrder
     public BO.Order GetOrderDetails(int requesterId, int orderId)
     {
         return OrderManager.GetOrderById(orderId)
-               ?? throw new BO.DalException($"Order with id {orderId} not found");
+               ?? throw new BO.BlException($"Order with id {orderId} not found");
     }
 
     public void UpdateOrder(int requesterId, BO.Order order)
