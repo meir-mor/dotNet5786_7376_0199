@@ -1,4 +1,6 @@
-﻿public enum UserRole
+﻿namespace BO;
+
+public enum UserRole
 {
     Manager,
     Courier

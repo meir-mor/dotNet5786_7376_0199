@@ -1,5 +1,4 @@
-using BO;
-using DO;
+using ShipmentType = DO.ShipmentType;
 
 namespace BlImplementation;
 
@@ -16,21 +15,21 @@ internal class OrderImplementation : IOrder
         return OrderManager.GetOrdersCountsSummary(requesterId);
     }
 
-    public IEnumerable<OrderInList> GetOrdersList(int requesterId, OrderListFilterBy? filterBy = null,
-        object? filterValue = null, OrderListSortBy? sortBy = null)
+    public IEnumerable<BO.OrderInList> GetOrdersList(int requesterId, BO.OrderListFilterBy? filterBy = null,
+        object? filterValue = null, BO.OrderListSortBy? sortBy = null)
     {
         // start from all orders
         var orders = OrderManager.GetAllOrders().ToList();
 
         // filter
-        if (filterBy.HasValue && filterBy.Value != OrderListFilterBy.None && filterValue is not null)
+        if (filterBy.HasValue && filterBy.Value != BO.OrderListFilterBy.None && filterValue is not null)
             orders = filterBy.Value switch
             {
-                OrderListFilterBy.OrderType => orders.Where(o => o.OrderType.Equals((OrderType)filterValue)).ToList(),
-                OrderListFilterBy.CustomerFullName => orders.Where(o =>
+                BO.OrderListFilterBy.OrderType => orders.Where(o => o.OrderType.Equals((DO.OrderType)filterValue)).ToList(),
+                BO.OrderListFilterBy.CustomerFullName => orders.Where(o =>
                     o.CustomerFullName.Contains(filterValue.ToString() ?? string.Empty,
                         StringComparison.OrdinalIgnoreCase)).ToList(),
-                OrderListFilterBy.OrderStatus => orders.Where(o => o.OrderStatus.Equals((OrderStatus)filterValue))
+                BO.OrderListFilterBy.OrderStatus => orders.Where(o => o.OrderStatus.Equals((DO.OrderStatus)filterValue))
                     .ToList(),
                 _ => orders
             };
@@ -38,13 +37,13 @@ internal class OrderImplementation : IOrder
         // sort
         orders = sortBy switch
         {
-            OrderListSortBy.AerialDistance => orders.OrderBy(o => o.AerialDistance).ToList(),
-            OrderListSortBy.OrderOpenTime => orders.OrderByDescending(o => o.OrderOpenTime).ToList(),
-            OrderListSortBy.CustomerFullName => orders.OrderBy(o => o.CustomerFullName).ToList(),
+            BO.OrderListSortBy.AerialDistance => orders.OrderBy(o => o.AerialDistance).ToList(),
+            BO.OrderListSortBy.OrderOpenTime => orders.OrderByDescending(o => o.OrderOpenTime).ToList(),
+            BO.OrderListSortBy.CustomerFullName => orders.OrderBy(o => o.CustomerFullName).ToList(),
             _ => orders.OrderBy(o => o.OrderStatus).ToList()
         };
 
-        return orders.Select(o => new OrderInList
+        return orders.Select(o => new BO.OrderInList
         {
             OrderType = o.OrderType,
             OrderStatus = o.OrderStatus,
@@ -94,14 +93,14 @@ internal class OrderImplementation : IOrder
         OrderManager.AssignOrderToCourier(requesterId, courierId, orderId);
     }
 
-    public IEnumerable<ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId,
-        ShipmentType? typeFilter = null, ClosedDeliverySortBy? sortBy = null)
+    public IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesForCourier(int requesterId, int courierId,
+        BO.ShipmentType? typeFilter = null, BO.ClosedDeliverySortBy? sortBy = null)
     {
         return OrderManager.GetClosedDeliveriesForCourier(requesterId, courierId, typeFilter, sortBy);
     }
 
-    public IEnumerable<OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId,
-        OrderType? typeFilter = null, OpenOrderSortBy? sortBy = null)
+    public IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId,
+        BO.OrderType? typeFilter = null, BO.OpenOrderSortBy? sortBy = null)
     {
         return OrderManager.GetOpenOrdersForCourier(requesterId, courierId, typeFilter, sortBy);
     }
