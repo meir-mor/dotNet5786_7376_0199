@@ -1,6 +1,4 @@
 ﻿using BO;
-using BlApi;
-using Helpers;
 namespace BlTest;
 
 internal class Program
@@ -185,13 +183,6 @@ internal class Program
     /// <returns>A new or updated BO.Courier object.</returns>
     private static BO.Courier GetCourierInput(int id)
     {
-        if (id == -1)
-        {
-            Console.Write("Enter Courier ID: ");
-            while (!int.TryParse(Console.ReadLine(), out id))
-                Console.WriteLine("Invalid input! Courier ID must be a valid integer.");
-        }
-
         Console.Write("Enter Full Name: ");
         string fullName;
         while (string.IsNullOrWhiteSpace(fullName = Console.ReadLine()))
@@ -243,13 +234,6 @@ internal class Program
                 Console.WriteLine("Unknown shipment type, defaulting to Motorcycle.");
             else
                 shipmentType = (ShipmentType)st;
-        }
-
-
-        if (id != -1)
-        {
-            // when updating, user may want to keep existing start time - we do not ask to change it here.
-            // BL will preserve relevant values if not allowed to change.
         }
 
         return new BO.Courier
@@ -517,17 +501,60 @@ internal class Program
                         Console.WriteLine(cfg);
                         break;
                     case 6:
-                        var newCfg = new BO.Config();
-                        Console.Write("Enter RiskRange in minutes (optional): ");
-                        if (int.TryParse(Console.ReadLine(), out int rr))
-                            newCfg.RiskRange = TimeSpan.FromMinutes(rr);
+                        Console.Write("Enter RiskRange (minutes, optional): ");
+                        var hasRiskRange = int.TryParse(Console.ReadLine(), out var riskRange);
+
+                        Console.Write("Enter Company Address (optional): ");
+                        var compAddr = Console.ReadLine();
+                        var hasCompAddr = !string.IsNullOrWhiteSpace(compAddr);
+
+                        Console.Write("Enter Manager Password (optional): ");
+                        var managerPwd = Console.ReadLine();
+                        var hasManagerPwd = !string.IsNullOrWhiteSpace(managerPwd);
+
                         Console.Write("Enter Latitude (optional): ");
-                        if (double.TryParse(Console.ReadLine(), out double lat))
-                            newCfg.Latitude = lat;
+                        var hasLat = double.TryParse(Console.ReadLine(), out var lat);
+
                         Console.Write("Enter Longitude (optional): ");
-                        if (double.TryParse(Console.ReadLine(), out double lon))
-                            newCfg.Longitude = lon;
-                        // other fields may be set similarly
+                        var hasLon = double.TryParse(Console.ReadLine(), out var lon);
+
+                        Console.Write("Enter Max Distance (optional): ");
+                        var hasMaxDist = double.TryParse(Console.ReadLine(), out var maxDist);
+
+                        Console.Write("Enter Average Car Speed (optional): ");
+                        var hasAvgCar = double.TryParse(Console.ReadLine(), out var avgCar);
+
+                        Console.Write("Enter Average Bike Speed (optional): ");
+                        var hasAvgBike = double.TryParse(Console.ReadLine(), out var avgBike);
+
+                        Console.Write("Enter Average Bicycle Speed (optional): ");
+                        var hasAvgBicycle = double.TryParse(Console.ReadLine(), out var avgBicycle);
+
+                        Console.Write("Enter Average Walk Speed (optional): ");
+                        var hasAvgWalk = double.TryParse(Console.ReadLine(), out var avgWalk);
+
+                        Console.Write("Enter Max Delivery Time (minutes, optional): ");
+                        var hasMaxDel = int.TryParse(Console.ReadLine(), out var maxDel);
+
+                        Console.Write("Enter Time To Be Dispose (minutes, optional): ");
+                        var hasDispose = int.TryParse(Console.ReadLine(), out var dispose);
+
+                        var newCfg = new BO.Config
+                        {
+                            Latitude = hasLat ? lat : null,
+                            Longitude = hasLon ? lon : null
+                        };
+
+                        if (hasRiskRange) newCfg.RiskRange = TimeSpan.FromMinutes(riskRange);
+                        if (hasCompAddr) newCfg.ComponyAddress = compAddr;
+                        if (hasManagerPwd) newCfg.ManagerPassword = managerPwd;
+                        if (hasMaxDist) newCfg.MaxDistance = maxDist;
+                        if (hasAvgCar) newCfg.AverageCarSpeed = avgCar;
+                        if (hasAvgBike) newCfg.AverageBikeSpeedBike = avgBike;
+                        if (hasAvgBicycle) newCfg.AverageBicycleSpeed = avgBicycle;
+                        if (hasAvgWalk) newCfg.AverageWalkSpeed = avgWalk;
+                        if (hasMaxDel) newCfg.MaxDeliveryTime = TimeSpan.FromMinutes(maxDel);
+                        if (hasDispose) newCfg.TimeToBeDispose = TimeSpan.FromMinutes(dispose);
                         s_bl.Admin.SetConfig(newCfg);
                         Console.WriteLine("Config updated.");
                         break;
