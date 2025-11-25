@@ -1,4 +1,5 @@
 ﻿using DalApi;
+using DO;
 using Factory = DalApi.Factory;
 
 namespace Helpers;
@@ -176,6 +177,16 @@ internal static class OrderManager
 
     internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
+        var list = s_dal.Order.ReadAll();
+        foreach (var doOrder in list)
+        {
+            //if student study for more than MaxRange years
+            //then student should be automatically updated to 'not active'
+            if (AdminManager.Now - doOrder.CreatedAt >= s_dal.Config.MaxDeliveryTime)
+            {
+                s_dal.Order.Update(doOrder with { Status = OrderStatus.Closed });
+            }
+        }
     }
 
     private static BO.Order MapDoToBo(DO.Order o)

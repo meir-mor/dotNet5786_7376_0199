@@ -1,4 +1,5 @@
 ﻿using DalApi;
+using DO;
 
 namespace Helpers;
 
@@ -187,6 +188,16 @@ internal static class DeliveryManager
 
     internal static void PeriodicDeliveriesUpdates(DateTime oldClock, DateTime newClock)
     {
+        var list = s_dal.Delivery.ReadAll();
+        foreach (var doDelivery in list)
+        {
+            //if student study for more than MaxRange years
+            //then student should be automatically updated to 'not active'
+            if (AdminManager.Now - doDelivery.StartTime >= s_dal.Config.MaxDeliveryTime)
+            {
+                s_dal.Delivery.Update(doDelivery with { DeliveryEndType = DeliveryEndType.Failed });
+            }
+        }
     }
 
     private static BO.DeliveryPerOrderInList MapDoToBo(DO.Delivery d)

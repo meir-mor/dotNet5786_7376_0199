@@ -278,5 +278,16 @@ internal static class CourierManager
 
     internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
     {
+        var list = s_dal.Courier.ReadAll();
+        foreach (var doCourier in list)
+        {
+            //if student study for more than MaxRange years
+            //then student should be automatically updated to 'not active'
+            if (AdminManager.Now - doCourier.StartingWork >= s_dal.Config.TimeToBeDispose)
+            {
+                s_dal.Courier.Update(doCourier with { IsActive = false });
+            }
+        }
     }
+
 }
