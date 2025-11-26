@@ -1,5 +1,6 @@
-﻿using DalApi;
-//using BlApi;
+﻿using BlApi;
+using DalApi;
+using Factory = DalApi.Factory;
 
 namespace Helpers;
 
@@ -27,7 +28,7 @@ internal static class CourierManager
                     Id = c.Id,
                     FullName = c.Name,
                     IsActive = c.IsActive,
-                    shipmentType = c.ShipmentType,
+                    shipmentType = (BO.ShipmentType)(int)c.ShipmentType,
                     StartWorkTime = c.StartingWork,
                     TotalDeliveredOnTime = deliveries.Count(d =>
                         d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
@@ -86,7 +87,7 @@ internal static class CourierManager
                 Password = d.Password,
                 IsActive = d.IsActive,
                 MaxDistance = d.MaximumDistance ?? null,
-                ShipmentType = d.ShipmentType,
+                ShipmentType = (BO.ShipmentType)(int)d.ShipmentType,
                 StartWorkTime = d.StartingWork,
                 TotalDeliveredOnTime = 0,
                 TotalDeliveredLate = 0,
@@ -118,7 +119,7 @@ internal static class CourierManager
                 boCourier.Password ?? string.Empty,
                 boCourier.IsActive,
                 boCourier.MaxDistance,
-                boCourier.ShipmentType,
+                (DO.ShipmentType)(int)boCourier.ShipmentType,
                 boCourier.StartWorkTime
             );
 
@@ -137,7 +138,7 @@ internal static class CourierManager
     /// <summary>
     /// Update an existing courier via DAL.
     /// </summary>
-    internal static void UpdateCourier(BO.Courier courier, UserRole userRole)
+    internal static void UpdateCourier(BO.Courier courier, BO.UserRole userRole)
     {
         var oldCourier = s_dal.Courier.Read(c => c.Id == courier.Id);
         if (oldCourier is null)
@@ -150,9 +151,9 @@ internal static class CourierManager
                 courier.PhoneNumber,
                 courier.Email,
                 courier.Password ?? string.Empty,
-                userRole == UserRole.Manager ? courier.IsActive : oldCourier.IsActive,
+                userRole == BO.UserRole.Manager ? courier.IsActive : oldCourier.IsActive,
                 courier.MaxDistance,
-                courier.ShipmentType,
+                (DO.ShipmentType)(int)courier.ShipmentType,
                 oldCourier.StartingWork
             );
 
@@ -259,7 +260,7 @@ internal static class CourierManager
                     Id = c.Id,
                     FullName = c.Name,
                     IsActive = c.IsActive,
-                    shipmentType = c.ShipmentType,
+                    shipmentType = (BO.ShipmentType)(int)c.ShipmentType,
                     StartWorkTime = c.StartingWork,
                     TotalDeliveredOnTime = 0,
                     TotalDeliveredLate = 0,
@@ -277,5 +278,16 @@ internal static class CourierManager
 
     internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
     {
+        var list = s_dal.Courier.ReadAll();
+        foreach (var doCourier in list)
+        {
+            //if student study for more than MaxRange years
+            //then student should be automatically updated to 'not active'
+            if (AdminManager.Now - doCourier.StartingWork >= s_dal.Config.TimeToBeDispose)
+            {
+                s_dal.Courier.Update(doCourier with { IsActive = false });
+            }
+        }
     }
+
 }

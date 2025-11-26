@@ -1,3 +1,5 @@
+using BO;
+
 namespace BlImplementation;
 
 using System;
