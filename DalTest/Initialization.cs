@@ -16,7 +16,7 @@ public static class Initialization
         Console.WriteLine("Reset Configuration values and List values...");
         s_dal.ResetDB();
 
-        Console.WriteLine("Initializing Students list ...");
+        Console.WriteLine("Initializing list ...");
         CreateOrder();
         CreateCourier();
         CreateDelivery();

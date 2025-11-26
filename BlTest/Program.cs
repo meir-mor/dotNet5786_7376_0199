@@ -183,6 +183,12 @@ internal class Program
     /// <returns>A new or updated BO.Courier object.</returns>
     private static BO.Courier GetCourierInput(int id)
     {
+        if (id == -1)
+        {
+            Console.Write("Enter Courier ID: ");
+            while (!int.TryParse(Console.ReadLine(), out id))
+                Console.WriteLine("Invalid input! Courier ID must be an integer.");
+        }
         Console.Write("Enter Full Name: ");
         string fullName;
         while (string.IsNullOrWhiteSpace(fullName = Console.ReadLine()))
@@ -225,7 +231,7 @@ internal class Program
         if (!string.IsNullOrWhiteSpace(maxDistanceInput) && double.TryParse(maxDistanceInput, out double md))
             maxDistance = md;
 
-        Console.Write("Enter Shipment Type (Motorcycle, Car, Bicycle, Foot) - default Motorcycle: ");
+        Console.Write("Enter Shipment Type (Walk, Bicycle, Motorcycle, Car) - default Motorcycle: ");
         string shipmentTypeInput = Console.ReadLine();
         ShipmentType shipmentType = ShipmentType.Motorcycle;
         if (!string.IsNullOrWhiteSpace(shipmentTypeInput))
@@ -385,13 +391,7 @@ internal class Program
     /// </summary>
     private static BO.Order GetOrderInput(int id)
     {
-        if (id == -1)
-        {
-            Console.Write("Enter Order ID: ");
-            while (!int.TryParse(Console.ReadLine(), out id))
-                Console.WriteLine("Invalid input! Order ID must be an integer.");
-        }
-
+        
         Console.Write("Enter Order Type (e.g., General) - optional, press Enter to skip: ");
         string typeInput = Console.ReadLine();
         OrderType orderType = OrderType.General;
