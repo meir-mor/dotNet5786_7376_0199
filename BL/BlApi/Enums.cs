@@ -1,4 +1,5 @@
-﻿public enum UserRole
+﻿
+public enum UserRole
 {
     Manager,
     Courier

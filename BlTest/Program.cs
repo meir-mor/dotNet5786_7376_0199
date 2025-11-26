@@ -1,5 +1,4 @@
-﻿using BO;
-using BlApi;
+﻿using BlApi;
 using Helpers;
 namespace BlTest;
 
@@ -504,7 +503,7 @@ internal class Program
                             Console.WriteLine("Invalid choice.");
                             break;
                         }
-                        BO.TimeUnit tu = (BO.TimeUnit)(unitChoice - 1);
+                        TimeUnit tu = (TimeUnit)(unitChoice - 1);
                         s_bl.Admin.ForwardClock(tu);
                         Console.WriteLine($"New clock: {s_bl.Admin.GetClock()}");
                         break;
