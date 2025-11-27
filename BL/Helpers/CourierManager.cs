@@ -278,7 +278,7 @@ internal static class CourierManager
 
     internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
     {
-        var list = s_dal.Courier.ReadAll();
+        var list = s_dal.Courier.ReadAll().ToList();
         foreach (var doCourier in list)
         {
             //if student study for more than MaxRange years

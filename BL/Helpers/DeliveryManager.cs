@@ -189,7 +189,7 @@ internal static class DeliveryManager
 
     internal static void PeriodicDeliveriesUpdates(DateTime oldClock, DateTime newClock)
     {
-        var list = s_dal.Delivery.ReadAll();
+        var list = s_dal.Delivery.ReadAll().ToList();
         foreach (var doDelivery in list)
         {
             //if student study for more than MaxRange years

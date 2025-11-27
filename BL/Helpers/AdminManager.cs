@@ -87,19 +87,77 @@ internal static class AdminManager //stage 4
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     internal static void SetConfig(BO.Config configuration) //stage 4
     {
-        var configChanged = false; // stage 5
-
-        var props = s_dal.Config.GetType()
-            .GetProperties()
-            .Where(p => p.CanRead && p.CanWrite); // רק פרופרטיז שאפשר גם לקרוא וגם לכתוב
-
-        foreach (var prop in props)
+        bool configChanged = false; // stage 5
+        
+        if (!s_dal.Config.AverageBicycleSpeed.Equals(configuration.AverageBicycleSpeed))
         {
-            var oldValue = prop.GetValue(s_dal.Config);
-            var newValue = prop.GetValue(configuration);
+            s_dal.Config.AverageBicycleSpeed = configuration.AverageBicycleSpeed;
+            configChanged = true;
+        }
 
-            if (Equals(oldValue, newValue)) continue;
-            prop.SetValue(s_dal.Config, newValue);
+        if (!s_dal.Config.AverageBikeSpeedBike.Equals(configuration.AverageBikeSpeedBike))
+        {
+            s_dal.Config.AverageBikeSpeedBike = configuration.AverageBikeSpeedBike;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.ManagerId != configuration.ManagerId)
+        {
+            s_dal.Config.ManagerId = configuration.ManagerId;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.Clock != configuration.Clock)
+        {
+            s_dal.Config.Clock = configuration.Clock;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.RiskRange != configuration.RiskRange)
+        {
+            s_dal.Config.RiskRange = configuration.RiskRange;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.ComponyAddress != configuration.ComponyAddress)
+        {
+            s_dal.Config.ComponyAddress = configuration.ComponyAddress;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.ManagerPassword != configuration.ManagerPassword)
+        {
+            s_dal.Config.ManagerPassword = configuration.ManagerPassword;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.MaxDistance != configuration.MaxDistance)
+        {
+            s_dal.Config.MaxDistance = configuration.MaxDistance;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.AverageCarSpeed != configuration.AverageCarSpeed)
+        {
+            s_dal.Config.AverageCarSpeed = configuration.AverageCarSpeed;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.AverageWalkSpeed != configuration.AverageWalkSpeed)
+        {
+            s_dal.Config.AverageWalkSpeed = configuration.AverageWalkSpeed;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.MaxDeliveryTime != configuration.MaxDeliveryTime)
+        {
+            s_dal.Config.MaxDeliveryTime = configuration.MaxDeliveryTime;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.TimeToBeDispose != configuration.TimeToBeDispose)
+        {
+            s_dal.Config.TimeToBeDispose = configuration.TimeToBeDispose;
             configChanged = true;
         }
 

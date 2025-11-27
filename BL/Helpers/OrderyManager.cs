@@ -177,7 +177,7 @@ internal static class OrderManager
 
     internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
-        var list = s_dal.Order.ReadAll();
+        var list = s_dal.Order.ReadAll().ToList();
         foreach (var doOrder in list)
         {
             //if student study for more than MaxRange years
