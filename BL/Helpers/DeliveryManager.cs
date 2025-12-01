@@ -6,6 +6,8 @@ namespace Helpers;
 
 internal static class DeliveryManager
 {
+    internal static ObserverManager Observers = new(); //stage 5  
+
     private static IDal s_dal = Factory.Get;
 
     /// <summary>
@@ -121,6 +123,8 @@ internal static class DeliveryManager
             );
 
             s_dal.Delivery.Create(doDelivery);
+            Observers.NotifyItemUpdated(doDelivery.Id);
+            Observers.NotifyListUpdated();
         }
         catch (DO.DalAlreadyExistsException ex)
         {
@@ -153,6 +157,8 @@ internal static class DeliveryManager
             );
 
             s_dal.Delivery.Update(doDelivery);
+            Observers.NotifyItemUpdated(doDelivery.Id);
+            Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -176,6 +182,8 @@ internal static class DeliveryManager
             if (!exists) throw new BO.BlException($"DAL: delivery {id} not found");
 
             s_dal.Delivery.Delete(id);
+            Observers.NotifyItemUpdated(id);
+            Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -190,15 +198,20 @@ internal static class DeliveryManager
     internal static void PeriodicDeliveriesUpdates(DateTime oldClock, DateTime newClock)
     {
         var list = s_dal.Delivery.ReadAll().ToList();
+        bool updated = false; // stage 5
         foreach (var doDelivery in list)
         {
             //if student study for more than MaxRange years
             //then student should be automatically updated to 'not active'
             if (AdminManager.Now - doDelivery.StartTime >= s_dal.Config.MaxDeliveryTime)
             {
-                s_dal.Delivery.Update(doDelivery with { DeliveryEndType = DO.DeliveryEndType.Failed });
+                s_dal.Delivery.Update(doDelivery with { DeliveryEndType = DeliveryEndType.Failed });
+                updated = true;
+                Observers.NotifyItemUpdated(doDelivery.Id);
             }
         }
+        if (updated)
+            Observers.NotifyListUpdated();
     }
 
     private static BO.DeliveryPerOrderInList MapDoToBo(DO.Delivery d)
