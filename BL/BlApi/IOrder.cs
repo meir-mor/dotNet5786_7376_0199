@@ -6,7 +6,7 @@ namespace BlApi;
 /// Implementations must validate requesterId for authorization/audit, wrap DAL calls in try/catch,
 /// translate DO exceptions into BO-level exceptions and must not hold BL-level entity collections.
 /// </summary>
-public interface IOrder
+public interface IOrder : IObservable //stage 5
 {
     /// <summary>
     /// Summary matrix of order counts by (OrderStatus x ScheduleStatus).

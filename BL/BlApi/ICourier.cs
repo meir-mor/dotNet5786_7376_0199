@@ -8,7 +8,7 @@ namespace BlApi;
 /// and must NOT keep BL-level collections of DO/BO entities (only operations).
 /// All methods receive a caller id (requesterId) for authorization/audit and must validate permissions accordingly.
 /// </summary>
-public interface ICourier
+public interface ICourier : IObservable //stage 5
 {
     /// <summary>
     /// Authenticate a user by username and password.

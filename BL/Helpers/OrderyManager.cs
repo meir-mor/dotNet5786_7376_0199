@@ -6,6 +6,8 @@ namespace Helpers;
 
 internal static class OrderManager
 {
+    internal static ObserverManager Observers = new(); //stage 5 
+
     private static IDal s_dal = Factory.Get;
 
     /// <summary>
@@ -117,6 +119,8 @@ internal static class OrderManager
             );
 
             s_dal.Order.Create(doOrder);
+            Observers.NotifyItemUpdated(doOrder.Id);
+            Observers.NotifyListUpdated();
         }
         catch (DO.DalAlreadyExistsException ex)
         {
@@ -150,6 +154,8 @@ internal static class OrderManager
             );
 
             s_dal.Order.Update(doOrder);
+            Observers.NotifyItemUpdated(bo.Id);
+            Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -168,6 +174,8 @@ internal static class OrderManager
             if (!exists) throw new BO.BlException($"DAL: order {id} not found");
 
             s_dal.Order.Delete(id);
+            Observers.NotifyItemUpdated(id);
+            Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -178,6 +186,7 @@ internal static class OrderManager
     internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
         var list = s_dal.Order.ReadAll().ToList();
+        bool updated = false;
         foreach (var doOrder in list)
         {
             //if student study for more than MaxRange years
@@ -185,7 +194,11 @@ internal static class OrderManager
             if (AdminManager.Now - doOrder.CreatedAt >= s_dal.Config.MaxDeliveryTime)
             {
                 s_dal.Order.Update(doOrder with { Status = OrderStatus.Closed });
+                updated = true;
+                Observers.NotifyItemUpdated(doOrder.Id);
             }
+            if (updated)
+                Observers.NotifyListUpdated();
         }
     }
 
@@ -277,6 +290,7 @@ internal static class OrderManager
                     now
                 );
                 s_dal.Delivery.Create(dummy);
+               
             }
             else if (status == DO.OrderStatus.InProgress)
             {
@@ -293,6 +307,8 @@ internal static class OrderManager
             {
                 throw new BO.BlInvalidOperationException($"Order {orderId} cannot be cancelled (status {status})");
             }
+            Observers.NotifyItemUpdated(orderId);
+            Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -322,6 +338,7 @@ internal static class OrderManager
             // update delivery end and type
             var updated = delivery with { EndTime = now, DeliveryEndType = DO.DeliveryEndType.Supplied };
             s_dal.Delivery.Update(updated);
+
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -363,6 +380,8 @@ internal static class OrderManager
             // Optionally update order status to InProgress
             var updatedOrder = order with { Status = DO.OrderStatus.InProgress };
             s_dal.Order.Update(updatedOrder);
+            Observers.NotifyItemUpdated(orderId);
+            Observers.NotifyListUpdated();
         }
         catch (DO.DalDoesNotExistException ex)
         {

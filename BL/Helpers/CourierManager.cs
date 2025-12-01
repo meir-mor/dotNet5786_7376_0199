@@ -1,11 +1,14 @@
 ﻿using BlApi;
 using DalApi;
+using System;
 using Factory = DalApi.Factory;
 
 namespace Helpers;
 
 internal static class CourierManager
 {
+    internal static ObserverManager Observers = new(); //stage 5 
+
     // DAL access (private field as requested)
     private static IDal s_dal = Factory.Get; //stage 4
 
@@ -124,6 +127,7 @@ internal static class CourierManager
             );
 
             s_dal.Courier.Create(doCourier);
+            Observers.NotifyListUpdated(); // stage 5
         }
         catch (DO.DalAlreadyExistsException ex)
         {
@@ -158,6 +162,8 @@ internal static class CourierManager
             );
 
             s_dal.Courier.Update(doCourier);
+            Observers.NotifyItemUpdated(courier.Id); // stage 5
+            Observers.NotifyListUpdated(); // stage 5
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -181,6 +187,8 @@ internal static class CourierManager
                 throw new BO.BlInvalidOperationException($"DAL: courier with id {id} cannot be deleted");
 
             s_dal.Courier.Delete(id);
+            Observers.NotifyItemUpdated(id); // stage 5
+            Observers.NotifyListUpdated();   // stage 5
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -279,6 +287,7 @@ internal static class CourierManager
     internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
     {
         var list = s_dal.Courier.ReadAll().ToList();
+        bool courierUpdated = false; // stage 5
         foreach (var doCourier in list)
         {
             //if student study for more than MaxRange years
@@ -286,8 +295,13 @@ internal static class CourierManager
             if (AdminManager.Now - doCourier.StartingWork >= s_dal.Config.TimeToBeDispose)
             {
                 s_dal.Courier.Update(doCourier with { IsActive = false });
+                courierUpdated = true; // stage 5
+                Observers.NotifyItemUpdated(doCourier.Id); // stage 5
             }
-        }
-    }
+        } 
+        if (courierUpdated)
+        Observers.NotifyListUpdated(); // stage 5
 
+    }
+    
 }
