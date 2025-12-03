@@ -190,7 +190,7 @@ internal static class OrderManager
         }
     }
 
-    internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
+    internal static void PeriodicOrdersUpdates()
     {
         var list = s_dal.Order.ReadAll().ToList();
         bool updated = false;

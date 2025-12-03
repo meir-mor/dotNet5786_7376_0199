@@ -31,7 +31,7 @@ internal static class CourierManager
                     Id = c.Id,
                     FullName = c.Name,
                     IsActive = c.IsActive,
-                    shipmentType = (BO.ShipmentType)(int)c.ShipmentType,
+                    ShipmentType = (BO.ShipmentType)(int)c.ShipmentType,
                     StartWorkTime = c.StartingWork,
                     TotalDeliveredOnTime = deliveries.Count(d =>
                         d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
@@ -268,7 +268,7 @@ internal static class CourierManager
                     Id = c.Id,
                     FullName = c.Name,
                     IsActive = c.IsActive,
-                    shipmentType = (BO.ShipmentType)(int)c.ShipmentType,
+                    ShipmentType = (BO.ShipmentType)(int)c.ShipmentType,
                     StartWorkTime = c.StartingWork,
                     TotalDeliveredOnTime = 0,
                     TotalDeliveredLate = 0,
@@ -284,7 +284,7 @@ internal static class CourierManager
         }
     }
 
-    internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
+    internal static void PeriodicCouriersUpdates()
     {
         var list = s_dal.Courier.ReadAll().ToList();
         bool courierUpdated = false; // stage 5
@@ -300,7 +300,7 @@ internal static class CourierManager
             }
         } 
         if (courierUpdated)
-        Observers.NotifyListUpdated(); // stage 5
+            Observers.NotifyListUpdated(); // stage 5
 
     }
     

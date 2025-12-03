@@ -195,7 +195,7 @@ internal static class DeliveryManager
         }
     }
 
-    internal static void PeriodicDeliveriesUpdates(DateTime oldClock, DateTime newClock)
+    internal static void PeriodicDeliveriesUpdates()
     {
         var list = s_dal.Delivery.ReadAll().ToList();
         bool updated = false; // stage 5

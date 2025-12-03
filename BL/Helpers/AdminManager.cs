@@ -39,12 +39,9 @@ internal static class AdminManager //stage 4
         // - (students become not active after 5 years etc.)
 
         //TO_DO: //stage 4
-        CourierManager.PeriodicCouriersUpdates(oldClock,
-            newClock); //stage 4. to be removed in stage 7 and replaced as below
-        DeliveryManager.PeriodicDeliveriesUpdates(oldClock,
-            newClock); //stage 4. to be removed in stage 7 and replaced as below
-        OrderManager.PeriodicOrdersUpdates(oldClock,
-            newClock); //stage 4. to be removed in stage 7 and replaced as below
+        CourierManager.PeriodicCouriersUpdates(); //stage 4. to be removed in stage 7 and replaced as below
+        DeliveryManager.PeriodicDeliveriesUpdates(); //stage 4. to be removed in stage 7 and replaced as below
+        OrderManager.PeriodicOrdersUpdates(); //stage 4. to be removed in stage 7 and replaced as below
         //...
 
         //TO_DO: //stage 7

@@ -66,6 +66,16 @@ internal class CourierImplementation : ICourier
         };
     }
 
+    public IEnumerable<BO.CourierInList> GetCouriersListByFiltering(int requesterId, BO.ShipmentType filterBy)
+    {
+        if (AdminManager.GetConfig().ManagerId != requesterId)
+            throw new BO.BlInvalidRequestException("Invalid user");
+
+        var list = CourierManager.GetAllCouriersInList(c => c.ShipmentType == filterBy);
+
+        return list;
+    }
+
     public BO.Courier GetCourierDetails(int courierId)
     {
         return CourierManager.GetCourierById(courierId)

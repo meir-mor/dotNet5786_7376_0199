@@ -5,20 +5,93 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid Margin="20">
-        <!-- Left area: Clock (takes about 1/3) -->
+        Title="Admin - Main" Height="450" Width="900"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
+    <Grid Margin="12">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-       
-            
+        <!-- Top header -->
+        <TextBlock Grid.ColumnSpan="3" Grid.Row="0" Text="Administration - Control Panel"
+                   FontSize="18" FontWeight="Bold" Margin="6"/>
 
+        <!-- Left: System clock and advance buttons -->
+        <!-- Clock display area -->
+        <StackPanel Grid.Column="0" Grid.Row="1" Margin="6" VerticalAlignment="Top">
+            <!-- Current system clock (bound to CurrentTime DP) -->
+            <Label Content="{Binding CurrentTime}" FontWeight="Bold" FontSize="18" HorizontalAlignment="Left"/>
 
+            <!-- Buttons to advance the clock -->
+            <!-- Advance by one minute -->
+            <Button Content="Advance: Minute" Click="BtnAdvanceMinute_Click" Margin="4" />
+            <!-- Advance by one hour -->
+            <Button Content="Advance: Hour" Click="BtnAdvanceHour_Click" Margin="4" />
+            <!-- Advance by one day -->
+            <Button Content="Advance: Day" Click="BtnAdvanceDay_Click" Margin="4" />
+            <!-- Advance by one month -->
+            <Button Content="Advance: Month" Click="BtnAdvanceMonth_Click" Margin="4" />
+            <!-- Advance by one year -->
+            <Button Content="Advance: Year" Click="BtnAdvanceYear_Click" Margin="4" />
+        </StackPanel>
 
-       
+        <!-- Center: Configuration variables -->
+        <Border Grid.Column="1" Grid.Row="1" Margin="6" Padding="8" BorderBrush="LightGray" BorderThickness="1" CornerRadius="4">
+            <StackPanel>
+                <TextBlock Text="Configuration (editable)" FontWeight="Bold" Margin="0,0,0,8"/>
+
+                <!-- Configuration.MaxRange -->
+                <!-- TextBox bound to Configuration.MaxRange -->
+                <StackPanel Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="MaxRange:" Width="120" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Configuration.MaxRange, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
+                </StackPanel>
+
+                <!-- Configuration.RiskRange (TimeSpan shown as string, editable) -->
+                <!-- TextBox bound to Configuration.RiskRange (string representation) -->
+                <StackPanel Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="RiskRange:" Width="120" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Configuration.RiskRange, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
+                    <TextBlock Text="(e.g. 00:05:00)" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Configuration.Latitude -->
+                <StackPanel Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="Latitude:" Width="120" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Configuration.Latitude, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
+                </StackPanel>
+
+                <!-- Configuration.Longitude -->
+                <StackPanel Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="Longitude:" Width="120" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Configuration.Longitude, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
+                </StackPanel>
+
+                <!-- Buttons for configuration actions -->
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <!-- Updates configuration via BL -->
+                    <Button Content="Update Configuration" Click="BtnUpdateConfig_Click" Margin="4"/>
+                    <!-- Opens list view (example: courier / relevant list window) -->
+                    <Button Content="Open List View" Click="BtnOpenListView_Click" Margin="4"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Right: DB operations -->
+        <StackPanel Grid.Column="2" Grid.Row="1" Margin="6" VerticalAlignment="Top">
+            <TextBlock Text="Database" FontWeight="Bold" Margin="0,0,0,8"/>
+            <!-- Initialize DB -->
+            <Button Content="Initialize DB" Click="BtnInitializeDb_Click" Margin="4"/>
+            <!-- Reset DB -->
+            <Button Content="Reset DB" Click="BtnResetDb_Click" Margin="4"/>
+        </StackPanel>
     </Grid>
 </Window>

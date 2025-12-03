@@ -30,6 +30,8 @@ public interface ICourier : IObservable //stage 5
     IEnumerable<BO.CourierInList> GetCouriersList(int requesterId, bool? isActiveFilter = null,
         CourierListSortBy? sortBy = null);
 
+    IEnumerable<BO.CourierInList> GetCouriersListByFiltering(int requesterId, BO.ShipmentType filterBy);
+
     /// <summary>
     /// Request detailed courier data (BO.Courier), includes current order-in-progress if exists.
     /// </summary>

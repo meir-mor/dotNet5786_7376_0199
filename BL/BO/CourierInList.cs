@@ -20,7 +20,7 @@ public class CourierInList
     public int Id { get; init; }
     public string FullName { get; set; } = string.Empty;
     public bool IsActive { get; set; }
-    public ShipmentType shipmentType { get; set; }
+    public ShipmentType ShipmentType { get; set; }
     public DateTime StartWorkTime { get; set; }
     public int TotalDeliveredOnTime { get; set; }
     public int TotalDeliveredLate { get; set; }
