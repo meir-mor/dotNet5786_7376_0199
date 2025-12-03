@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using BO;
 
 namespace PL.Courier;
@@ -164,6 +165,38 @@ public partial class CourierListWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show($"Cannot open add-courier window: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    /// <summary>
+    /// Delete button handler for a row. CommandParameter is bound to the courier Id in XAML.
+    /// Asks for confirmation, calls BL.DeleteCourier and refreshes the list on success.
+    /// </summary>
+    private void DeleteCourier_Click(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (sender is not Button btn || btn.CommandParameter is not int courierId)
+                return;
+
+            var confirm = MessageBox.Show("Are you sure you want to delete the selected courier?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirm != MessageBoxResult.Yes) return;
+
+            var managerId = s_bl.Admin.GetConfig().ManagerId;
+            s_bl.Courier.DeleteCourier(managerId, courierId);
+
+            // BL should notify observers and update the list; refresh here to ensure immediate feedback.
+            RefreshCouriers();
+
+            MessageBox.Show("Courier deleted.", "Deleted", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (BO.BlException ex)
+        {
+            MessageBox.Show($"Delete failed: {ex.Message}", "Delete Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("Unexpected error while deleting courier. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

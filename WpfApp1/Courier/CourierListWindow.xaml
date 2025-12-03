@@ -42,7 +42,7 @@
                       VerticalAlignment="Stretch"/>
         </Grid>
 
-        <!-- DataGrid bound to Couriers DP (Couriers is a DependencyProperty in code-behind) -->
+        <!-- DataGrid bound to Couriers DP -->
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding Couriers}"
                   SelectedItem="{Binding SelectedCourier}"
@@ -63,6 +63,19 @@
                 <DataGridTextColumn Header="Delivered On Time" Binding="{Binding TotalDeliveredOnTime}" Width="*" />
                 <DataGridTextColumn Header="Delivered Late" Binding="{Binding TotalDeliveredLate}" Width="*" />
                 <DataGridTextColumn Header="Current Delivery" Binding="{Binding CurrentDeliveryId}" Width="*" />
+
+                <!-- Actions column: Delete button per row -->
+                <DataGridTemplateColumn Header="Actions" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Delete"
+                                    Padding="6,2"
+                                    Margin="4"
+                                    CommandParameter="{Binding Id}"
+                                    Click="DeleteCourier_Click"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
