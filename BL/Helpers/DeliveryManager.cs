@@ -68,7 +68,7 @@ internal static class DeliveryManager
                     DeliveryStartTime = d.StartTime,
                     DeliveryEndType = d.DeliveryEndType is null
                         ? null
-                        : (DO.DeliveryEndType?)(int)d.DeliveryEndType,
+                        : (BO.DeliveryEndType?)(int)d.DeliveryEndType,
                     DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
                 };
 
@@ -196,7 +196,7 @@ internal static class DeliveryManager
             //then student should be automatically updated to 'not active'
             if (AdminManager.Now - doDelivery.StartTime >= s_dal.Config.MaxDeliveryTime)
             {
-                s_dal.Delivery.Update(doDelivery with { DeliveryEndType = DeliveryEndType.Failed });
+                s_dal.Delivery.Update(doDelivery with { DeliveryEndType = DO.DeliveryEndType.Failed });
             }
         }
     }
@@ -210,7 +210,9 @@ internal static class DeliveryManager
             CourierName = s_dal.Courier.Read(d.CourierId)?.Name,
             ShipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentType.ToString()),
             DeliveryStartTime = d.StartTime,
-            DeliveryEndType = d.DeliveryEndType,
+            DeliveryEndType = d.DeliveryEndType is null
+                ? null
+                : (BO.DeliveryEndType?)(int)d.DeliveryEndType,
             DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
         };
     }

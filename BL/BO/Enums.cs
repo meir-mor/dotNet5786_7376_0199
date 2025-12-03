@@ -83,3 +83,12 @@ public enum TimeUnit
     Month,
     Year
 }
+
+public enum DeliveryEndType
+{
+    Supplied,
+    RefusedByCustomer,
+    Cancelled,
+    CustomerNotFound,
+    Failed
+}

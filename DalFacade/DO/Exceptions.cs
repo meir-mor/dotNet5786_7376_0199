@@ -62,3 +62,18 @@ public class DalXMLFileLoadCreateException : Exception
     {
     }
 }
+
+/// <summary>
+/// נזרקת כאשר יש בעיה בחישוב מרחק
+/// </summary>
+[Serializable]
+public class DalDistanceException : Exception
+{
+    public DalDistanceException(string? message) : base(message)
+    {
+    }
+
+    public DalDistanceException(string? message, Exception? inner) : base(message, inner)
+    {
+    }
+}

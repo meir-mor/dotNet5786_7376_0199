@@ -46,7 +46,6 @@ internal static class Config
 
         ManagerId = 0;
         ComponyAddress = "Bar Cochva 2 BneiBrak Israel";
-        // var (lat, lon) = DistanceCalculator.GetCoordinates(ComponyAddress);
         Latitude = 32.09376490211114;
         Longitude = 34.82291411745883;
     }

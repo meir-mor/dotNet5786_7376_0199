@@ -1,5 +1,4 @@
 ﻿using BO;
-using DalTest.Helpers;
 
 namespace BlTest;
 
@@ -529,7 +528,7 @@ internal class Program
                         if (hasCompAddr)
                         {
                             newCfg.ComponyAddress = compAddr;
-                            var (lat, lon) = DistanceCalculator.GetCoordinates(compAddr);
+                            var (lat, lon) = Helpers.DistanceCalculator.GetCoordinates(compAddr);
                             newCfg.Latitude = lat;
                             newCfg.Longitude = lon;
                         }

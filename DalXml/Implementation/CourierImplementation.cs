@@ -40,8 +40,6 @@ internal class CourierImplementation : ICourier
     public Courier? Read(int id)
     {
         var couriers = XMLTools.LoadListFromXMLSerializer<Courier>(xmlFileName);
-        if (couriers.Any(c => id == c.Id))
-            throw new DalAlreadyExistsException($"Courier with ID={id} already exists");
         return couriers.FirstOrDefault(c => id == c.Id);
     }
 

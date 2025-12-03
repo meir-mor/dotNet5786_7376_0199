@@ -1,4 +1,5 @@
 ﻿using DalApi;
+using DalTest.Helpers;
 using DO;
 using Factory = DalApi.Factory;
 
@@ -31,7 +32,7 @@ internal static class OrderManager
                             DeliveryStartTime = d.StartTime,
                             DeliveryEndType = d.DeliveryEndType is null
                                 ? null
-                                : (DO.DeliveryEndType?)Enum.Parse(typeof(DO.DeliveryEndType), d.DeliveryEndType.ToString()),
+                                : (BO.DeliveryEndType?)(int)d.DeliveryEndType,
                             DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
                         })
                         .ToList(); // extension ToList
@@ -79,7 +80,7 @@ internal static class OrderManager
                         DeliveryStartTime = x.StartTime,
                         DeliveryEndType = x.DeliveryEndType is null
                             ? null
-                            : (DO.DeliveryEndType?)(int)x.DeliveryEndType,
+                            : (BO.DeliveryEndType?)(int)x.DeliveryEndType,
                         DeliveryEndTime = x.EndTime is DateTime time && time != DateTime.MinValue ? x.EndTime : null
                     }).ToList()
                 };
@@ -414,7 +415,7 @@ internal static class OrderManager
                             shipmentType = (BO.ShipmentType)(int)d.ShipmentType,
                             ActualDistance = d.ActualDistance,
                             TotalHandlingTime = handling,
-                            DeliveryEndType = d.DeliveryEndType
+                            DeliveryEndType = (BO.DeliveryEndType)(int)d.DeliveryEndType
                         },
                         // compute schedule status for sorting if needed
                         Schedule = order is null

@@ -1,93 +1,100 @@
 ﻿using System.Text.Json;
+using System.Globalization;
 
 namespace DalTest.Helpers;
 
-static class DistanceCalculator
+public static class DistanceCalculator
 {
+    private static readonly HttpClient Client = new();
+
     /// <summary>
-    /// Synchronously retrieves the latitude and longitude for a given address.
+    /// Resolve coordinates for an address using external geocoding service.
+    /// Returns (null, null) when address not found; converts unexpected errors to <see cref="BO.BlException"/>.
+    /// Uses `var` and `TryParse` for numeric parsing.
     /// </summary>
-    /// <param name="address">The address for which to retrieve the coordinates.</param>
-    /// <returns>A tuple containing the latitude and longitude of the address. Returns null values if the address is not found.</returns>
-    /// <exception cref="BlInvalidAddressCoordinatesException">Thrown if the address is null or invalid.</exception>
-    internal static (double? Latitude, double? Longitude) GetCoordinates(string? address)
+    public static (double? Latitude, double? Longitude) GetCoordinates(string? address)
     {
-        if (string.IsNullOrWhiteSpace(address))
-            return (null, null);
-
-        string url = "https://geocode.maps.co/search?q=" + address + "&api_key=69304622ebba1769305894zyn57146b";
-
-        using HttpClient client = new HttpClient();
-
-        var response = client.GetAsync(url).Result;
-
-        if (!response.IsSuccessStatusCode) return (null, null);
-        // throw new BlJsonException("Failed to retrieve coordinates for the given address.");
-
-        var json = response.Content.ReadAsStringAsync().Result;
-
-        var data = JsonDocument.Parse(json);
-
-        if (data.RootElement.GetArrayLength() == 0) return (null, null);
-        // throw new BlInvalidAddressCoordinatesException("Address not found.");
-
-        var firstResult = data.RootElement[0];
-
-        double latitude = double.Parse(firstResult.GetProperty("lat").GetString());
-        double longitude = double.Parse(firstResult.GetProperty("lon").GetString());
-
-        if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) return (null, null);
-        // throw new BlInvalidLatitudeLongitudeException("Latitude or Longitude values are out of range.");
-
-        return (latitude, longitude);
-    }
-    /// <summary>
-    /// Calculates the distance between two addresses based on the specified distance type.
-    /// </summary>
-    /// <param name="address1">The first address.</param>
-    /// <param name="address2">The second address.</param>
-    /// <param name="distanceType">The type of distance to calculate (Aerial, Walking, or Driving).</param>
-    /// <returns>The distance in kilometers between the two addresses.</returns>
-    /// <exception cref="BlInvalidAddressException">Thrown if one or both addresses are invalid or if the distance type is invalid.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if the API request for walking or driving distance fails.</exception>
-    internal static double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2, DO.ShipmentType distanceType)
-    {
-        // Check if the addresses are valid.
-        if (lat1 == null || lon1 == null || lat2 == null || lon2 == null)
-            return 0; //throw new BlInvalidAddressException("One or both addresses are invalid or not found.");
-
-        string url = distanceType switch
+        try
         {
-            DO.ShipmentType.Walk => 
-                $"https://routing.openstreetmap.de/routed-foot/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
+            if (string.IsNullOrWhiteSpace(address))
+                return (null, null);
 
-            DO.ShipmentType.Car => 
-                $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
+            var url = $"https://geocode.maps.co/search?q={address}&api_key=69304622ebba1769305894zyn57146b";
 
-            DO.ShipmentType.Bicycle => 
-                $"https://routing.openstreetmap.de/routed-bike/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
+            var response = Client.GetAsync(url).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) 
+                return (null, null);
 
-            DO.ShipmentType.Motorcycle =>
-                $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false", // משתמש ברכב כתשתית
+            var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            using var doc = JsonDocument.Parse(json);
 
-            // _ => throw new BlInvalidOperationException("Invalid DistanceType provided.")
-        };
+            if (doc.RootElement.ValueKind != JsonValueKind.Array || doc.RootElement.GetArrayLength() == 0)
+                return (null, null);
 
-        using var client = new HttpClient();
-        var response = client.GetAsync(url).Result;
+            var first = doc.RootElement[0];
 
-        if (!response.IsSuccessStatusCode) return 0;
-        // throw new BlJsonException("Failed to retrieve distance from API.");
+            var latStr = first.GetProperty("lat").GetString();
+            var lonStr = first.GetProperty("lon").GetString();
 
-        var json = response.Content.ReadAsStringAsync().Result;
+            var latOk = double.TryParse(latStr, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var lat);
+            var lonOk = double.TryParse(lonStr, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var lon);
 
-        // Parse the JSON response
-        var data = JsonDocument.Parse(json);
-        double distance = data.RootElement
-            .GetProperty("routes")[0]
-            .GetProperty("distance")
-            .GetDouble() / 1000.0; // Convert meters to kilometers
+            if (!latOk || !lonOk) return (null, null);
+            if (lat is < -90 or > 90 || lon is < -180 or > 180) return (null, null);
 
-        return distance;
+            return (lat, lon);
+        }
+        catch (Exception ex)
+        {
+            // convert unexpected errors to BO-level exception per PL/BL contract
+            throw new DO.DalDistanceException("Error while resolving coordinates.", ex);
+        }
+    }
+
+    /// <summary>
+    /// Calculate route distance (kilometers) between two coordinates using routing service.
+    /// Returns 0 on missing data or service failure; unexpected exceptions are wrapped as <see cref="BO.BlException"/>.
+    /// </summary>
+    public static double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2, DO.ShipmentType distanceType)
+    {
+        try
+        {
+            if (lat1 == null || lon1 == null || lat2 == null || lon2 == null)
+                return 0.0;
+
+            var coordA = $"{lon1.Value.ToString(CultureInfo.InvariantCulture)},{lat1.Value.ToString(CultureInfo.InvariantCulture)}";
+            var coordB = $"{lon2.Value.ToString(CultureInfo.InvariantCulture)},{lat2.Value.ToString(CultureInfo.InvariantCulture)}";
+
+            var url = distanceType switch
+            {
+                DO.ShipmentType.Walk => $"https://routing.openstreetmap.de/routed-foot/route/v1/driving/{coordA};{coordB}?overview=false",
+                DO.ShipmentType.Car => $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{coordA};{coordB}?overview=false",
+                DO.ShipmentType.Bicycle => $"https://routing.openstreetmap.de/routed-bike/route/v1/driving/{coordA};{coordB}?overview=false",
+                DO.ShipmentType.Motorcycle => $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{coordA};{coordB}?overview=false",
+                _ => null
+            };
+
+            if (url == null) return 0.0;
+
+            var response = Client.GetAsync(url).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) return 0.0;
+
+            var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            using var doc = JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("routes", out var routes) || routes.ValueKind != JsonValueKind.Array || routes.GetArrayLength() == 0)
+                return 0.0;
+
+            var firstRoute = routes[0];
+            if (!firstRoute.TryGetProperty("distance", out var distProp) || distProp.ValueKind != JsonValueKind.Number)
+                return 0.0;
+
+            var meters = distProp.GetDouble();
+            return meters / 1000.0;
+        }
+        catch (Exception ex)
+        {
+            throw new DO.DalDistanceException("Error while calculating distance.", ex);
+        }
     }
 }
