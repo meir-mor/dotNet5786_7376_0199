@@ -205,7 +205,7 @@ internal static class DeliveryManager
             //then student should be automatically updated to 'not active'
             if (AdminManager.Now - doDelivery.StartTime >= s_dal.Config.MaxDeliveryTime)
             {
-                s_dal.Delivery.Update(doDelivery with { DeliveryEndType = DeliveryEndType.Failed });
+                s_dal.Delivery.Update(doDelivery with { DeliveryEndType = DO.DeliveryEndType.Failed });
                 updated = true;
                 Observers.NotifyItemUpdated(doDelivery.Id);
             }
