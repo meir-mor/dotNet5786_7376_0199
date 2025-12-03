@@ -125,4 +125,45 @@ public partial class CourierListWindow : Window
             // ignore cleanup errors
         }
     }
+
+    /// <summary>
+    /// The currently selected item in the DataGrid (bound from XAML).
+    /// Regular property (updated by binding from view -> code-behind).
+    /// </summary>
+    public BO.CourierInList? SelectedCourier { get; set; }
+
+    /// <summary>
+    /// DataGrid MouseDoubleClick handler: open selected courier in detail window (update mode).
+    /// </summary>
+    private void DataGrid_MouseDoubleClick(object? sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        try
+        {
+            if (SelectedCourier != null)
+            {
+                var wnd = new CourierWindow(SelectedCourier.Id);
+                wnd.Show();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Cannot open courier details: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    /// <summary>
+    /// Add button click handler: open empty courier window (add mode).
+    /// </summary>
+    private void BtnAdd_Click(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var wnd = new CourierWindow(0); // id=0 -> add mode
+            wnd.Show();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Cannot open add-courier window: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
 }

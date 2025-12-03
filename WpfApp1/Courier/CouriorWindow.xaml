@@ -1,12 +1,71 @@
-﻿<Window x:Class="PL.Courier.CouriorWindow"
+﻿<Window x:Class="PL.Courier.CourierWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:pl="clr-namespace:PL"
         xmlns:local="clr-namespace:PL.Courier"
         mc:Ignorable="d"
-        Title="CouriorWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Courier" Height="420" Width="520"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
+    <Grid Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Id (read-only) -->
+        <Label Grid.Row="0" Grid.Column="0" Content="Id:" VerticalAlignment="Center" Margin="3"/>
+        <TextBox Grid.Row="0" Grid.Column="1"
+                 Text="{Binding CurrentCourier.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 IsReadOnly="True" Margin="3"/>
+
+        <!-- Full name -->
+        <Label Grid.Row="1" Grid.Column="0" Content="Full Name:" VerticalAlignment="Center" Margin="3"/>
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Text="{Binding CurrentCourier.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                 Margin="3"/>
+
+        <!-- Phone -->
+        <Label Grid.Row="2" Grid.Column="0" Content="Phone:" VerticalAlignment="Center" Margin="3"/>
+        <TextBox Grid.Row="2" Grid.Column="1"
+                 Text="{Binding CurrentCourier.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                 Margin="3"/>
+
+        <!-- Email -->
+        <Label Grid.Row="3" Grid.Column="0" Content="Email:" VerticalAlignment="Center" Margin="3"/>
+        <TextBox Grid.Row="3" Grid.Column="1"
+                 Text="{Binding CurrentCourier.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                 Margin="3"/>
+
+        <!-- IsActive -->
+        <Label Grid.Row="4" Grid.Column="0" Content="Is Active:" VerticalAlignment="Center" Margin="3"/>
+        <CheckBox Grid.Row="4" Grid.Column="1"
+                  IsChecked="{Binding CurrentCourier.IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  VerticalAlignment="Center" Margin="3"/>
+
+        <!-- Shipment type (enum) -->
+        <Label Grid.Row="5" Grid.Column="0" Content="Shipment Type:" VerticalAlignment="Top" Margin="3"/>
+        <ComboBox Grid.Row="5" Grid.Column="1"
+                  ItemsSource="{Binding Source={StaticResource ShipmentTypeItemsKey}}"
+                  DisplayMemberPath="Name"
+                  SelectedValuePath="Value"
+                  SelectedValue="{Binding CurrentCourier.ShipmentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  Margin="3" VerticalAlignment="Top"/>
+
+        <!-- Add / Update button -->
+        <Button Grid.Row="6" Grid.ColumnSpan="2" Height="36" HorizontalAlignment="Center" Width="120" Margin="6"
+                Content="{Binding ButtonText}" Click="BtnAddUpdate_Click"/>
     </Grid>
 </Window>

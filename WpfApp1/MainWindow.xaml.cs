@@ -270,7 +270,7 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// Attempts to open a list-view window (example: CourseListWindow) using reflection.
+    /// Attempts to open a list-view window (example: CourierListWindow) using reflection.
     /// Uses <see cref="Window.Show"/> so the main window remains accessible.
     /// </summary>
     /// <param name="sender">Event source (Button).</param>
@@ -279,7 +279,7 @@ public partial class MainWindow : Window
     {
         try
         {
-            // Open a list window. Replace CourseListWindow with your actual list-window if exists.
+            // Open a list window. Replace CourierListWindow with your actual list-window if exists.
             // Using Show() to keep main window accessible.
             var wnd = new PL.Courier.CourierListWindow();
             wnd.Show();

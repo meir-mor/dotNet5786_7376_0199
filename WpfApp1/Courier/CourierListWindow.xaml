@@ -45,6 +45,8 @@
         <!-- DataGrid bound to Couriers DP (Couriers is a DependencyProperty in code-behind) -->
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding Couriers}"
+                  SelectedItem="{Binding SelectedCourier}"
+                  MouseDoubleClick="DataGrid_MouseDoubleClick"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
@@ -56,7 +58,6 @@
                 <DataGridTextColumn Header="Courier ID" Binding="{Binding Id}" Width="*" />
                 <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="2*" />
                 <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive}" Width="*" />
-                <!-- Note: BO.CourierInList property name is 'shipmentType' (lowercase) -->
                 <DataGridTextColumn Header="Type" Binding="{Binding ShipmentType}" Width="*" />
                 <DataGridTextColumn Header="Started" Binding="{Binding StartWorkTime}" Width="2*" />
                 <DataGridTextColumn Header="Delivered On Time" Binding="{Binding TotalDeliveredOnTime}" Width="*" />
@@ -77,7 +78,8 @@
                     FontSize="14"
                     FontFamily="Arial Black"
                     Foreground="#FFF93108"
-                    FontStyle="Italic" />
+                    FontStyle="Italic"
+                    Click="BtnAdd_Click" />
         </Border>
     </Grid>
 </Window>
