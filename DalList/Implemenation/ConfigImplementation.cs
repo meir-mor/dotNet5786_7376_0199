@@ -22,7 +22,7 @@ internal class ConfigImplementation : IConfig
         set => Config.RiskRange = value;
     }
 
-    public string ComponyAddress
+    public string? ComponyAddress
     {
         get => Config.ComponyAddress;
         set => Config.ComponyAddress = value;
@@ -34,9 +34,17 @@ internal class ConfigImplementation : IConfig
         set => Config.ManagerPassword = value;
     }
 
-    public double? Latitude => Config.Latitude;
+    public double? Latitude
+    {
+        get => Config.Latitude;
+        set => Config.Latitude = value;
+    }
 
-    public double? Longitude => Config.Longitude;
+    public double? Longitude 
+    {
+        get => Config.Longitude;
+        set => Config.Longitude = value;
+    }
 
     public double? MaxDistance
     {

@@ -20,9 +20,9 @@ internal static class Config
     internal static DateTime Clock { get; set; } = DateTime.Now;
     internal static int ManagerId { get; set; }
     internal static string ManagerPassword { get; set; } = "";
-    internal static string ComponyAddress { get; set; } = "";
-    internal static double? Latitude { get; } // = ourFunctionToCalculate();
-    internal static double? Longitude { get; } // = ourFunctionToCalculate();
+    internal static string? ComponyAddress { get; set; }
+    internal static double? Latitude { get; set; } = 0;
+    internal static double? Longitude { get; set; } = 0;
     internal static double? MaxDistance { get; set; } = 100;
     internal static double AverageCarSpeed { get; set; }
     internal static double AverageBikeSpeedBike { get; set; }
@@ -46,5 +46,8 @@ internal static class Config
 
         ManagerId = 0;
         ComponyAddress = "Bar Cochva 2 BneiBrak Israel";
+        // var (lat, lon) = DistanceCalculator.GetCoordinates(ComponyAddress);
+        Latitude = 32.09376490211114;
+        Longitude = 34.82291411745883;
     }
 }

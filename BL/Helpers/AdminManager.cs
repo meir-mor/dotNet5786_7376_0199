@@ -130,8 +130,20 @@ internal static class AdminManager //stage 4
             s_dal.Config.ManagerPassword = configuration.ManagerPassword;
             configChanged = true;
         }
+        
+        if (!Equals(s_dal.Config.Latitude, configuration.Latitude))
+        {
+            s_dal.Config.Latitude = configuration.Latitude;
+            configChanged = true;
+        }
+        
+        if (!Equals(s_dal.Config.Longitude, configuration.Longitude))
+        {
+            s_dal.Config.Longitude = configuration.Longitude;
+            configChanged = true;
+        }
 
-        if (s_dal.Config.MaxDistance != configuration.MaxDistance)
+        if (!Equals(s_dal.Config.MaxDistance, configuration.MaxDistance))
         {
             s_dal.Config.MaxDistance = configuration.MaxDistance;
             configChanged = true;

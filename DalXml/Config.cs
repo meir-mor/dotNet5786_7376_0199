@@ -37,22 +37,22 @@ internal static class Config
         set => XMLTools.SetConfigStringVal(s_data_config_xml, "ManagerPassword", value);
     }
 
-    internal static string ComponyAddress
+    internal static string? ComponyAddress
     {
         get => XMLTools.GetConfigStringVal(s_data_config_xml, "ComponyAddress");
-        set => XMLTools.SetConfigStringVal(s_data_config_xml, "ComponyAddress", value);
+        set => XMLTools.SetConfigStringVal(s_data_config_xml, "ComponyAddress", value ?? "");
     }
 
-    internal static double Latitude
+    internal static double? Latitude
     {
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "Latitude");
-        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "Latitude", value);
+        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "Latitude", value ?? 0);
     }
 
-    internal static double Longitude
+    internal static double? Longitude
     {
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "Longitude");
-        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "Longitude", value);
+        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "Longitude", value ?? 0);
     }
 
     internal static double? MaxDistance

@@ -169,14 +169,16 @@ internal static class EntityActions
         Console.Write("Is Fragile? (true/false): ");
         var isFragile = bool.TryParse(Console.ReadLine(), out var tmpFragile) && tmpFragile;
 
-        Console.Write("Enter Longitude: ");
-        double.TryParse(Console.ReadLine(), out var lon);
-
-        Console.Write("Enter Latitude: ");
-        double.TryParse(Console.ReadLine(), out var lat);
+        var (lat, lon) = DistanceCalculator.GetCoordinates(address);
+        
+        if (lat is null || lon is null)
+        {
+            Console.WriteLine("Invalid coordinates. Order not created.");
+            return null;
+        }
 
         return new Order(orderId, type, description, address, customerName, customerPhone, isFragile,
-            dal.Config.Clock, OrderStatus.Open, lat, lon);
+            dal.Config.Clock, OrderStatus.Open, lat ?? 0, lon ?? 0);
     }
 
     private static Delivery CreateDelivery(IDal dal)
@@ -192,9 +194,10 @@ internal static class EntityActions
         Console.Write("Enter Shipment Type (number): ");
         var shipmentType = Enum.TryParse<ShipmentType>(Console.ReadLine(), out var tmpShipment) ? tmpShipment : default;
 
-        Console.Write("Enter Actual Distance (or leave empty): ");
-        double? actualDistance = double.TryParse(Console.ReadLine(), out var tmpDist) ? tmpDist : null;
-
+        var order = dal.Order.Read(d => d.Id == tmpOrderId);
+        
+        var actualDistance = DistanceCalculator.CalculateDistance(dal.Config.Latitude, dal.Config.Longitude, order.Latitude, order.Longitude, tmpShipment);
+        
         return new Delivery(deliveryId, orderId, courierId, shipmentType, dal.Config.Clock, actualDistance,
             null, DateTime.MinValue);
     }

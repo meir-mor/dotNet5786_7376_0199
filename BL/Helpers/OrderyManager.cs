@@ -27,7 +27,7 @@ internal static class OrderManager
                             DeliveryId = d.Id,
                             CourierId = d.CourierId == 0 ? null : (int?)d.CourierId,
                             CourierName = s_dal.Courier.Read(d.CourierId) is DO.Courier c ? c.Name : string.Empty,
-                            shipmentType = (BO.ShipmentType)(int)d.ShipmentType,
+                            ShipmentType = (BO.ShipmentType)(int)d.ShipmentType,
                             DeliveryStartTime = d.StartTime,
                             DeliveryEndType = d.DeliveryEndType is null
                                 ? null
@@ -75,7 +75,7 @@ internal static class OrderManager
                         DeliveryId = x.Id,
                         CourierId = x.CourierId,
                         CourierName = s_dal.Courier.Read(x.CourierId)?.Name,
-                        shipmentType = (BO.ShipmentType)(int)x.ShipmentType,
+                        ShipmentType = (BO.ShipmentType)(int)x.ShipmentType,
                         DeliveryStartTime = x.StartTime,
                         DeliveryEndType = x.DeliveryEndType is null
                             ? null
@@ -102,6 +102,12 @@ internal static class OrderManager
     {
         try
         {
+            var (lat, lon) = DistanceCalculator.GetCoordinates(bo.FullAddress);
+            if (lat is null || lon is null)
+            {
+                throw new BO.BlUnexpectedException("DAL: invalid coordinates");
+            }
+            
             var doOrder = new DO.Order(
                 0,
                 (DO.OrderType)(int)bo.OrderType,
@@ -112,8 +118,8 @@ internal static class OrderManager
                 false, // BO doesn't expose IsFragile; default false
                 bo.OrderOpenTime,
                 bo.OrderStatus,
-                bo.Latitude,
-                bo.Longitude
+                lat ?? 0,
+                lon ?? 0
             );
 
             s_dal.Order.Create(doOrder);
@@ -345,7 +351,9 @@ internal static class OrderManager
                 .FirstOrDefault();
             if (active != null)
                 throw new BO.BlException("Order already has an active delivery");
-
+            
+            var distance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude, order.Latitude, order.Longitude, DO.ShipmentType.Motorcycle);
+            
             // create delivery (use default ShipmentType - can be improved)
             var delivery = new DO.Delivery(
                 0,
@@ -353,7 +361,7 @@ internal static class OrderManager
                 courierId,
                 DO.ShipmentType.Motorcycle,
                 now,
-                null,
+                distance,
                 null,
                 null
             );

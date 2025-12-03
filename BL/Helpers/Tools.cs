@@ -1,4 +1,11 @@
 namespace Helpers;
+using BO;
+using DO;
+using System.Net.Http;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using static System.Net.WebRequestMethods;
 
 internal static class Tools
 {

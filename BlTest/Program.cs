@@ -1,4 +1,6 @@
 ﻿using BO;
+using DalTest.Helpers;
+
 namespace BlTest;
 
 internal class Program
@@ -409,19 +411,7 @@ internal class Program
 
         Console.Write("Enter Customer Phone: ");
         string customerPhone = Console.ReadLine() ?? "";
-
-        Console.Write("Enter Latitude (optional): ");
-        double latitude = 0;
-        var latInput = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(latInput) && double.TryParse(latInput, out var latVal))
-            latitude = latVal;
-
-        Console.Write("Enter Longitude (optional): ");
-        double longitude = 0;
-        var lonInput = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(lonInput) && double.TryParse(lonInput, out var lonVal))
-            longitude = lonVal;
-
+        
         return new BO.Order
         {
             Id = id,
@@ -430,8 +420,8 @@ internal class Program
             FullAddress = address,
             CustomerFullName = customerName,
             CustomerPhone = customerPhone,
-            Latitude = latitude,
-            Longitude = longitude,
+            Latitude = 0,
+            Longitude = 0,
             OrderOpenTime = DateTime.Now
         };
     }
@@ -511,13 +501,7 @@ internal class Program
                         Console.Write("Enter Manager Password (optional): ");
                         var managerPwd = Console.ReadLine();
                         var hasManagerPwd = !string.IsNullOrWhiteSpace(managerPwd);
-
-                        Console.Write("Enter Latitude (optional): ");
-                        var hasLat = double.TryParse(Console.ReadLine(), out var lat);
-
-                        Console.Write("Enter Longitude (optional): ");
-                        var hasLon = double.TryParse(Console.ReadLine(), out var lon);
-
+                        
                         Console.Write("Enter Max Distance (optional): ");
                         var hasMaxDist = double.TryParse(Console.ReadLine(), out var maxDist);
 
@@ -539,14 +523,16 @@ internal class Program
                         Console.Write("Enter Time To Be Dispose (minutes, optional): ");
                         var hasDispose = int.TryParse(Console.ReadLine(), out var dispose);
 
-                        var newCfg = new BO.Config
-                        {
-                            Latitude = hasLat ? lat : null,
-                            Longitude = hasLon ? lon : null
-                        };
+                        var newCfg = new BO.Config();
 
                         if (hasRiskRange) newCfg.RiskRange = TimeSpan.FromMinutes(riskRange);
-                        if (hasCompAddr) newCfg.ComponyAddress = compAddr;
+                        if (hasCompAddr)
+                        {
+                            newCfg.ComponyAddress = compAddr;
+                            var (lat, lon) = DistanceCalculator.GetCoordinates(compAddr);
+                            newCfg.Latitude = lat;
+                            newCfg.Longitude = lon;
+                        }
                         if (hasManagerPwd) newCfg.ManagerPassword = managerPwd;
                         if (hasMaxDist) newCfg.MaxDistance = maxDist;
                         if (hasAvgCar) newCfg.AverageCarSpeed = avgCar;

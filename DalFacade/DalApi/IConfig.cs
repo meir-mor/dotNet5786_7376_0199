@@ -12,8 +12,8 @@ public interface IConfig
     TimeSpan RiskRange { get; set; }
     string ComponyAddress { get; set; }
     string ManagerPassword { get; set; }
-    double? Latitude { get; }
-    double? Longitude { get; }
+    double? Latitude { get; set; }
+    double? Longitude { get; set; }
     double? MaxDistance { get; set; }
     double AverageCarSpeed { get; set; }
     double AverageBikeSpeedBike { get; set; }

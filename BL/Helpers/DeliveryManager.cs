@@ -64,7 +64,7 @@ internal static class DeliveryManager
                     DeliveryId = d.Id,
                     CourierId = d.CourierId == 0 ? null : (int?)d.CourierId,
                     CourierName = courier is null ? string.Empty : courier.Name,
-                    shipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentType.ToString()),
+                    ShipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentType.ToString()),
                     DeliveryStartTime = d.StartTime,
                     DeliveryEndType = d.DeliveryEndType is null
                         ? null
@@ -111,7 +111,7 @@ internal static class DeliveryManager
                 0,
                 bo.DeliveryId == 0 ? 0 : bo.DeliveryId, // DAL implementations set id; pass 0 or given
                 bo.CourierId ?? 0,
-                (DO.ShipmentType)Enum.Parse(typeof(DO.ShipmentType), bo.shipmentType.ToString()),
+                (DO.ShipmentType)Enum.Parse(typeof(DO.ShipmentType), bo.ShipmentType.ToString()),
                 bo.DeliveryStartTime,
                 null, // ActualDistance not provided by BO.DeliveryPerOrderInList
                 bo.DeliveryEndType is null
@@ -143,7 +143,7 @@ internal static class DeliveryManager
                 bo.DeliveryId,
                 0, // OrderId unknown in BO.DeliveryPerOrderInList; DAL will expect correct value in real usage
                 bo.CourierId ?? 0,
-                (DO.ShipmentType)(int)bo.shipmentType,
+                (DO.ShipmentType)(int)bo.ShipmentType,
                 bo.DeliveryStartTime,
                 null,
                 bo.DeliveryEndType is null
@@ -208,7 +208,7 @@ internal static class DeliveryManager
             DeliveryId = d.Id,
             CourierId = d.CourierId == 0 ? null : d.CourierId,
             CourierName = s_dal.Courier.Read(d.CourierId)?.Name,
-            shipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentType.ToString()),
+            ShipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentType.ToString()),
             DeliveryStartTime = d.StartTime,
             DeliveryEndType = d.DeliveryEndType,
             DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null

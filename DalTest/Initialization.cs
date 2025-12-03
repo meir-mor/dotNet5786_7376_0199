@@ -1,4 +1,6 @@
-﻿namespace DalTest;
+﻿using DalTest.Helpers;
+
+namespace DalTest;
 
 using DalApi;
 using DO;
@@ -28,7 +30,15 @@ public static class Initialization
 
         for (var i = 0; i < count; i++)
         {
-            var (address, lat, lon, _, _) = Mock.Addresses[i % Mock.Addresses.Length];
+            var (address, _) = Mock.Addresses[i % Mock.Addresses.Length];
+
+            var (lat, lon) = DistanceCalculator.GetCoordinates(address);
+            
+            if (lat is null || lon is null)
+            {
+                Console.WriteLine("Invalid coordinates. Order not created.");
+                continue;
+            }
 
             var status = i switch
             {
@@ -51,8 +61,8 @@ public static class Initialization
                 s_rand.NextDouble() > 0.5,
                 randomPastTime,
                 status,
-                lat,
-                lon
+                lat ?? 0,
+                lon ?? 0
             ));
         }
     }
@@ -160,10 +170,11 @@ public static class Initialization
                 };
             }
 
-            var (_, _, _, actualDistance, shipmentType) = Mock.Addresses.FirstOrDefault(a =>
-                a.Address == order.Address &&
-                a.Latitude == order.Latitude &&
-                a.Longitude == order.Longitude);
+            var (_, shipmentType) = Mock.Addresses.FirstOrDefault(a =>
+                a.Address == order.Address);
+
+            var actualDistance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude, order.Latitude, order.Longitude, shipmentType);
+
 
             s_dal.Delivery?.Create(new Delivery(
                 0,
