@@ -75,7 +75,7 @@ internal class CourierImplementation : ICourier
 
         return list;
     }
-
+  
     public BO.Courier GetCourierDetails(int courierId)
     {
         return CourierManager.GetCourierById(courierId)
@@ -101,4 +101,7 @@ internal class CourierImplementation : ICourier
     {
         CourierManager.CreateCourier(courier);
     }
+
+    public static IEnumerable<BO.CourierInList> GetAllCouriersInList(Func<BO.CourierInList, bool>? customFilter = null, BO.ShipmentType? filter = null)
+    { return CourierManager.GetAllCouriersInList(customFilter, filter); }
 }

@@ -5,7 +5,8 @@ public enum ShipmentType
     Walk,
     Bicycle,
     Motorcycle,
-    Car
+    Car,
+    Aerial
 }
 
 public enum OrderType

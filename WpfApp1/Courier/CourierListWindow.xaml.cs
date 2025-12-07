@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BO;
-
 namespace PL.Courier;
 
 /// <summary>
@@ -82,10 +81,9 @@ public partial class CourierListWindow : Window
     /// </summary>
     private void ApplyShipmentFilter()
     {
-        if (_allCouriers == null) _allCouriers = new List<BO.CourierInList>();
         Couriers = SelectedShipment == null
-            ? _allCouriers
-            : _allCouriers.Where(c => c.ShipmentType == SelectedShipment.Value).ToList();
+         ? s_bl?.Courier.GetAllCouriersInList()!
+         : s_bl?.Courier.GetAllCouriersInList(null,SelectedShipment.Value)!;
     }
 
     /// <summary>

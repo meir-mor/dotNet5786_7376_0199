@@ -1,4 +1,4 @@
-﻿using BlApi;
+﻿using BO;
 using DalApi;
 using System;
 using Factory = DalApi.Factory;
@@ -12,62 +12,7 @@ internal static class CourierManager
     // DAL access (private field as requested)
     private static IDal s_dal = Factory.Get; //stage 4
 
-    /// <summary>
-    /// Return all couriers converted to BO.CourierInList.
-    /// Uses LINQ extension methods (Where, Select, OrderBy, ToList).
-    /// Wrapped in try/catch to translate DO exceptions into BO.DalException.
-    /// </summary>
-    internal static IEnumerable<BO.CourierInList> GetAllCouriersInList(Func<BO.CourierInList, bool>? filter = null)
-    {
-        try
-        {
-            var deliveries = s_dal.Delivery.ReadAll();
-            var config = s_dal.Config;
-            // ReadAll from DAL (returns IEnumerable&lt;DO.Courier&gt;)
-            var result = s_dal.Courier.ReadAll()
-                .Where(c => c != null) // extension method 1 (Where)
-                .Select(c => new BO.CourierInList // extension method 2 (Select)
-                {
-                    Id = c.Id,
-                    FullName = c.Name,
-                    IsActive = c.IsActive,
-                    ShipmentType = (BO.ShipmentType)(int)c.ShipmentType,
-                    StartWorkTime = c.StartingWork,
-                    TotalDeliveredOnTime = deliveries.Count(d =>
-                        d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
-                        d.EndTime - d.StartTime <= config.MaxDeliveryTime),
-                    TotalDeliveredLate = deliveries.Count(d =>
-                        d.CourierId == c.Id && d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
-                        d.EndTime - d.StartTime > config.MaxDeliveryTime),
-                    CurrentDeliveryId = deliveries.Count(d => d.CourierId == c.Id && d.EndTime == null)
-                })
-                .OrderBy(c => c.FullName) // extension method 3 (OrderBy)
-                .ToList(); // extension method 4 (ToList)
-
-            return filter == null ? result : result.Where(filter);
-        }
-        catch (DO.DalDoesNotExistException ex)
-        {
-            throw new BO.BlDoesNotExistException("DAL: requested courier does not exist", ex);
-        }
-        catch (DO.DalAlreadyExistsException ex)
-        {
-            throw new BO.BlAlreadyExistsException("DAL: entity already exists", ex);
-        }
-        catch (DO.DalNullException ex)
-        {
-            throw new BO.BlInvalidOperationException("DAL: null encountered", ex);
-        }
-        catch (DO.DalXMLFileLoadCreateException ex)
-        {
-            throw new BO.BlDalFileException("DAL: XML file load/create error", ex);
-        }
-        catch (Exception ex)
-        {
-            throw new BO.BlUnexpectedException("DAL: unexpected error while reading couriers", ex);
-        }
-    }
-
+    
     /// <summary>
     /// Read a single courier by id and map to BO.Courier.
     /// Uses extension method FirstOrDefault.
@@ -102,6 +47,70 @@ internal static class CourierManager
         catch (DO.DalDoesNotExistException ex)
         {
             throw new BO.BlDoesNotExistException($"DAL: courier with id {id} does not exist", ex);
+        }
+    }
+    /// <summary>
+    /// Return all couriers converted to BO.CourierInList.
+    /// Uses LINQ extension methods (Where, Select, OrderBy, ToList).
+    /// Wrapped in try/catch to translate DO exceptions into BO.DalException.
+    /// </summary>
+    public static IEnumerable<BO.CourierInList> GetAllCouriersInList(
+    Func<BO.CourierInList, bool>? customFilter = null, BO.ShipmentType? filter = null)
+    {
+        try
+        {
+            var deliveries = s_dal.Delivery.ReadAll();
+            var config = s_dal.Config;
+
+            var result = s_dal.Courier.ReadAll()
+                .Where(c => c != null)
+                .Select(c => new BO.CourierInList
+                {
+                    Id = c.Id,
+                    FullName = c.Name,
+                    IsActive = c.IsActive,
+                    ShipmentType = (BO.ShipmentType)(int)c.ShipmentType,
+                    StartWorkTime = c.StartingWork,
+                    TotalDeliveredOnTime = deliveries.Count(d =>
+                        d.CourierId == c.Id &&
+                        d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
+                        d.EndTime - d.StartTime <= config.MaxDeliveryTime),
+                    TotalDeliveredLate = deliveries.Count(d =>
+                        d.CourierId == c.Id &&
+                        d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
+                        d.EndTime - d.StartTime > config.MaxDeliveryTime),
+                    CurrentDeliveryId = deliveries.Count(d =>
+                        d.CourierId == c.Id && d.EndTime == null)
+                })
+                .ToList();
+
+            if (filter.HasValue)
+                result = result.Where(c => c.ShipmentType == filter.Value).ToList();
+
+            if (customFilter != null)
+                result = result.Where(customFilter).ToList();
+
+            return result;
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException("DAL: requested courier does not exist", ex);
+        }
+        catch (DO.DalAlreadyExistsException ex)
+        {
+            throw new BO.BlAlreadyExistsException("DAL: entity already exists", ex);
+        }
+        catch (DO.DalNullException ex)
+        {
+            throw new BO.BlInvalidOperationException("DAL: null encountered", ex);
+        }
+        catch (DO.DalXMLFileLoadCreateException ex)
+        {
+            throw new BO.BlDalFileException("DAL: XML file load/create error", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new BO.BlUnexpectedException("DAL: unexpected error while reading couriers", ex);
         }
     }
 
@@ -303,5 +312,4 @@ internal static class CourierManager
             Observers.NotifyListUpdated(); // stage 5
 
     }
-    
 }

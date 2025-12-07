@@ -1,223 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfCourier xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Courier>
-    <Id>53298632</Id>
+    <Id>10192509</Id>
     <Name>Ori Zigi</Name>
-    <Phone>052-2583871</Phone>
+    <Phone>052-1190638</Phone>
     <Email>ori.zigi@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>11</MaximumDistance>
-    <ShipmentType>Motorcycle</ShipmentType>
-    <StartingWork>2021-03-14T21:33:50</StartingWork>
+    <IsActive>false</IsActive>
+    <MaximumDistance>4</MaximumDistance>
+    <ShipmentType>Walk</ShipmentType>
+    <StartingWork>2021-08-08T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>72124478</Id>
+    <Id>18054114</Id>
     <Name>Itay Blum</Name>
-    <Phone>052-7252249</Phone>
+    <Phone>052-6942412</Phone>
     <Email>itay.blum@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>8</MaximumDistance>
-    <ShipmentType>Bicycle</ShipmentType>
-    <StartingWork>2022-12-19T21:33:50</StartingWork>
+    <IsActive>false</IsActive>
+    <MaximumDistance>40</MaximumDistance>
+    <ShipmentType>Motorcycle</ShipmentType>
+    <StartingWork>2021-11-18T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>10380735</Id>
+    <Id>20099150</Id>
     <Name>Amit Grossman</Name>
-    <Phone>052-9047516</Phone>
+    <Phone>052-8457428</Phone>
     <Email>amit.grossman@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>30</MaximumDistance>
-    <ShipmentType>Motorcycle</ShipmentType>
-    <StartingWork>2021-02-02T21:33:50</StartingWork>
+    <IsActive>false</IsActive>
+    <MaximumDistance xsi:nil="true" />
+    <ShipmentType>Aerial</ShipmentType>
+    <StartingWork>2022-09-29T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>54461456</Id>
+    <Id>10680540</Id>
     <Name>Tal Shapiro</Name>
-    <Phone>052-7458620</Phone>
+    <Phone>052-6251885</Phone>
     <Email>tal.shapiro@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>65</MaximumDistance>
-    <ShipmentType>Car</ShipmentType>
-    <StartingWork>2021-04-01T21:33:50</StartingWork>
+    <IsActive>false</IsActive>
+    <MaximumDistance>2</MaximumDistance>
+    <ShipmentType>Walk</ShipmentType>
+    <StartingWork>2022-12-16T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>44580742</Id>
+    <Id>49603458</Id>
     <Name>Yossi Mizrachi</Name>
-    <Phone>052-7224826</Phone>
+    <Phone>052-7988161</Phone>
     <Email>yossi.mizrachi@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance xsi:nil="true" />
+    <IsActive>false</IsActive>
+    <MaximumDistance>32</MaximumDistance>
     <ShipmentType>Motorcycle</ShipmentType>
-    <StartingWork>2024-09-01T21:33:50</StartingWork>
+    <StartingWork>2025-02-14T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>44424626</Id>
+    <Id>76644717</Id>
     <Name>Shira Ben-David</Name>
-    <Phone>052-1425156</Phone>
+    <Phone>052-3671663</Phone>
     <Email>shira.ben-david@gmail.com</Email>
     <Password>1234</Password>
     <IsActive>false</IsActive>
-    <MaximumDistance>20</MaximumDistance>
-    <ShipmentType>Motorcycle</ShipmentType>
-    <StartingWork>2024-07-21T21:33:50</StartingWork>
+    <MaximumDistance xsi:nil="true" />
+    <ShipmentType>Walk</ShipmentType>
+    <StartingWork>2025-06-21T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>78595858</Id>
+    <Id>98124999</Id>
     <Name>Sarah Cohen</Name>
-    <Phone>052-9746414</Phone>
+    <Phone>052-6568561</Phone>
     <Email>sarah.cohen@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>2</MaximumDistance>
+    <IsActive>false</IsActive>
+    <MaximumDistance>1</MaximumDistance>
     <ShipmentType>Walk</ShipmentType>
-    <StartingWork>2021-08-12T21:33:50</StartingWork>
+    <StartingWork>2021-06-18T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>69065684</Id>
+    <Id>57513874</Id>
     <Name>Michal Avraham</Name>
-    <Phone>052-6145892</Phone>
+    <Phone>052-4539347</Phone>
     <Email>michal.avraham@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>83</MaximumDistance>
+    <IsActive>false</IsActive>
+    <MaximumDistance>48</MaximumDistance>
     <ShipmentType>Car</ShipmentType>
-    <StartingWork>2022-11-23T21:33:50</StartingWork>
+    <StartingWork>2024-04-11T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>58234703</Id>
+    <Id>48931767</Id>
     <Name>Nir Carmi</Name>
-    <Phone>052-9623276</Phone>
+    <Phone>052-9794158</Phone>
     <Email>nir.carmi@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>22</MaximumDistance>
-    <ShipmentType>Motorcycle</ShipmentType>
-    <StartingWork>2024-06-22T21:33:50</StartingWork>
-  </Courier>
-  <Courier>
-    <Id>63685061</Id>
-    <Name>Gal Noy</Name>
-    <Phone>052-8887445</Phone>
-    <Email>gal.noy@gmail.com</Email>
-    <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>2</MaximumDistance>
-    <ShipmentType>Walk</ShipmentType>
-    <StartingWork>2023-09-15T21:33:50</StartingWork>
-  </Courier>
-  <Courier>
-    <Id>39945201</Id>
-    <Name>Ronen Fisher</Name>
-    <Phone>052-7452916</Phone>
-    <Email>ronen.fisher@gmail.com</Email>
-    <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>9</MaximumDistance>
-    <ShipmentType>Bicycle</ShipmentType>
-    <StartingWork>2024-05-07T21:33:50</StartingWork>
-  </Courier>
-  <Courier>
-    <Id>70412966</Id>
-    <Name>Yael Katz</Name>
-    <Phone>052-1902273</Phone>
-    <Email>yael.katz@gmail.com</Email>
-    <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>12</MaximumDistance>
-    <ShipmentType>Bicycle</ShipmentType>
-    <StartingWork>2021-09-07T21:33:50</StartingWork>
-  </Courier>
-  <Courier>
-    <Id>18577153</Id>
-    <Name>Hila Raz</Name>
-    <Phone>052-9291712</Phone>
-    <Email>hila.raz@gmail.com</Email>
-    <Password>1234</Password>
     <IsActive>false</IsActive>
-    <MaximumDistance>3</MaximumDistance>
-    <ShipmentType>Bicycle</ShipmentType>
-    <StartingWork>2024-12-11T21:33:50</StartingWork>
+    <MaximumDistance xsi:nil="true" />
+    <ShipmentType>Walk</ShipmentType>
+    <StartingWork>2024-05-03T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>29557697</Id>
-    <Name>Noam Peretz</Name>
-    <Phone>052-6092397</Phone>
-    <Email>noam.peretz@gmail.com</Email>
-    <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>6</MaximumDistance>
-    <ShipmentType>Bicycle</ShipmentType>
-    <StartingWork>2022-07-27T21:33:50</StartingWork>
-  </Courier>
-  <Courier>
-    <Id>25890985</Id>
-    <Name>Maya Solomon</Name>
-    <Phone>052-1435716</Phone>
-    <Email>maya.solomon@gmail.com</Email>
+    <Id>12817318</Id>
+    <Name>Gal Noy</Name>
+    <Phone>052-8451271</Phone>
+    <Email>gal.noy@gmail.com</Email>
     <Password>1234</Password>
     <IsActive>false</IsActive>
     <MaximumDistance>5</MaximumDistance>
     <ShipmentType>Walk</ShipmentType>
-    <StartingWork>2023-04-08T21:33:50</StartingWork>
+    <StartingWork>2021-11-30T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>32494269</Id>
+    <Id>64335235</Id>
+    <Name>Ronen Fisher</Name>
+    <Phone>052-3044960</Phone>
+    <Email>ronen.fisher@gmail.com</Email>
+    <Password>1234</Password>
+    <IsActive>false</IsActive>
+    <MaximumDistance>91</MaximumDistance>
+    <ShipmentType>Car</ShipmentType>
+    <StartingWork>2023-01-28T23:10:48</StartingWork>
+  </Courier>
+  <Courier>
+    <Id>76852783</Id>
+    <Name>Yael Katz</Name>
+    <Phone>052-1902653</Phone>
+    <Email>yael.katz@gmail.com</Email>
+    <Password>1234</Password>
+    <IsActive>false</IsActive>
+    <MaximumDistance>3</MaximumDistance>
+    <ShipmentType>Walk</ShipmentType>
+    <StartingWork>2022-04-03T23:10:48</StartingWork>
+  </Courier>
+  <Courier>
+    <Id>28458174</Id>
+    <Name>Hila Raz</Name>
+    <Phone>052-2163519</Phone>
+    <Email>hila.raz@gmail.com</Email>
+    <Password>1234</Password>
+    <IsActive>false</IsActive>
+    <MaximumDistance>11</MaximumDistance>
+    <ShipmentType>Motorcycle</ShipmentType>
+    <StartingWork>2024-04-16T23:10:48</StartingWork>
+  </Courier>
+  <Courier>
+    <Id>52514244</Id>
+    <Name>Noam Peretz</Name>
+    <Phone>052-3115931</Phone>
+    <Email>noam.peretz@gmail.com</Email>
+    <Password>1234</Password>
+    <IsActive>false</IsActive>
+    <MaximumDistance>1</MaximumDistance>
+    <ShipmentType>Walk</ShipmentType>
+    <StartingWork>2022-10-28T23:10:48</StartingWork>
+  </Courier>
+  <Courier>
+    <Id>93399763</Id>
+    <Name>Maya Solomon</Name>
+    <Phone>052-6448999</Phone>
+    <Email>maya.solomon@gmail.com</Email>
+    <Password>1234</Password>
+    <IsActive>false</IsActive>
+    <MaximumDistance>3</MaximumDistance>
+    <ShipmentType>Walk</ShipmentType>
+    <StartingWork>2024-06-21T23:10:48</StartingWork>
+  </Courier>
+  <Courier>
+    <Id>28745226</Id>
     <Name>Erez Ben-Yosef</Name>
-    <Phone>052-2500564</Phone>
+    <Phone>052-8921669</Phone>
     <Email>erez.ben-yosef@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>3</MaximumDistance>
-    <ShipmentType>Bicycle</ShipmentType>
-    <StartingWork>2023-06-15T21:33:50</StartingWork>
+    <IsActive>false</IsActive>
+    <MaximumDistance>54</MaximumDistance>
+    <ShipmentType>Car</ShipmentType>
+    <StartingWork>2025-04-09T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>33903543</Id>
+    <Id>52755885</Id>
     <Name>Avital Ashkenazi</Name>
-    <Phone>052-9360480</Phone>
+    <Phone>052-8350111</Phone>
     <Email>avital.ashkenazi@gmail.com</Email>
     <Password>1234</Password>
     <IsActive>false</IsActive>
-    <MaximumDistance>12</MaximumDistance>
-    <ShipmentType>Motorcycle</ShipmentType>
-    <StartingWork>2024-08-11T21:33:50</StartingWork>
+    <MaximumDistance>93</MaximumDistance>
+    <ShipmentType>Car</ShipmentType>
+    <StartingWork>2025-01-22T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>36894362</Id>
+    <Id>63308916</Id>
     <Name>Ariel Ben-Ami</Name>
-    <Phone>052-2390850</Phone>
+    <Phone>052-8182638</Phone>
     <Email>ariel.ben-ami@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>17</MaximumDistance>
-    <ShipmentType>Motorcycle</ShipmentType>
-    <StartingWork>2024-09-29T21:33:50</StartingWork>
+    <IsActive>false</IsActive>
+    <MaximumDistance xsi:nil="true" />
+    <ShipmentType>Car</ShipmentType>
+    <StartingWork>2025-01-06T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>69511064</Id>
+    <Id>15194467</Id>
     <Name>Tzvika Mor</Name>
-    <Phone>052-6085881</Phone>
+    <Phone>052-5010819</Phone>
     <Email>tzvika.mor@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>71</MaximumDistance>
-    <ShipmentType>Car</ShipmentType>
-    <StartingWork>2021-12-03T21:33:50</StartingWork>
+    <IsActive>false</IsActive>
+    <MaximumDistance xsi:nil="true" />
+    <ShipmentType>Aerial</ShipmentType>
+    <StartingWork>2021-04-08T23:10:48</StartingWork>
   </Courier>
   <Courier>
-    <Id>71770049</Id>
+    <Id>41435179</Id>
     <Name>Lior Shani</Name>
-    <Phone>052-5883075</Phone>
+    <Phone>052-3658769</Phone>
     <Email>lior.shani@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
-    <MaximumDistance>1</MaximumDistance>
-    <ShipmentType>Walk</ShipmentType>
-    <StartingWork>2024-11-20T21:33:50</StartingWork>
+    <IsActive>false</IsActive>
+    <MaximumDistance>71</MaximumDistance>
+    <ShipmentType>Car</ShipmentType>
+    <StartingWork>2022-01-22T23:10:48</StartingWork>
   </Courier>
 </ArrayOfCourier>
