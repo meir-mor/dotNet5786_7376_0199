@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PL.Order;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -388,4 +389,10 @@ public partial class MainWindow : Window
     }
 
     #endregion
+
+    private void BtnOpenOrderInList_Click(object sender, RoutedEventArgs e)
+    {
+        var wnd = new OrderListWindow();
+        wnd.Show();
+    }
 }

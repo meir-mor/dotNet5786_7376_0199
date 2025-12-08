@@ -81,6 +81,7 @@
                     <Button Content="Update Configuration" Click="BtnUpdateConfig_Click" Margin="4"/>
                     <!-- Opens list view (example: courier / relevant list window) -->
                     <Button Content="Open List View" Click="BtnOpenListView_Click" Margin="4"/>
+                    <Button Content="Manage Order" Click="BtnOpenOrderInList_Click" Margin="4"/>
                 </StackPanel>
             </StackPanel>
         </Border>

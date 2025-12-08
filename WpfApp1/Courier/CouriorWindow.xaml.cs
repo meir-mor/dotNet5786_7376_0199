@@ -162,5 +162,10 @@ namespace PL.Courier
                 MessageBox.Show("Unexpected error during save. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
