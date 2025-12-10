@@ -11,19 +11,23 @@ using Helpers;
 internal class CourierImplementation : ICourier
 {
     #region Stage 5
+
     public void AddObserver(Action listObserver) =>
-    CourierManager.Observers.AddListObserver(listObserver); //stage 5
+        CourierManager.Observers.AddListObserver(listObserver); //stage 5
+
     public void AddObserver(int id, Action observer) =>
-    CourierManager.Observers.AddObserver(id, observer); //stage 5
+        CourierManager.Observers.AddObserver(id, observer); //stage 5
+
     public void RemoveObserver(Action listObserver) =>
-    CourierManager.Observers.RemoveListObserver(listObserver); //stage 5
+        CourierManager.Observers.RemoveListObserver(listObserver); //stage 5
+
     public void RemoveObserver(int id, Action observer) =>
-    CourierManager.Observers.RemoveObserver(id, observer); //stage 5
+        CourierManager.Observers.RemoveObserver(id, observer); //stage 5
+
     #endregion Stage 5
 
     public UserRole Login(string username, string password)
     {
-
         // check manager credentials first
         var cfg = AdminManager.GetConfig();
         if (!string.IsNullOrWhiteSpace(username) &&
@@ -75,7 +79,7 @@ internal class CourierImplementation : ICourier
 
         return list;
     }
-  
+
     public BO.Courier GetCourierDetails(int courierId)
     {
         return CourierManager.GetCourierById(courierId)
@@ -102,6 +106,9 @@ internal class CourierImplementation : ICourier
         CourierManager.CreateCourier(courier);
     }
 
-    public static IEnumerable<BO.CourierInList> GetAllCouriersInList(Func<BO.CourierInList, bool>? customFilter = null, BO.ShipmentType? filter = null)
-    { return CourierManager.GetAllCouriersInList(customFilter, filter); }
+    public IEnumerable<BO.CourierInList> GetAllCouriersInList(Func<BO.CourierInList, bool>? customFilter = null,
+        BO.ShipmentType? filter = null)
+    {
+        return CourierManager.GetAllCouriersInList(customFilter, filter);
+    }
 }

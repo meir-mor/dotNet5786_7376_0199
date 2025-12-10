@@ -32,15 +32,15 @@
 
             <!-- Buttons to advance the clock -->
             <!-- Advance by one minute -->
-            <Button Content="Advance: Minute" Click="BtnAdvanceMinute_Click" Margin="4" />
+            <Button Content="Add One Minute" Click="BtnAdvanceMinute_Click" Margin="4" />
             <!-- Advance by one hour -->
-            <Button Content="Advance: Hour" Click="BtnAdvanceHour_Click" Margin="4" />
+            <Button Content="Add One Hour" Click="BtnAdvanceHour_Click" Margin="4" />
             <!-- Advance by one day -->
-            <Button Content="Advance: Day" Click="BtnAdvanceDay_Click" Margin="4" />
+            <Button Content="Add One Day" Click="BtnAdvanceDay_Click" Margin="4" />
             <!-- Advance by one month -->
-            <Button Content="Advance: Month" Click="BtnAdvanceMonth_Click" Margin="4" />
+            <Button Content="Add One Month" Click="BtnAdvanceMonth_Click" Margin="4" />
             <!-- Advance by one year -->
-            <Button Content="Advance: Year" Click="BtnAdvanceYear_Click" Margin="4" />
+            <Button Content="Add One Year" Click="BtnAdvanceYear_Click" Margin="4" />
         </StackPanel>
 
         <!-- Center: Configuration variables -->
@@ -48,32 +48,66 @@
             <StackPanel>
                 <TextBlock Text="Configuration (editable)" FontWeight="Bold" Margin="0,0,0,8"/>
 
-                <!-- Configuration.MaxRange -->
-                <!-- TextBox bound to Configuration.MaxRange -->
-                <StackPanel Orientation="Horizontal" Margin="0,4">
-                    <TextBlock Text="MaxRange:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Configuration.MaxRange, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
-                </StackPanel>
+        <!-- RiskRange -->
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+            <TextBlock Text="RiskRange:" Width="160" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Configuration.RiskRange, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+        </StackPanel>
 
-                <!-- Configuration.RiskRange (TimeSpan shown as string, editable) -->
-                <!-- TextBox bound to Configuration.RiskRange (string representation) -->
-                <StackPanel Orientation="Horizontal" Margin="0,4">
-                    <TextBlock Text="RiskRange:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Configuration.RiskRange, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
-                    <TextBlock Text="(e.g. 00:05:00)" Margin="6,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+        <!-- Company Address -->
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+            <TextBlock Text="Company Address:" Width="160" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Configuration.ComponyAddress, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+        </StackPanel>
 
-                <!-- Configuration.Latitude -->
-                <StackPanel Orientation="Horizontal" Margin="0,4">
-                    <TextBlock Text="Latitude:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Configuration.Latitude, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
-                </StackPanel>
+        <!-- Manager Password -->
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+            <TextBlock Text="Manager Password:" Width="160" VerticalAlignment="Center"/>
+            <PasswordBox Width="120" Margin="0">
+                <PasswordBox.Password>
+                    <Binding Path="Configuration.ManagerPassword" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                </PasswordBox.Password>
+            </PasswordBox>
+        </StackPanel>
 
-                <!-- Configuration.Longitude -->
-                <StackPanel Orientation="Horizontal" Margin="0,4">
-                    <TextBlock Text="Longitude:" Width="120" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Configuration.Longitude, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
-                </StackPanel>
+        <!-- MaxDistance -->
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+            <TextBlock Text="MaxDistance (km):" Width="160" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Configuration.MaxDistance, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+        </StackPanel>
+
+        <!-- Average speeds -->
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+            <TextBlock Text="Average Car Speed (km/h):" Width="160" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Configuration.AverageCarSpeed, UpdateSourceTrigger=PropertyChanged}" Width="120" Margin="0,0,12,0"/>
+        </StackPanel>
+                
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+          <TextBlock Text="Average Bike Speed (km/h):" Width="160" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Configuration.AverageBikeSpeedBike, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+            <TextBlock Text="Average Bicycle Speed (km/h):" Width="160" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Configuration.AverageBicycleSpeed, UpdateSourceTrigger=PropertyChanged}" Width="120" Margin="0,0,12,0"/>
+       </StackPanel>
+                
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+            <TextBlock Text="Average Walk Speed (km/h):" Width="160" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Configuration.AverageWalkSpeed, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+        </StackPanel>
+
+        <!-- MaxDeliveryTime -->
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+            <TextBlock Text="Max Delivery Time:" Width="160" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Configuration.MaxDeliveryTime, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+        </StackPanel>
+
+        <!-- TimeToBeDispose -->
+        <StackPanel Orientation="Horizontal" Margin="0,4">
+            <TextBlock Text="Time To Be Dispose:" Width="160" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Configuration.TimeToBeDispose, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+        </StackPanel>
 
                 <!-- Buttons for configuration actions -->
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
