@@ -32,6 +32,7 @@
         <TextBox Grid.Row="0" Grid.Column="1"
                  Text="{Binding CurrentCourier.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  IsReadOnly="{Binding IdIsReadOnly}"
+                 PreviewTextInput="Id_PreviewTextInput"
                  Margin="3"/>
 
         <!-- Full name -->

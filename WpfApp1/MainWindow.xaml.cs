@@ -250,15 +250,43 @@ public partial class MainWindow : Window
     {
         try
         {
-            // Push the current Configuration DP to BL
             if (Configuration is null)
             {
                 MessageBox.Show("Configuration is not available.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            s_bl.Admin.SetConfig(Configuration);
+            // Fetch current persisted config and copy only fields the UI is allowed to change
+            var current = s_bl.Admin.GetConfig();
+
+            var toUpdate = new BO.Config
+            {
+                // preserve manager id and clock from current
+                ManagerId = current.ManagerId,
+                Clock = current.Clock,
+
+                // Only these fields are allowed to be changed from the UI:
+                RiskRange = Configuration.RiskRange,
+                ComponyAddress = Configuration.ComponyAddress,
+                ManagerPassword = Configuration.ManagerPassword,
+                MaxDistance = Configuration.MaxDistance,
+                AverageCarSpeed = Configuration.AverageCarSpeed,
+                AverageBikeSpeedBike = Configuration.AverageBikeSpeedBike,
+                AverageBicycleSpeed = Configuration.AverageBicycleSpeed,
+                AverageWalkSpeed = Configuration.AverageWalkSpeed,
+                MaxDeliveryTime = Configuration.MaxDeliveryTime,
+                TimeToBeDispose = Configuration.TimeToBeDispose,
+
+                // keep latitude/longitude unchanged (unless you want UI to change them)
+                Latitude = current.Latitude,
+                Longitude = current.Longitude
+            };
+
+            s_bl.Admin.SetConfig(toUpdate);
             MessageBox.Show("Configuration updated.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // refresh local view
+            Configuration = s_bl.Admin.GetConfig();
         }
         catch (BO.BlException ex)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using BO;
 
@@ -12,6 +13,7 @@ namespace PL.Courier
     {
         // BL facade
         private static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+        private static readonly Regex s_digitsOnly = new(@"^\d+$");
 
         /// <summary>
         /// Dependency property that holds the current courier instance shown in the UI.
@@ -155,16 +157,31 @@ namespace PL.Courier
             {
                 if (ButtonText == "Add")
                 {
-                    // ensure user provided an Id
                     if (CurrentCourier.Id == 0)
                     {
                         MessageBox.Show("Please enter a valid ID for the new courier.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
-                    s_bl.Courier.AddCourier(CurrentCourier);
-                    MessageBox.Show("Courier added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Close();
+                    // check uniqueness using manager id
+                    try
+                    {
+                        var managerId = s_bl.Admin.GetConfig().ManagerId;
+                        var exists = s_bl.Courier.GetCouriersList(managerId).Any(c => c.Id == CurrentCourier.Id);
+                        if (exists)
+                        {
+                            MessageBox.Show("A courier with this ID already exists. Choose a different ID.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        s_bl.Courier.AddCourier(CurrentCourier);
+                        MessageBox.Show("Courier added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        Close();
+                    }
+                    catch (BO.BlException ex)
+                    {
+                        MessageBox.Show($"Add failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
                 }
                 else // Update
                 {
@@ -209,6 +226,12 @@ namespace PL.Courier
             {
                 MessageBox.Show("Unexpected error while deleting courier. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void Id_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            // allow only digits
+            e.Handled = !s_digitsOnly.IsMatch(e.Text);
         }
     }
 }
