@@ -67,7 +67,7 @@ public partial class CourierListWindow : Window
         }
         catch (BO.BlException ex)
         {
-            MessageBox.Show($"Unable to load couriers: {ex.Message}", "Load Couriers", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"Unable to load couriers", "Load Couriers", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (Exception)
         {
@@ -146,7 +146,7 @@ public partial class CourierListWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Cannot open courier details: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Cannot open courier details", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -162,7 +162,7 @@ public partial class CourierListWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Cannot open add-courier window: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Cannot open add-courier window", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -190,7 +190,7 @@ public partial class CourierListWindow : Window
         }
         catch (BO.BlException ex)
         {
-            MessageBox.Show($"Delete failed: {ex.Message}", "Delete Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"Delete failed", "Delete Error", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (Exception)
         {

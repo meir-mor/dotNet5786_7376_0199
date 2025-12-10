@@ -313,7 +313,7 @@ public partial class MainWindow : Window
             // Close other windows except this main window
             CloseOtherWindows();
             
-            Task.Run(() => s_bl.Admin.InitializeDB());
+            s_bl.Admin.InitializeDB();
             // Refresh local view
             Configuration = s_bl.Admin.GetConfig();
             CurrentTime = s_bl.Admin.GetClock();

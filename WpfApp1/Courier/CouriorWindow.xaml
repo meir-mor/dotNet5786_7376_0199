@@ -6,7 +6,7 @@
         xmlns:pl="clr-namespace:PL"
         xmlns:local="clr-namespace:PL.Courier"
         mc:Ignorable="d"
-        Title="Courier" Height="420" Width="520"
+        Title="Courier" Height="480" Width="520"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
         Loaded="Window_Loaded"
         Closed="Window_Closed">
@@ -15,7 +15,6 @@
             <ColumnDefinition Width="160"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -24,87 +23,53 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Id -->
-        <Label Grid.Row="0" Grid.Column="0" Content="Id:" Margin="3"/>
+        <!-- Id (editable in Add mode, read-only in Update mode) -->
+        <Label Grid.Row="0" Grid.Column="0" Content="Id:" VerticalAlignment="Center" Margin="3"/>
         <TextBox Grid.Row="0" Grid.Column="1"
-                 Text="{Binding CurrentCourier.Id}" IsReadOnly="True" Margin="3"/>
-
-        <!-- Full Name -->
-        <Label Grid.Row="1" Grid.Column="0" Content="Full Name:" Margin="3"/>
-        <TextBox Grid.Row="1" Grid.Column="1" 
-                 Text="{Binding CurrentCourier.FullName, Mode=TwoWay}" Margin="3"/>
-
-        <!-- Phone -->
-        <Label Grid.Row="2" Grid.Column="0" Content="Phone:" Margin="3"/>
-        <TextBox Grid.Row="2" Grid.Column="1" 
-                 Text="{Binding CurrentCourier.PhoneNumber, Mode=TwoWay}" Margin="3"/>
-
-        <!-- Email -->
-        <Label Grid.Row="3" Grid.Column="0" Content="Email:" Margin="3"/>
-        <TextBox Grid.Row="3" Grid.Column="1" 
-                 Text="{Binding CurrentCourier.Email, Mode=TwoWay}" Margin="3"/>
-
-        <!-- Password -->
-        <Label Grid.Row="4" Grid.Column="0" Content="Password:" Margin="3"/>
-        <PasswordBox Grid.Row="4" Grid.Column="1" Margin="3"
-                     PasswordChanged="PasswordBox_PasswordChanged"/>
-
-        <!-- IsActive -->
-        <Label Grid.Row="5" Grid.Column="0" Content="Is Active:" Margin="3"/>
-        <CheckBox Grid.Row="5" Grid.Column="1"
-                  IsChecked="{Binding CurrentCourier.IsActive, Mode=TwoWay}"
-                  Margin="3"/>
-
-        <!-- MaxDistance -->
-        <Label Grid.Row="6" Grid.Column="0" Content="Max Distance:" Margin="3"/>
-        <TextBox Grid.Row="6" Grid.Column="1"
-                 Text="{Binding CurrentCourier.MaxDistance, Mode=TwoWay}" 
+                 Text="{Binding CurrentCourier.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 IsReadOnly="{Binding IdIsReadOnly}"
                  Margin="3"/>
 
-        <!-- Shipment type -->
-        <Label Grid.Row="7" Grid.Column="0" Content="Shipment Type:" Margin="3"/>
-        <ComboBox Grid.Row="7" Grid.Column="1"
+        <!-- Full name -->
+        <Label Grid.Row="1" Grid.Column="0" Content="Full Name:" VerticalAlignment="Center" Margin="3"/>
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Text="{Binding CurrentCourier.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="3"/>
+
+        <!-- Phone -->
+        <Label Grid.Row="2" Grid.Column="0" Content="Phone:" VerticalAlignment="Center" Margin="3"/>
+        <TextBox Grid.Row="2" Grid.Column="1"
+                 Text="{Binding CurrentCourier.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="3"/>
+
+        <!-- Email -->
+        <Label Grid.Row="3" Grid.Column="0" Content="Email:" VerticalAlignment="Center" Margin="3"/>
+        <TextBox Grid.Row="3" Grid.Column="1"
+                 Text="{Binding CurrentCourier.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="3"/>
+
+        <!-- IsActive -->
+        <Label Grid.Row="4" Grid.Column="0" Content="Is Active:" VerticalAlignment="Center" Margin="3"/>
+        <CheckBox Grid.Row="4" Grid.Column="1"
+                  IsChecked="{Binding CurrentCourier.IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  VerticalAlignment="Center" Margin="3"/>
+
+        <!-- Shipment type (enum) -->
+        <Label Grid.Row="5" Grid.Column="0" Content="Shipment Type:" VerticalAlignment="Center" Margin="3"/>
+        <ComboBox Grid.Row="5" Grid.Column="1"
                   ItemsSource="{Binding Source={StaticResource ShipmentTypeItemsKey}}"
                   DisplayMemberPath="Name"
                   SelectedValuePath="Value"
-                  SelectedValue="{Binding CurrentCourier.ShipmentType, Mode=TwoWay}"
-                  Margin="3"/>
-
-        <!-- Start Work Time -->
-        <Label Grid.Row="8" Grid.Column="0" Content="Start Work Time:" Margin="3"/>
-        <DatePicker Grid.Row="8" Grid.Column="1" 
-                    SelectedDate="{Binding CurrentCourier.StartWorkTime, Mode=TwoWay}"
-                    Margin="3"/>
-
-        <!-- Total Delivered On Time -->
-        <Label Grid.Row="9" Grid.Column="0" Content="Delivered On Time:" Margin="3"/>
-        <TextBox Grid.Row="9" Grid.Column="1"
-                 Text="{Binding CurrentCourier.TotalDeliveredOnTime}" 
-                 IsReadOnly="True" Margin="3"/>
-
-        <!-- Total Delivered Late -->
-        <Label Grid.Row="10" Grid.Column="0" Content="Delivered Late:" Margin="3"/>
-        <TextBox Grid.Row="10" Grid.Column="1"
-                 Text="{Binding CurrentCourier.TotalDeliveredLate}"
-                 IsReadOnly="True" Margin="3"/>
-
-        <!-- Order In Progress -->
-        <Label Grid.Row="11" Grid.Column="0" Content="Order In Progress:" Margin="3"/>
-        <TextBox Grid.Row="11" Grid.Column="1"
-                 Text="{Binding CurrentCourier.OrderInProgress.OrderId}"
-                 IsReadOnly="True" Margin="3"/>
-
+                  SelectedValue="{Binding CurrentCourier.ShipmentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  Margin="3" VerticalAlignment="Center"/>
+        
         <!-- Save Button -->
-        <Button Grid.Row="12" Grid.ColumnSpan="2"
-                Content="{Binding ButtonText}"
+        <Button Grid.Row="8" Grid.ColumnSpan="2"
+                Content="Save"
                 Height="36" Width="120" Margin="10"
                 HorizontalAlignment="Center"
                 Click="BtnAddUpdate_Click"/>

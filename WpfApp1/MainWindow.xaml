@@ -63,11 +63,7 @@
         <!-- Manager Password -->
         <StackPanel Orientation="Horizontal" Margin="0,4">
             <TextBlock Text="Manager Password:" Width="160" VerticalAlignment="Center"/>
-            <PasswordBox Width="120" Margin="0">
-                <PasswordBox.Password>
-                    <Binding Path="Configuration.ManagerPassword" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
-                </PasswordBox.Password>
-            </PasswordBox>
+            <TextBox Text="{Binding Configuration.ManagerPassword, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
         </StackPanel>
 
         <!-- MaxDistance -->
@@ -114,7 +110,7 @@
                     <!-- Updates configuration via BL -->
                     <Button Content="Update Configuration" Click="BtnUpdateConfig_Click" Margin="4"/>
                     <!-- Opens list view (example: courier / relevant list window) -->
-                    <Button Content="Open List View" Click="BtnOpenListView_Click" Margin="4"/>
+                    <Button Content="Manage Courier" Click="BtnOpenListView_Click" Margin="4"/>
                     <Button Content="Manage Order" Click="BtnOpenOrderInList_Click" Margin="4"/>
                 </StackPanel>
             </StackPanel>

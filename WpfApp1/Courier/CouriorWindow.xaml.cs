@@ -36,6 +36,17 @@ namespace PL.Courier
         public static readonly DependencyProperty ButtonTextProperty =
             DependencyProperty.Register(nameof(ButtonText), typeof(string), typeof(CourierWindow), new PropertyMetadata("Add"));
 
+        /// <summary>
+        /// Controls whether Id textbox is read-only. True when updating existing courier.
+        /// </summary>
+        public bool IdIsReadOnly
+        {
+            get => (bool)GetValue(IdIsReadOnlyProperty);
+            set => SetValue(IdIsReadOnlyProperty, value);
+        }
+        public static readonly DependencyProperty IdIsReadOnlyProperty =
+            DependencyProperty.Register(nameof(IdIsReadOnly), typeof(bool), typeof(CourierWindow), new PropertyMetadata(true));
+
         // Observer callback for this courier id
         private Action? _courierObserver;
 
@@ -49,11 +60,15 @@ namespace PL.Courier
             // set button label according to mode
             ButtonText = id == 0 ? "Add" : "Update";
 
+            // Id editable only in Add mode
+            IdIsReadOnly = id != 0;
+
             InitializeComponent();
 
             // load or create current courier
             if (id == 0)
             {
+                // creation mode: allow user to enter Id and set initial metrics
                 CurrentCourier = new BO.Courier
                 {
                     Id = 0,
@@ -98,7 +113,6 @@ namespace PL.Courier
                 {
                     try
                     {
-                        // refresh current courier on UI thread
                         Dispatcher.Invoke(() =>
                         {
                             try
@@ -141,6 +155,13 @@ namespace PL.Courier
             {
                 if (ButtonText == "Add")
                 {
+                    // ensure user provided an Id
+                    if (CurrentCourier.Id == 0)
+                    {
+                        MessageBox.Show("Please enter a valid ID for the new courier.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
                     s_bl.Courier.AddCourier(CurrentCourier);
                     MessageBox.Show("Courier added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     Close();
@@ -163,9 +184,31 @@ namespace PL.Courier
             }
         }
 
-        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Delete button - only enabled/visible in update mode (converter handles visibility).
+        /// </summary>
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
+            if (CurrentCourier == null || CurrentCourier.Id == 0) return;
 
+            var confirm = MessageBox.Show("Are you sure you want to delete this courier?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirm != MessageBoxResult.Yes) return;
+
+            try
+            {
+                var managerId = s_bl.Admin.GetConfig().ManagerId;
+                s_bl.Courier.DeleteCourier(managerId, CurrentCourier.Id);
+                MessageBox.Show("Courier deleted.", "Deleted", MessageBoxButton.OK, MessageBoxImage.Information);
+                Close();
+            }
+            catch (BO.BlException ex)
+            {
+                MessageBox.Show($"Delete failed: {ex.Message}", "Delete Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unexpected error while deleting courier. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
