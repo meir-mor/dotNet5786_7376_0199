@@ -131,7 +131,7 @@ public static class Initialization
 
             var possibleCouriers = couriers
                 .Where(c => c.IsActive && (c.MaximumDistance == null || c.MaximumDistance >= s_rand.Next(1, 60)))
-                .ToList();
+                ?.ToList();
 
             if (possibleCouriers.Count == 0)
                 continue;

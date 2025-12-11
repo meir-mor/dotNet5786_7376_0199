@@ -2,18 +2,18 @@
 <config>
   <NextOrderId>50</NextOrderId>
   <NextDeliveryId>15</NextDeliveryId>
-  <Clock>08/12/2025 22:04:57</Clock>
-  <ManagerId>0</ManagerId>
+  <Clock>11/12/2025 15:29:18</Clock>
+  <ManagerId>1234</ManagerId>
   <ManagerPassword>1234</ManagerPassword>
-  <ComponyAddress>Bar Cochva 2 BneiBrak Israel</ComponyAddress>
-  <Latitude>32.0853</Latitude>
-  <Longitude>34.7818</Longitude>
-  <MaxDistance>50</MaxDistance>
-  <AverageCarSpeed>40</AverageCarSpeed>
-  <AverageBikeSpeedBike>25</AverageBikeSpeedBike>
+  <ComponyAddress>Bar Cochva 4 BneiBrak Israel</ComponyAddress>
+  <Latitude>32.09376490211114</Latitude>
+  <Longitude>34.82291411745883</Longitude>
+  <MaxDistance>100</MaxDistance>
+  <AverageCarSpeed>80</AverageCarSpeed>
+  <AverageBikeSpeedBike>20</AverageBikeSpeedBike>
   <AverageBicycleSpeed>15</AverageBicycleSpeed>
   <AverageWalkSpeed>5</AverageWalkSpeed>
   <RiskRange>00:30:00</RiskRange>
-  <MaxDeliveryTime>02:00:00</MaxDeliveryTime>
-  <TimeToBeDispose>00:15:00</TimeToBeDispose>
+  <MaxDeliveryTime>01:00:00</MaxDeliveryTime>
+  <TimeToBeDispose>01:00:00</TimeToBeDispose>
 </config>

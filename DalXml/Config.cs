@@ -105,12 +105,21 @@ internal static class Config
 
     internal static void Reset()
     {
-        NextOrderId = 0;
         NextDeliveryId = 0;
+        NextOrderId = 0;
         Clock = DateTime.Now;
-        RiskRange = TimeSpan.FromMinutes(30);
-
-        ManagerId = 0;
+        ManagerId = 1234;
+        ManagerPassword = "1234";
         ComponyAddress = "Bar Cochva 2 BneiBrak Israel";
+        Latitude = 32.09376490211114;
+        Longitude = 34.82291411745883;
+        MaxDistance = 100;
+        AverageCarSpeed = 60;
+        AverageBikeSpeedBike = 20;
+        AverageBicycleSpeed = 15;
+        AverageWalkSpeed = 5;
+        MaxDeliveryTime = TimeSpan.FromHours(1);
+        TimeToBeDispose = TimeSpan.FromHours(1);
+        RiskRange = TimeSpan.FromMinutes(30);
     }
 }
