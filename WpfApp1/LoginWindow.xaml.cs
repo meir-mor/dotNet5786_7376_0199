@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace WpfApp1;
+namespace PL;
 
 /// <summary>
 /// Simple login window using username/password flow.

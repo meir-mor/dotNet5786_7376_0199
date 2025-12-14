@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace WpfApp1;
+namespace PL;
 
 /// <summary>
 /// Main administration window used as temporary management entry point for a manager user.

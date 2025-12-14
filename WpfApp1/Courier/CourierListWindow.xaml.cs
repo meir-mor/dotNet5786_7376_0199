@@ -83,7 +83,7 @@ public partial class CourierListWindow : Window
     {
         Couriers = SelectedShipment == null
          ? s_bl?.Courier.GetAllCouriersInList()!
-         : s_bl?.Courier.GetAllCouriersInList(null,SelectedShipment.Value)!;
+         : s_bl?.Courier.GetAllCouriersInList(null, SelectedShipment.Value)!;
     }
 
     /// <summary>

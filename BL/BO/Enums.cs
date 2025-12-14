@@ -41,7 +41,8 @@ public enum OrderListFilterBy
     OrderType,
     CustomerFullName,
 
-    OrderStatus
+    OrderStatus,
+    ShipmentType
     // add more keys as needed (e.g., Address, DateRange)
 }
 

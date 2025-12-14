@@ -27,6 +27,7 @@ public class OrderInList
     public TimeSpan TimeRemaining { get; set; }
     public TimeSpan TotalHandlingTime { get; set; }
     public int TotalDeliveriesCount { get; set; }
+    public ShipmentType? ShipmentType { get; set; }
 
     /// <summary>
     /// Debug friendly string representation.

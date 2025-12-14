@@ -1,4 +1,4 @@
-﻿<Window x:Class="PL.Courier.CourierWindow"
+﻿﻿<Window x:Class="PL.Courier.CourierWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -67,7 +67,7 @@
                   SelectedValuePath="Value"
                   SelectedValue="{Binding CurrentCourier.ShipmentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   Margin="3" VerticalAlignment="Center"/>
-        
+
         <!-- Save Button -->
         <Button Grid.Row="8" Grid.ColumnSpan="2"
                 Content="Save"
