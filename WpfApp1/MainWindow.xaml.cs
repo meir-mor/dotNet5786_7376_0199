@@ -420,7 +420,14 @@ public partial class MainWindow : Window
 
     private void BtnOpenOrderInList_Click(object sender, RoutedEventArgs e)
     {
-        var wnd = new OrderListWindow();
-        wnd.Show();
+        try
+        {
+            var wnd = new PL.Order.OrderListWindow();
+            wnd.Show();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error opening list view: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

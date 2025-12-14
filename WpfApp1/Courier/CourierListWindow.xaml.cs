@@ -51,7 +51,9 @@ public partial class CourierListWindow : Window
     public CourierListWindow()
     {
         InitializeComponent();
+        DataContext = this;
     }
+    
 
     /// <summary>
     /// Refresh couriers from BL (single BL call), cache them and apply current shipment-type filter.
@@ -144,7 +146,7 @@ public partial class CourierListWindow : Window
                 wnd.Show();
             }
         }
-        catch (Exception ex)
+        catch (Exception )
         {
             MessageBox.Show($"Cannot open courier details", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }

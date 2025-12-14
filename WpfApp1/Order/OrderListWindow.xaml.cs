@@ -1,10 +1,10 @@
 ﻿using BO;
-using DO;
+using PL.Courier;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace PL.Order
 {
@@ -14,24 +14,25 @@ namespace PL.Order
 
         public BO.ShipmentType? SelectedShipment { get; set; } = null;
 
-        public IEnumerable<OrderInList> OrderList
+        public BO.OrderInList? SelectedOrder { get; set; }
+
+
+        public IEnumerable<BO.OrderInList> OrderList
         {
-            get => (IEnumerable<OrderInList>)GetValue(OrderListProperty);
+            get => (IEnumerable<BO.OrderInList>)GetValue(OrderListProperty);
             set => SetValue(OrderListProperty, value);
         }
 
         public static readonly DependencyProperty OrderListProperty =
-            DependencyProperty.Register(nameof(OrderList), typeof(IEnumerable<OrderInList>), typeof(OrderListWindow), new PropertyMetadata(null));
-
+            DependencyProperty.Register(nameof(OrderList),typeof(IEnumerable<BO.OrderInList>),
+                typeof(OrderListWindow),new PropertyMetadata(null));
+   
         public OrderListWindow()
         {
             InitializeComponent();
         }
 
-        private void OrderListObserver()
-        {
-            UpdateOrderList();
-        }
+        private void OrderListObserver() => UpdateOrderList();
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -42,7 +43,8 @@ namespace PL.Order
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load orders: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to load orders: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -60,9 +62,7 @@ namespace PL.Order
             UpdateOrderList();
         }
 
-        /// <summary>
-        /// Updates OrderList using BL, applies ShipmentType filter if selected.
-        /// </summary>
+
         private void UpdateOrderList()
         {
             try
@@ -71,13 +71,34 @@ namespace PL.Order
 
                 OrderList = SelectedShipment == null
                     ? s_bl.Order.GetOrdersList(managerId)
-                    : s_bl.Order.GetOrdersList(managerId, 
-                    BO.OrderListFilterBy.ShipmentType, SelectedShipment.Value);
+                    : s_bl.Order.GetOrdersList(managerId, BO.OrderListFilterBy.ShipmentType,SelectedShipment.Value);           
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error updating orders: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error updating orders: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void Order_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (SelectedOrder != null)
+                {
+                    new OrderWindow(SelectedOrder.OrderId).Show();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Cannot open Order details",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            new OrderWindow().Show();
         }
 
         private void DeleteOrder_Click(object? sender, RoutedEventArgs e)
@@ -99,22 +120,12 @@ namespace PL.Order
                 s_bl.Order.DeleteOrder(managerId, orderId);
 
                 UpdateOrderList();
-
-                MessageBox.Show("Order deleted.", "Deleted", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            catch (BO.BlException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Delete failed: {ex.Message}", "Delete Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            catch (Exception)
-            {
-                MessageBox.Show("Unexpected error while deleting order. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void BtnAdd_Click(object sender, RoutedEventArgs e)
-        {
         }
     }
 }
-

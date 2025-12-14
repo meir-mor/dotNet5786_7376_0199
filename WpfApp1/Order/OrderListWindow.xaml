@@ -34,7 +34,11 @@
 
         <DataGrid Grid.Row="1" Margin="5" AutoGenerateColumns="False" CanUserAddRows="False"
                   CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                  ItemsSource="{Binding OrderList}" SelectionMode="Single">
+                  ItemsSource="{Binding OrderList}" 
+                  SelectedItem="{Binding SelectedOrder}"
+                  SelectionMode="Single"
+                  CanUserSortColumns="True" MouseDoubleClick="Order_DoubleClick">  
+            
             
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Order ID" Binding="{Binding OrderId}" Width="*" />

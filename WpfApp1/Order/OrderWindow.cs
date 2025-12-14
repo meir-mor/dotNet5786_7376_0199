@@ -5,6 +5,10 @@ namespace PL.Order
     {
         private object id;
 
+        public OrderWindow()
+        {
+        }
+
         public OrderWindow(object id)
         {
             this.id = id;
