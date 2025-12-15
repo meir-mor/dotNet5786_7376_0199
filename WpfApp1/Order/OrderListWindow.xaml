@@ -42,6 +42,7 @@
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
+                  IsReadOnly="True"
                   HeadersVisibility="Column"
                   Margin="5"
                   SelectionMode="Single"
