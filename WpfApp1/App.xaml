@@ -8,6 +8,7 @@
         <!-- ShipmentType items for ComboBox (All + enum values) -->
         <pl:ShipmentTypeItemsCollection x:Key="ShipmentTypeItemsKey" />
 
+		<local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         <!-- Converter to control Cancel button visibility -->
         <!--<plConverters:CancelVisibilityConverter x:Key="CancelVisibilityConverter"/>-->
     </Application.Resources>

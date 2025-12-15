@@ -10,20 +10,12 @@ namespace PL;
 public class NullToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        bool invert = parameter?.ToString() == "Invert";
-        bool isNull = value == null || (value is int x && x == 0);
-
-        if (invert)
-            return isNull ? Visibility.Visible : Visibility.Collapsed;
-
-        return isNull ? Visibility.Collapsed : Visibility.Visible;
-    }
+        => value == null ? Visibility.Collapsed : Visibility.Visible;
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => throw new NotImplementedException();
 }
-
+/*
 public class NullToEnabledConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -61,4 +53,4 @@ public class CancelVisibilityConverter : IValueConverter
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => throw new NotImplementedException();
-}
+}*/

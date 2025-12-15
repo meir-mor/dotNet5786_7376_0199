@@ -1,0 +1,118 @@
+﻿<Window x:Class="PL.Order.OrderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="Order Details"
+        Height="600" Width="850"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <Window.Resources>
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style x:Key="ValueStyle" TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Text="Order Details"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,15"/>
+
+        <!-- Order info -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Customer:" Style="{StaticResource LabelStyle}" />
+            <TextBox Text="{Binding CurrentOrder.CustomerFullName}"
+                     Grid.Column="1"
+                     Style="{StaticResource ValueStyle}" />
+
+            <TextBlock Text="Phone:" Grid.Row="1" Style="{StaticResource LabelStyle}" />
+            <TextBox Text="{Binding CurrentOrder.CustomerPhone}"
+                     Grid.Row="1" Grid.Column="1"
+                     Style="{StaticResource ValueStyle}" />
+
+            <TextBlock Text="Address:" Grid.Row="2" Style="{StaticResource LabelStyle}" />
+            <TextBox Text="{Binding CurrentOrder.FullAddress}"
+                     Grid.Row="2" Grid.Column="1"
+                     Style="{StaticResource ValueStyle}" />
+
+            <TextBlock Text="Status:" Grid.Row="3" Style="{StaticResource LabelStyle}" />
+            <TextBox Text="{Binding CurrentOrder.OrderStatus}"
+                     Grid.Row="3" Grid.Column="1"
+                     Style="{StaticResource ValueStyle}" />
+        </Grid>
+
+        <!-- Deliveries -->
+        <GroupBox Header="Deliveries History"
+                  Grid.Row="2"
+                  Margin="0,15,0,0">
+            <DataGrid ItemsSource="{Binding CurrentOrder.Deliveries}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Courier"
+                                        Binding="{Binding CourierName}" />
+                    <DataGridTextColumn Header="Shipment"
+                                        Binding="{Binding ShipmentType}" />
+                    <DataGridTextColumn Header="Start"
+                                        Binding="{Binding DeliveryStartTime}" />
+                    <DataGridTextColumn Header="End Type"
+                                        Binding="{Binding DeliveryEndType}" />
+                    <DataGridTextColumn Header="End Time"
+                                        Binding="{Binding DeliveryEndTime}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,15,0,0">
+            <Button Content="Update"
+                    Width="120"
+                    Margin="5"
+                    Click="BtnUpdate_Click"/>
+
+            <Button Content="Cancel Order"
+                    Width="120"
+                    Margin="5"
+                    Click="BtnCancel_Click"/>
+
+            <Button Content="Close"
+                    Width="120"
+                    Margin="5"
+                    Click="BtnClose_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

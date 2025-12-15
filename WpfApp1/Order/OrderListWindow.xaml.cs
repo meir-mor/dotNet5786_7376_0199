@@ -91,8 +91,8 @@ namespace PL.Order
             }
             catch
             {
-                MessageBox.Show("Cannot open Order details",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Cannot open Order details", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

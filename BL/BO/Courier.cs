@@ -17,7 +17,7 @@ namespace BO;
 /// <param name="DeliveryType">Type of delivery the courier performs.</param>
 /// <param name="StartWorkTime">Time the courier started working at company (view only).</param>
 /// <param name="TotalDeliveredOnTime">Total orders delivered on time (view only).</param>
-/// <param name="TotalDeliveredLate">Total orders delivered late (view only).</param>
+/// <param name="TotalDeliveredLate"> Total orders delivered late (view only).</param>
 /// <param name="OrderInProgress">Current order in progress for this courier (nullable, view only).</param>
 public class Courier
 {
