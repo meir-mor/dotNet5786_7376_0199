@@ -35,12 +35,18 @@
                       SelectedValuePath="Value"/>
         </Grid>
 
-        <DataGrid Grid.Row="1" Margin="5" AutoGenerateColumns="False" CanUserAddRows="False"
-                  CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+        <DataGrid Grid.Row="1"
                   ItemsSource="{Binding OrderList}" 
                   SelectedItem="{Binding SelectedOrder}"
+                  MouseDoubleClick="Order_DoubleClick"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  HeadersVisibility="Column"
+                  Margin="5"
                   SelectionMode="Single"
-                  CanUserSortColumns="True" MouseDoubleClick="Order_DoubleClick">  
+                  GridLinesVisibility="Horizontal"
+                  CanUserSortColumns="True">  
             
             
             <DataGrid.Columns>

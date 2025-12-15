@@ -1,10 +1,4 @@
 ﻿using System.Collections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BO;
 
 namespace PL;
 
@@ -12,7 +6,7 @@ namespace PL;
 /// Item used to populate the ComboBox for shipment-type filtering.
 /// Value == null represents "All".
 /// </summary>
-public sealed class ShipmentTypeItem
+internal sealed class ShipmentTypeItem
 {
     /// <summary>
     /// The ShipmentType value (nullable). Null = All.
@@ -32,7 +26,7 @@ public sealed class ShipmentTypeItem
 /// Enumerable collection that exposes ShipmentType items (first item = All).
 /// Intended to be used as a StaticResource in XAML for ComboBox ItemsSource.
 /// </summary>
-public class ShipmentTypeItemsCollection : IEnumerable
+internal class ShipmentTypeItemsCollection : IEnumerable
 {
     private static readonly IEnumerable<ShipmentTypeItem> s_items = BuildItems();
 

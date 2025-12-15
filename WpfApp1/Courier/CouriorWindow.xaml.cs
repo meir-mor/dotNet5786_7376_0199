@@ -72,26 +72,12 @@ namespace PL.Courier
             {
                 // creation mode: allow user to enter Id and set initial metrics
                 CurrentCourier = new BO.Courier();
-                /*{
-                    Id = 0,
-                    FullName = string.Empty,
-                    PhoneNumber = string.Empty,
-                    Email = string.Empty,
-                    Password = "Default1A!",
-                    IsActive = true,
-                    MaxDistance = null,
-                    ShipmentType = ShipmentType.Motorcycle,
-                    StartWorkTime = s_bl.Admin.GetClock(),
-                    TotalDeliveredLate = 0,
-                    TotalDeliveredOnTime = 0,
-                    OrderInProgress = null
-                };*/
             }
             else
             {
                 try
                 {
-                    CurrentCourier = s_bl.Courier.GetCourierDetails(id)!;
+                    CurrentCourier = s_bl.Courier.GetCourierDetails(id);
                 }
                 catch (BO.BlException ex)
                 {
