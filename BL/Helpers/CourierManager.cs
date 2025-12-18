@@ -12,7 +12,7 @@ internal static class CourierManager
     // DAL access (private field as requested)
     private static IDal s_dal = Factory.Get; //stage 4
 
-    
+
     /// <summary>
     /// Read a single courier by id and map to BO.Courier.
     /// Uses extension method FirstOrDefault.
@@ -22,7 +22,16 @@ internal static class CourierManager
         try
         {
             var d = s_dal.Courier.Read(id); // may return null
-
+            
+            var order = s_dal.Order.ReadAll(o =>
+                s_dal.Delivery.ReadAll(d =>
+                    d.CourierId == id).
+                    Select(d => d.OrderId).
+                    Contains(o.Id))
+                .FirstOrDefault(o => o.Status == DO.OrderStatus.InProgress);
+            
+            var delivery = s_dal.Delivery.ReadAll(d => d.OrderId == order.Id).FirstOrDefault();
+            
             if (d == null) return null;
 
             // map DO.Courier -> BO.Courier
@@ -39,7 +48,7 @@ internal static class CourierManager
                 StartWorkTime = d.StartingWork,
                 TotalDeliveredOnTime = 0,
                 TotalDeliveredLate = 0,
-                OrderInProgress = null
+                OrderInProgress = CreateOrderInProgress(order, delivery),
             };
 
             return bo;
@@ -49,13 +58,35 @@ internal static class CourierManager
             throw new BO.BlDoesNotExistException($"DAL: courier with id {id} does not exist", ex);
         }
     }
+
+    public static BO.OrderInProgress CreateOrderInProgress(DO.Order order, DO.Delivery delivery)
+    {
+        return new BO.OrderInProgress
+        {
+            OrderId = order.Id,
+            ActualDistance = delivery.ActualDistance ?? 0,
+            DeliveryId = delivery.Id,
+            CustomerFullName = order.CustomerName,
+            CustomerPhone = order.CustomerPhone,
+            DeliveryStartTime = delivery.StartTime,
+            OrderType = (BO.OrderType)(int)order.Type,
+            OrderStatus = order.Status,
+            Description = "",
+            AerialDistance = 0, //TODo
+            OrderOpenTime = order.CreatedAt,
+            ExpectedDeliveryTime = order.CreatedAt, //TODO+ ,
+            MaxDeliveryTime = order.CreatedAt + s_dal.Config.MaxDeliveryTime,
+            ScheduleStatus = DO.ScheduleStatus.OnTime,
+            TimeRemaining = order.CreatedAt + s_dal.Config.MaxDeliveryTime - s_dal.Config.Clock
+        };
+    }
     /// <summary>
     /// Return all couriers converted to BO.CourierInList.
     /// Uses LINQ extension methods (Where, Select, OrderBy, ToList).
     /// Wrapped in try/catch to translate DO exceptions into BO.DalException.
     /// </summary>
     public static IEnumerable<BO.CourierInList> GetAllCouriersInList(
-    Func<BO.CourierInList, bool>? customFilter = null, BO.ShipmentType? filter = null)
+        Func<BO.CourierInList, bool>? customFilter = null, BO.ShipmentType? filter = null)
     {
         try
         {
@@ -197,7 +228,7 @@ internal static class CourierManager
 
             s_dal.Courier.Delete(id);
             Observers.NotifyItemUpdated(id); // stage 5
-            Observers.NotifyListUpdated();   // stage 5
+            Observers.NotifyListUpdated(); // stage 5
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -307,9 +338,9 @@ internal static class CourierManager
                 courierUpdated = true; // stage 5
                 Observers.NotifyItemUpdated(doCourier.Id); // stage 5
             }
-        } 
+        }
+
         if (courierUpdated)
             Observers.NotifyListUpdated(); // stage 5
-
     }
 }
