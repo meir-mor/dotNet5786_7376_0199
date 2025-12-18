@@ -40,14 +40,12 @@ public partial class LoginWindow : Window
 
             if (role == BO.UserRole.Manager)
             {
-                // Manager: open admin main window
                 var wnd = new MainWindow();
                 wnd.Show();
                 Close();
                 return;
             }
 
-            // Courier: username is expected to contain courier id (Tz). parse it.
             if (role == BO.UserRole.Courier)
             {
                 if (!int.TryParse(username, out var courierId))
@@ -58,9 +56,7 @@ public partial class LoginWindow : Window
 
                 try
                 {
-                    // Validate courier exists and open courier window
-                    var courierDetails = s_bl.Courier.GetCourierDetails(courierId);
-                    var wnd = new PL.Courier.CourierWindow(courierId);
+                    var wnd = new PL.Courier.CourierMainWindow(courierId);
                     wnd.Show();
                     Close();
                     return;
@@ -72,17 +68,15 @@ public partial class LoginWindow : Window
                 }
             }
 
-            // Unknown role - treat as error
             MessageBox.Show("Login succeeded but role is not supported by this UI.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (BO.BlException ex)
         {
-            // Friendly message for BL validation/auth errors
             MessageBox.Show($"Login failed: {ex.Message}", "Login Error", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             MessageBox.Show("An unexpected error occurred during login. Please try again or contact support.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-    }
+}
 }
