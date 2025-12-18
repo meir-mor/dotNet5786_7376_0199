@@ -74,6 +74,7 @@ public partial class OrderListWindow : Window
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+
     private void ApplyShipmentFilter()
     {
         OrderList = SelectedShipment == null
@@ -101,7 +102,8 @@ public partial class OrderListWindow : Window
 
     private void BtnAdd_Click(object sender, RoutedEventArgs e)
     {
-        new OrderWindow().Show();
+        new AddOrderWindow().ShowDialog();
+        RefreshOrders();
     }
 
     private void CancelOrder_Click(object? sender, RoutedEventArgs e)

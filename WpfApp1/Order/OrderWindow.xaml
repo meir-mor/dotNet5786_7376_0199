@@ -20,6 +20,11 @@
             <Setter Property="Margin" Value="5"/>
             <Setter Property="IsReadOnly" Value="True"/>
         </Style>
+        
+        <Style x:Key="EditStyle" TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="IsReadOnly" Value="False"/>
+        </Style>
     </Window.Resources>
 
     <Grid Margin="10">
@@ -40,7 +45,7 @@
         <!-- Order info -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -49,30 +54,57 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+             </Grid.RowDefinitions>
 
-            <TextBlock Text="Customer:" Style="{StaticResource LabelStyle}" />
-            <TextBox Text="{Binding CurrentOrder.CustomerFullName}"
-                     Grid.Column="1"
-                     Style="{StaticResource ValueStyle}" />
+            <TextBlock Text="Order ID:" Grid.Row="0" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.Id}" Grid.Row="0" Grid.Column="1" Style="{StaticResource ValueStyle}"/>
 
-            <TextBlock Text="Phone:" Grid.Row="1" Style="{StaticResource LabelStyle}" />
-            <TextBox Text="{Binding CurrentOrder.CustomerPhone}"
-                     Grid.Row="1" Grid.Column="1"
-                     Style="{StaticResource ValueStyle}" />
+            <TextBlock Text="Order Type:" Grid.Row="1" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.OrderType}" Grid.Row="1" Grid.Column="1" Style="{StaticResource EditStyle}"/>
 
-            <TextBlock Text="Address:" Grid.Row="2" Style="{StaticResource LabelStyle}" />
-            <TextBox Text="{Binding CurrentOrder.FullAddress}"
-                     Grid.Row="2" Grid.Column="1"
-                     Style="{StaticResource ValueStyle}" />
+            <TextBlock Text="Description:" Grid.Row="2" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.Description}" Grid.Row="2" Grid.Column="1" Style="{StaticResource EditStyle}"/>
 
-            <TextBlock Text="Status:" Grid.Row="3" Style="{StaticResource LabelStyle}" />
-            <TextBox Text="{Binding CurrentOrder.OrderStatus}"
-                     Grid.Row="3" Grid.Column="1"
-                     Style="{StaticResource ValueStyle}" />
+            <TextBlock Text="Volume / Notes:" Grid.Row="3" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.Volume}" Grid.Row="3" Grid.Column="1" Style="{StaticResource ValueStyle}"/>
+
+            <TextBlock Text="Customer:" Grid.Row="4" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.CustomerFullName}" Grid.Row="4" Grid.Column="1" Style="{StaticResource EditStyle}"/>
+
+            <TextBlock Text="Phone:" Grid.Row="5" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.CustomerPhone}" Grid.Row="5" Grid.Column="1" Style="{StaticResource EditStyle}"/>
+
+            <TextBlock Text="Address:" Grid.Row="6" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.FullAddress}" Grid.Row="6" Grid.Column="1" Style="{StaticResource EditStyle}"/>
+
+            <TextBlock Text="Status:" Grid.Row="7" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.OrderStatus}" Grid.Row="7" Grid.Column="1" Style="{StaticResource ValueStyle}"/>
+
+            <TextBlock Text="Opened At:" Grid.Row="8" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.OrderOpenTime}" Grid.Row="8" Grid.Column="1" Style="{StaticResource ValueStyle}"/>
+
+            <TextBlock Text="Expected Delivery:" Grid.Row="9" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.ExpectedDeliveryTime}" Grid.Row="9" Grid.Column="1" Style="{StaticResource ValueStyle}"/>
+
+            <TextBlock Text="Max Delivery Time:" Grid.Row="10" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.MaxDeliveryTime}" Grid.Row="10" Grid.Column="1" Style="{StaticResource ValueStyle}"/>
+
+            <TextBlock Text="Schedule Status:" Grid.Row="11" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.ScheduleStatus}" Grid.Row="11" Grid.Column="1" Style="{StaticResource ValueStyle}"/>
+
+            <TextBlock Text="Time Remaining:" Grid.Row="12" Style="{StaticResource LabelStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.TimeRemaining}" Grid.Row="12" Grid.Column="1" Style="{StaticResource ValueStyle}"/>
         </Grid>
 
-        <!-- Deliveries -->
         <GroupBox Header="Deliveries History"
                   Grid.Row="2"
                   Margin="0,15,0,0">
