@@ -15,6 +15,20 @@ public class NullToVisibilityConverter : IValueConverter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => throw new NotImplementedException();
 }
+public class CancelButtonVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is OrderStatus status)
+        {
+            return status != OrderStatus.Closed ? Visibility.Visible : Visibility.Collapsed;
+        }
+        return Visibility.Collapsed;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}
 /*
 public class NullToEnabledConverter : IValueConverter
 {
@@ -42,15 +56,4 @@ public class UpdateToReadOnlyConverter : IValueConverter
         => throw new NotImplementedException();
 }
 
-public class CancelVisibilityConverter : IValueConverter
-{
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        if (value is OrderStatus status)
-            return status == OrderStatus.Closed ? Visibility.Collapsed : Visibility.Visible;
-        return Visibility.Visible;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        => throw new NotImplementedException();
-}*/
+*/

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Windows.Services.Maps;
 
 namespace PL.Order;
 
@@ -8,7 +9,9 @@ public partial class OrderListWindow : Window
 {
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-    public BO.ShipmentType? SelectedShipment { get; set; } = null;
+    public BO.ShipmentType? SelectedShipment { get; set; }
+
+    public List<BO.OrderInList> _allOrders = new();
 
     public BO.OrderInList? SelectedOrder { get; set; }
 
@@ -20,22 +23,21 @@ public partial class OrderListWindow : Window
     }
 
     public static readonly DependencyProperty OrderListProperty =
-        DependencyProperty.Register(nameof(OrderList),typeof(IEnumerable<BO.OrderInList>),
-            typeof(OrderListWindow),new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(OrderList), typeof(IEnumerable<BO.OrderInList>),
+            typeof(OrderListWindow), new PropertyMetadata(null));
 
     public OrderListWindow()
     {
         InitializeComponent();
+        DataContext = this;
     }
-
-    private void OrderListObserver() => UpdateOrderList();
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         try
         {
-            s_bl.Order.AddObserver(OrderListObserver);
-            UpdateOrderList();
+            s_bl.Order.AddObserver(RefreshOrders);
+            RefreshOrders();
         }
         catch (Exception ex)
         {
@@ -48,33 +50,37 @@ public partial class OrderListWindow : Window
     {
         try
         {
-            s_bl.Order.RemoveObserver(OrderListObserver);
+            s_bl.Order.RemoveObserver(RefreshOrders);
         }
         catch { }
     }
 
     private void ShipmentFilter_SelectionChangedOrder(object sender, SelectionChangedEventArgs e)
     {
-        UpdateOrderList();
+        ApplyShipmentFilter();
     }
 
-
-    private void UpdateOrderList()
+    private void RefreshOrders()
     {
         try
         {
             var managerId = s_bl.Admin.GetConfig().ManagerId;
-
-            OrderList = SelectedShipment == null
-                ? s_bl.Order.GetOrdersList(managerId)
-                : s_bl.Order.GetOrdersList(managerId, BO.OrderListFilterBy.ShipmentType,SelectedShipment.Value);           
+            _allOrders = s_bl.Order.GetOrdersList(managerId).ToList();
+            ApplyShipmentFilter();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error updating orders: {ex.Message}",
+            MessageBox.Show($"Failed to load orders: {ex.Message}",
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+    private void ApplyShipmentFilter()
+    {
+        OrderList = SelectedShipment == null
+            ? _allOrders
+            : _allOrders.Where(o => o.ShipmentType == SelectedShipment.Value);
+    }
+
 
     private void Order_DoubleClick(object? sender, System.Windows.Input.MouseButtonEventArgs e)
     {
@@ -98,7 +104,7 @@ public partial class OrderListWindow : Window
         new OrderWindow().Show();
     }
 
-    private void DeleteOrder_Click(object? sender, RoutedEventArgs e)
+    private void CancelOrder_Click(object? sender, RoutedEventArgs e)
     {
         try
         {
@@ -106,22 +112,41 @@ public partial class OrderListWindow : Window
                 return;
 
             var confirm = MessageBox.Show(
-                "Are you sure you want to delete the selected order?",
-                "Confirm Delete",
-                MessageBoxButton.YesNo,
+                "Are you sure you want to cancel the selected order?","Confirm Cancel",MessageBoxButton.YesNo,    
                 MessageBoxImage.Question);
 
             if (confirm != MessageBoxResult.Yes) return;
 
             var managerId = s_bl.Admin.GetConfig().ManagerId;
-            s_bl.Order.DeleteOrder(managerId, orderId);
+            var order = s_bl.Order.GetOrderDetails(managerId, orderId);
 
-            UpdateOrderList();
+            if (order.OrderStatus == DO.OrderStatus.InProgress)
+            {
+                NotifyCourierOrderCancelled(order);
+            }
+
+            s_bl.Order.CancelOrder(managerId, orderId);
+            RefreshOrders();
         }
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message,
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
+    }
+    private void NotifyCourierOrderCancelled(BO.Order order)
+    {
+        var activeDelivery = order.Deliveries?.FirstOrDefault(d => d.DeliveryEndType == null);
+        if (activeDelivery?.CourierId is not int courierId)
+            return;
+
+        var courier = s_bl.Courier.GetCourierDetails(courierId);
+        if (courier == null)
+            return;
+
+        //MailService.SendMail(courier.Email,"Order Cancelled",
+           // $"The order {order.Id} assigned to you has been cancelled."
+        //);
     }
 }

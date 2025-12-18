@@ -3,13 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:PL"
              xmlns:pl="clr-namespace:PL" 
+             xmlns:order="clr-namespace:PL"
              StartupUri="LoginWindow.xaml">
     <Application.Resources>
         <!-- ShipmentType items for ComboBox (All + enum values) -->
         <pl:ShipmentTypeItemsCollection x:Key="ShipmentTypeItemsKey" />
 
 		<local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        
         <!-- Converter to control Cancel button visibility -->
-        <!--<plConverters:CancelVisibilityConverter x:Key="CancelVisibilityConverter"/>-->
+        <local:CancelButtonVisibilityConverter x:Key="CancelButtonVisibilityConverter"/>
+
     </Application.Resources>
 </Application>
