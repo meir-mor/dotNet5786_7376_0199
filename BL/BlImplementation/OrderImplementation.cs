@@ -58,14 +58,18 @@ internal class OrderImplementation : IOrder
         return orders.Select(o => new BO.OrderInList
         {
             OrderType = o.OrderType,
-            OrderStatus = o.OrderStatus,
+            OrderStatus = o.Deliveries.Any(d => d.DeliveryEndType == null)
+            ? BO.OrderStatus.InProgress  : o.OrderStatus,             
             AerialDistance = o.AerialDistance,
             ScheduleStatus = o.ScheduleStatus,
             TimeRemaining = o.TimeRemaining,
             DeliveryId = o.Deliveries?.FirstOrDefault()?.DeliveryId,
             OrderId = o.Id,
             TotalDeliveriesCount = o.Deliveries?.Count ?? 0,
-            TotalHandlingTime = TimeSpan.Zero
+            TotalHandlingTime = o.Deliveries.Where(d => d.DeliveryEndTime.HasValue)
+            .Aggregate(TimeSpan.Zero, (sum, d) => sum + (d.DeliveryEndTime.Value - d.DeliveryStartTime));
+    
+
         });
     }
 

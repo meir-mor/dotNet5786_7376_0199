@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Windows.Services.Maps;
+using BO;
 
 namespace PL.Order;
 
@@ -11,12 +13,9 @@ public partial class OrderListWindow : Window
 
     public BO.ShipmentType? SelectedShipment { get; set; }
 
-    public List<BO.OrderInList> _allOrders = new();
-
     public BO.OrderInList? SelectedOrder { get; set; }
 
-
-    public IEnumerable<BO.OrderInList> OrderList
+    public IEnumerable<BO.OrderInList>? OrderList
     {
         get => (IEnumerable<BO.OrderInList>)GetValue(OrderListProperty);
         set => SetValue(OrderListProperty, value);
@@ -26,10 +25,13 @@ public partial class OrderListWindow : Window
         DependencyProperty.Register(nameof(OrderList), typeof(IEnumerable<BO.OrderInList>),
             typeof(OrderListWindow), new PropertyMetadata(null));
 
+    private readonly int _managerId;
+
     public OrderListWindow()
     {
         InitializeComponent();
         DataContext = this;
+        _managerId = s_bl.Admin.GetConfig().ManagerId;
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -41,8 +43,7 @@ public partial class OrderListWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to load orders: {ex.Message}",
-                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Failed to load orders: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -55,35 +56,27 @@ public partial class OrderListWindow : Window
         catch { }
     }
 
-    private void ShipmentFilter_SelectionChangedOrder(object sender, SelectionChangedEventArgs e)
+    private void ShipmentFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        ApplyShipmentFilter();
+        RefreshOrders();
     }
 
     private void RefreshOrders()
     {
         try
         {
-            var managerId = s_bl.Admin.GetConfig().ManagerId;
-            _allOrders = s_bl.Order.GetOrdersList(managerId).ToList();
-            ApplyShipmentFilter();
+            BO.OrderListFilterBy? filterBy = SelectedShipment.HasValue ? BO.OrderListFilterBy.ShipmentType : null;
+            object? filterValue = SelectedShipment;
+
+            OrderList = s_bl.Order.GetOrdersList(_managerId, filterBy, filterValue).ToList();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to load orders: {ex.Message}",
-                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Failed to load orders: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
-    private void ApplyShipmentFilter()
-    {
-        OrderList = SelectedShipment == null
-            ? _allOrders
-            : _allOrders.Where(o => o.ShipmentType == SelectedShipment.Value);
-    }
-
-
-    private void Order_DoubleClick(object? sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void Order_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         try
         {
@@ -95,48 +88,45 @@ public partial class OrderListWindow : Window
         }
         catch
         {
-            MessageBox.Show("Cannot open Order details", "Error",
-                MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Cannot open Order details", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     private void BtnAdd_Click(object sender, RoutedEventArgs e)
     {
-        new AddOrderWindow().ShowDialog();
+        var wnd = new AddOrderWindow();
+        wnd.ShowDialog();
         RefreshOrders();
     }
 
-    private void CancelOrder_Click(object? sender, RoutedEventArgs e)
+    private void CancelOrder_Click(object sender, RoutedEventArgs e)
     {
         try
         {
             if (sender is not Button btn || btn.CommandParameter is not int orderId)
                 return;
 
-            var confirm = MessageBox.Show(
-                "Are you sure you want to cancel the selected order?","Confirm Cancel",MessageBoxButton.YesNo,    
-                MessageBoxImage.Question);
-
+            var confirm = MessageBox.Show("Are you sure you want to cancel the selected order?",
+                 "Confirm Cancel", MessageBoxButton.YesNo, MessageBoxImage.Question);
+   
             if (confirm != MessageBoxResult.Yes) return;
 
-            var managerId = s_bl.Admin.GetConfig().ManagerId;
-            var order = s_bl.Order.GetOrderDetails(managerId, orderId);
+            var order = s_bl.Order.GetOrderDetails(_managerId, orderId);
 
             if (order.OrderStatus == DO.OrderStatus.InProgress)
             {
                 NotifyCourierOrderCancelled(order);
             }
 
-            s_bl.Order.CancelOrder(managerId, orderId);
+            s_bl.Order.CancelOrder(_managerId, orderId);
             RefreshOrders();
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message,
-                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
     }
+
     private void NotifyCourierOrderCancelled(BO.Order order)
     {
         var activeDelivery = order.Deliveries?.FirstOrDefault(d => d.DeliveryEndType == null);
@@ -147,8 +137,6 @@ public partial class OrderListWindow : Window
         if (courier == null)
             return;
 
-        //MailService.SendMail(courier.Email,"Order Cancelled",
-           // $"The order {order.Id} assigned to you has been cancelled."
-        //);
-    }
+        // מייל:
+        }
 }

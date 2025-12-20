@@ -4,80 +4,91 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Order"
-        Title="Order List" 
-        Height="640" Width="900"
+        mc:Ignorable="d"
+        Title="Order List" Height="640" Width="900"
         Loaded="Window_Loaded"
         Closed="Window_Closed"
-		mc:Ignorable="d"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Grid>
         <Grid.RowDefinitions>
+            <!-- Top filter area, middle list area, bottom action area -->
             <RowDefinition Height="40*" />
             <RowDefinition Height="500*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <!-- Internal, Upper Grid: one filter control for ShipmentType -->
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" Width="Auto">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Column="0" Content="Filter by Shipment Type:" VerticalAlignment="Center"
-                  HorizontalAlignment="Left" />
+            <!-- Filter label -->
+            <Label Content="Filter by Shipment Type:" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                      ItemsSource="{Binding Source={StaticResource ShipmentTypeItemsKey}}"
-                      SelectedValue="{Binding SelectedShipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      SelectionChanged="ShipmentFilter_SelectionChangedOrder"
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{StaticResource ShipmentTypeItemsKey}"                     
                       DisplayMemberPath="Name"
-                      SelectedValuePath="Value"/>
+                      SelectedValuePath="Value"
+                      SelectedValue="{Binding Path=SelectedShipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      SelectionChanged="ShipmentFilter_SelectionChanged"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"/>
         </Grid>
 
+
+        <!-- DataGrid bound to Order DP -->
         <DataGrid Grid.Row="1"
-                  ItemsSource="{Binding OrderList}" 
-                  SelectedItem="{Binding SelectedOrder}"
-                  MouseDoubleClick="Order_DoubleClick"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  IsReadOnly="True"
-                  HeadersVisibility="Column"
-                  Margin="5"
-                  SelectionMode="Single"
-                  GridLinesVisibility="Horizontal"
-                  CanUserSortColumns="True">  
-            
-            
+           ItemsSource="{Binding Path=OrderList}"
+           SelectedItem="{Binding Path=SelectedOrder}"
+           MouseDoubleClick="DataGrid_MouseDoubleClick"
+           AutoGenerateColumns="False"
+           CanUserAddRows="False"
+           CanUserDeleteRows="False"
+           HeadersVisibility="Column"
+           Margin="5"
+           SelectionMode="Single"
+           GridLinesVisibility="Horizontal">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Order ID" Binding="{Binding OrderId}" Width="*" />
-                <DataGridTextColumn Header="Order Type" Binding="{Binding OrderType}" Width="*" />
+                <DataGridTextColumn Header="Order Type" Binding="{Binding OrderType}" Width="2*" />
                 <DataGridTextColumn Header="Order Status" Binding="{Binding OrderStatus}" Width="*" />
                 <DataGridTextColumn Header="Schedule Status" Binding="{Binding ScheduleStatus}" Width="*" />
                 <DataGridTextColumn Header="Shipment Type" Binding="{Binding ShipmentType, TargetNullValue=—}" Width="*" />
-                
+                <DataGridTextColumn Header="Time Remaining" Binding="{Binding TimeRemaining}" Width="*" />
+                <DataGridTextColumn Header="Total Deliveries" Binding="{Binding TotalDeliveriesCount}" Width="*" />
+
                 <DataGridTemplateColumn Header="Actions" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Cancel"
-                                    Padding="6,2"
-                                    Margin="4"
-                                    CommandParameter="{Binding OrderId}"
-                                    Click="CancelOrder_Click"
-                                    Visibility="{Binding OrderStatus, Converter={StaticResource CancelButtonVisibilityConverter}}" />
+                            <Button Content="Delete"
+                            Padding="6,2"
+                            Margin="4"
+                            CommandParameter="{Binding Id}"
+                            Click="DeleteCourier_Click"
+                            Visibility="{Binding OrderStatus, Converter={StaticResource CancelButtonVisibilityConverter}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
-        <Border Grid.Row="2" Height="50" Width="174" Background="#40C4FF" CornerRadius="20"
+        <Border Grid.Row="2"
+                Height="50"
+                Width="174"
+                Background="#40C4FF"
+                CornerRadius="20"
                 Margin="0,10,0,10">
-            <Button Content="Add" Background="Transparent" BorderThickness="0" FontSize="14"          
-                    FontFamily="Arial Black" Foreground="#FFF93108" FontStyle="Italic" 
+            <Button Content="Add"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontSize="14"
+                    FontFamily="Arial Black"
+                    Foreground="#FFF93108"
+                    FontStyle="Italic"
                     Click="BtnAdd_Click" />
         </Border>
-
     </Grid>
 </Window>

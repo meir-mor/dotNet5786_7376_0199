@@ -5,6 +5,12 @@ public enum UserRole
     Manager,
     Courier
 }
+public enum OrderStatus
+{
+    Open,
+    InProgress,
+    Closed
+}
 public enum OrderType
 {
     Food,

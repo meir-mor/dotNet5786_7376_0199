@@ -1,45 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace PL.Order;
-
-/// <summary>
-/// Interaction logic for AddOrderWindow.xaml
-/// </summary>
-public partial class AddOrderWindow : Window
+namespace PL.Order
 {
-    static readonly BlApi.IBl bl = BlApi.Factory.Get();
-    public BO.Order CurrentOrder { get; set; }
-
-    public AddOrderWindow()
+    public partial class AddOrderWindow : Window
     {
-        InitializeComponent();
-        CurrentOrder = new BO.Order();
-        DataContext = this;
-    }
+        static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-    private void BtnAdd_Click(object sender, RoutedEventArgs e)
-    {
-        try
+        public BO.Order CurrentOrder
         {
-            bl.Order.AddOrder(CurrentOrder);
-            MessageBox.Show("Order added successfully");
-            Close();
+            get => (BO.Order)GetValue(CurrentOrderProperty);
+            set => SetValue(CurrentOrderProperty, value);
         }
-        catch (Exception ex)
+
+        public static readonly DependencyProperty CurrentOrderProperty =
+            DependencyProperty.Register(nameof(CurrentOrder), typeof(BO.Order), typeof(AddOrderWindow),
+                new PropertyMetadata(null));
+
+        public AddOrderWindow()
         {
-            MessageBox.Show(ex.Message);
+            InitializeComponent();
+            CurrentOrder = new BO.Order();
+            DataContext = this;
+        }
+
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var managerId = s_bl.Admin.GetConfig().ManagerId;
+                s_bl.Order.AddOrder(managerId, CurrentOrder);
+                MessageBox.Show("Order added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

@@ -3,17 +3,7 @@ using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace PL.Order
 {
@@ -21,11 +11,8 @@ namespace PL.Order
     {
         private static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-        private volatile DispatcherOperation? _observerOperation = null;
+        private readonly int _managerId;
 
-        /// <summary>
-        /// Current order displayed in the window
-        /// </summary>
         public BO.Order CurrentOrder
         {
             get => (BO.Order)GetValue(CurrentOrderProperty);
@@ -33,112 +20,62 @@ namespace PL.Order
         }
 
         public static readonly DependencyProperty CurrentOrderProperty =
-            DependencyProperty.Register(
-                nameof(CurrentOrder),
-                typeof(BO.Order),
-                typeof(OrderWindow),
-                new PropertyMetadata(null)
-            );
+            DependencyProperty.Register(  nameof(CurrentOrder),  typeof(BO.Order),  typeof(OrderWindow),
+               new PropertyMetadata(null));
 
-        private readonly int _managerId;
-        private readonly bool _isAddMode;
-
-        /// <summary>
-        /// Create new order
-        /// </summary>
-        public OrderWindow()
-        {
-            _managerId = s_bl.Admin.GetConfig().ManagerId;
-            _isAddMode = true;
-
-            InitializeComponent();
-
-            CurrentOrder = new BO.Order
-            {
-                OrderOpenTime = DateTime.Now,
-                OrderStatus = OrderStatus.Open,
-                Deliveries = new System.Collections.Generic.List<DeliveryPerOrderInList>()
-            };
-        }
-
-        /// <summary>
-        /// Open existing order
-        /// </summary>
+        public IEnumerable<BO.OrderType> OrderTypes => Enum.GetValues(typeof(BO.OrderType)).Cast<BO.OrderType>();
+     
         public OrderWindow(int orderId)
         {
-            _managerId = s_bl.Admin.GetConfig().ManagerId;
-            _isAddMode = false;
-
             InitializeComponent();
+
+            _managerId = s_bl.Admin.GetConfig().ManagerId;
 
             try
             {
                 CurrentOrder = s_bl.Order.GetOrderDetails(_managerId, orderId);
+                DataContext = this;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load order: {ex.Message}", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to load order: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Close();
-            }
-        }
-
-        private void OrderObserver()
-        {
-            if (_observerOperation is null ||
-                _observerOperation.Status == DispatcherOperationStatus.Completed)
-            {
-                _observerOperation = Dispatcher.BeginInvoke(() =>
-                {
-                    try
-                    {
-                        var updated = s_bl.Order.GetOrderDetails(_managerId, CurrentOrder.Id);
-                        if (updated == null)
-                        {
-                            MessageBox.Show("Order was removed.", "Info");
-                            Close();
-                        }
-                        else
-                        {
-                            CurrentOrder = updated;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Observer Error");
-                    }
-                });
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!_isAddMode)
-            {
-                s_bl.Order.AddObserver(OrderObserver);
-                s_bl.Admin.AddClockObserver(OrderObserver);
-            }
+            s_bl.Order.AddObserver(CurrentOrder.Id, RefreshOrder);
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            if (!_isAddMode)
+            s_bl.Order.RemoveObserver(CurrentOrder.Id, RefreshOrder);
+        }
+
+        private void RefreshOrder()
+        {
+            try
             {
-                s_bl.Order.RemoveObserver(OrderObserver);
-                s_bl.Admin.RemoveClockObserver(OrderObserver);
+                CurrentOrder = s_bl.Order.GetOrderDetails(_managerId, CurrentOrder.Id);
+            }
+            catch
+            {
+                MessageBox.Show("Order was removed", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                Close();
             }
         }
 
-        private void BtnUpdate_Click(object sender, RoutedEventArgs e)
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 s_bl.Order.UpdateOrder(_managerId, CurrentOrder);
-                MessageBox.Show("Order updated successfully", "Success");
+                MessageBox.Show("Order updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Update Error");
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -147,12 +84,12 @@ namespace PL.Order
             try
             {
                 s_bl.Order.CancelOrder(_managerId, CurrentOrder.Id);
-                MessageBox.Show("Order cancelled", "Success");
+                MessageBox.Show("Order cancelled", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Cancel Error");
+                MessageBox.Show(ex.Message, "Cancel Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

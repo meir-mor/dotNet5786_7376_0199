@@ -3,11 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PL.Order"
         mc:Ignorable="d"
-        Title="AddOrderWindow" Height="450" Width="800">
-    
-    
+        Title="Add New Order" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen">
+
     <Window.Resources>
         <Style x:Key="LabelStyle" TargetType="TextBlock">
             <Setter Property="Margin" Value="5"/>
@@ -33,7 +32,7 @@
                    HorizontalAlignment="Center"
                    Margin="0,0,0,15"/>
 
-        <!-- Order info -->
+        <!-- Order Info -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="160"/>
@@ -47,54 +46,31 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock Text="Order Type:" Grid.Row="0" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.OrderType}"
-                     Grid.Row="0" Grid.Column="1"
-                     Style="{StaticResource EditStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.OrderType, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" Style="{StaticResource EditStyle}"/>
 
             <TextBlock Text="Description:" Grid.Row="1" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.Description}"
-                     Grid.Row="1" Grid.Column="1"
-                     Style="{StaticResource EditStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.Description, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Style="{StaticResource EditStyle}"/>
 
             <TextBlock Text="Volume / Notes:" Grid.Row="2" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.Volume}"
-                     Grid.Row="2" Grid.Column="1"
-                     Style="{StaticResource EditStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.Volume, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Style="{StaticResource EditStyle}"/>
 
             <TextBlock Text="Customer:" Grid.Row="3" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.CustomerFullName}"
-                     Grid.Row="3" Grid.Column="1"
-                     Style="{StaticResource EditStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.CustomerFullName, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Style="{StaticResource EditStyle}"/>
 
             <TextBlock Text="Phone:" Grid.Row="4" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.CustomerPhone}"
-                     Grid.Row="4" Grid.Column="1"
-                     Style="{StaticResource EditStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.CustomerPhone, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Style="{StaticResource EditStyle}"/>
 
             <TextBlock Text="Address:" Grid.Row="5" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.FullAddress}"
-                     Grid.Row="5" Grid.Column="1"
-                     Style="{StaticResource EditStyle}"/>
+            <TextBox Text="{Binding CurrentOrder.FullAddress, Mode=TwoWay}" Grid.Row="5" Grid.Column="1" Style="{StaticResource EditStyle}"/>
         </Grid>
 
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Margin="0,15,0,0">
-            <Button Content="Add"
-                    Width="120"
-                    Margin="5"
-                    Click="BtnAdd_Click"/>
-
-            <Button Content="Close"
-                    Width="120"
-                    Margin="5"
-                    Click="BtnClose_Click"/>
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Button Content="Add" Width="120" Margin="5" Click="BtnAdd_Click"/>
+            <Button Content="Close" Width="120" Margin="5" Click="BtnClose_Click"/>
         </StackPanel>
     </Grid>
 </Window>
-

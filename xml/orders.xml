@@ -2,13 +2,13 @@
 <Orders>
   <Order>
     <Id>0</Id>
-    <Type>General</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Daniel Levy</Description>
     <Address>Wingate 38 Herzliya</Address>
     <CustomerName>Daniel Levy</CustomerName>
-    <CustomerPhone>054-4135127</CustomerPhone>
+    <CustomerPhone>054-9879784</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T03:34:21</CreatedAt>
+    <CreatedAt>2025-12-19T02:37:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1832113</Latitude>
     <Longitude>34.8078524</Longitude>
@@ -19,191 +19,191 @@
     <Description>Package delivery for Noa Friedman</Description>
     <Address>Abba Eban 2 Herzliya</Address>
     <CustomerName>Noa Friedman</CustomerName>
-    <CustomerPhone>054-8511480</CustomerPhone>
+    <CustomerPhone>054-7448829</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T16:41:21</CreatedAt>
+    <CreatedAt>2025-12-14T03:34:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1620911</Latitude>
     <Longitude>34.8086534</Longitude>
   </Order>
   <Order>
     <Id>2</Id>
-    <Type>Flowers</Type>
+    <Type>Clothing</Type>
     <Description>Package delivery for Eli Katz</Description>
     <Address>Arlozorov 4 Herzliya</Address>
     <CustomerName>Eli Katz</CustomerName>
-    <CustomerPhone>054-5302682</CustomerPhone>
+    <CustomerPhone>054-7032410</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-16T20:25:21</CreatedAt>
+    <CreatedAt>2025-12-18T16:36:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1605722</Latitude>
     <Longitude>34.842891</Longitude>
   </Order>
   <Order>
     <Id>3</Id>
-    <Type>Clothing</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Maya Cohen</Description>
     <Address>Ben Yehuda 12 Herzliya</Address>
     <CustomerName>Maya Cohen</CustomerName>
-    <CustomerPhone>054-2771433</CustomerPhone>
+    <CustomerPhone>054-5990857</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-17T08:45:21</CreatedAt>
+    <CreatedAt>2025-12-18T01:07:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.8103515</Latitude>
     <Longitude>34.993927</Longitude>
   </Order>
   <Order>
     <Id>4</Id>
-    <Type>Flowers</Type>
+    <Type>General</Type>
     <Description>Package delivery for Yonatan Mizrachi</Description>
     <Address>Hagalil 11 Herzliya</Address>
     <CustomerName>Yonatan Mizrachi</CustomerName>
-    <CustomerPhone>054-7883363</CustomerPhone>
+    <CustomerPhone>054-2279208</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-16T13:56:21</CreatedAt>
+    <CreatedAt>2025-12-16T03:25:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1656712</Latitude>
     <Longitude>34.8438455</Longitude>
   </Order>
   <Order>
     <Id>5</Id>
-    <Type>General</Type>
+    <Type>Flowers</Type>
     <Description>Package delivery for Sara Gold</Description>
     <Address>Maskit 27 Herzliya</Address>
     <CustomerName>Sara Gold</CustomerName>
-    <CustomerPhone>054-2580267</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-16T21:00:21</CreatedAt>
+    <CustomerPhone>054-8686846</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-14T05:28:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1631522</Latitude>
     <Longitude>34.8110896</Longitude>
   </Order>
   <Order>
     <Id>6</Id>
-    <Type>Clothing</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Ronen Shalev</Description>
     <Address>Ben Gurion 12 Herzliya</Address>
     <CustomerName>Ronen Shalev</CustomerName>
-    <CustomerPhone>054-4067149</CustomerPhone>
+    <CustomerPhone>054-1558466</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-15T05:54:21</CreatedAt>
+    <CreatedAt>2025-12-18T12:06:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.165068</Latitude>
     <Longitude>34.8423486</Longitude>
   </Order>
   <Order>
     <Id>7</Id>
-    <Type>Food</Type>
+    <Type>General</Type>
     <Description>Package delivery for Hila Barak</Description>
     <Address>Ramat Yam 60 Herzliya</Address>
     <CustomerName>Hila Barak</CustomerName>
-    <CustomerPhone>054-3616034</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-18T21:31:21</CreatedAt>
+    <CustomerPhone>054-3703009</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-15T11:16:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1719514</Latitude>
     <Longitude>34.8005933</Longitude>
   </Order>
   <Order>
     <Id>8</Id>
-    <Type>Food</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Omer Levi</Description>
     <Address>Weizmann 8 Kfar Saba</Address>
     <CustomerName>Omer Levi</CustomerName>
-    <CustomerPhone>054-8401295</CustomerPhone>
+    <CustomerPhone>054-2197581</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-16T09:09:21</CreatedAt>
+    <CreatedAt>2025-12-16T13:47:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1755487</Latitude>
     <Longitude>34.9071512</Longitude>
   </Order>
   <Order>
     <Id>9</Id>
-    <Type>General</Type>
+    <Type>Clothing</Type>
     <Description>Package delivery for Tamar Peretz</Description>
     <Address>Shenkar 3 Herzliya</Address>
     <CustomerName>Tamar Peretz</CustomerName>
-    <CustomerPhone>054-9966037</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-12T23:20:21</CreatedAt>
+    <CustomerPhone>054-2393168</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-16T16:20:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1604227</Latitude>
     <Longitude>34.810224</Longitude>
   </Order>
   <Order>
     <Id>10</Id>
-    <Type>Food</Type>
+    <Type>General</Type>
     <Description>Package delivery for Amit Rosen</Description>
     <Address>Herzl 20 Netanya</Address>
     <CustomerName>Amit Rosen</CustomerName>
-    <CustomerPhone>054-3372376</CustomerPhone>
-    <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-16T11:15:21</CreatedAt>
+    <CustomerPhone>054-7458239</CustomerPhone>
+    <IsFragile>false</IsFragile>
+    <CreatedAt>2025-12-14T06:17:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.3290308</Latitude>
     <Longitude>34.8555262</Longitude>
   </Order>
   <Order>
     <Id>11</Id>
-    <Type>General</Type>
+    <Type>Clothing</Type>
     <Description>Package delivery for Yaara Azulay</Description>
     <Address>Ben Gurion 1 Netanya</Address>
     <CustomerName>Yaara Azulay</CustomerName>
-    <CustomerPhone>054-6822380</CustomerPhone>
+    <CustomerPhone>054-5089295</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-17T10:55:21</CreatedAt>
+    <CreatedAt>2025-12-15T22:02:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.282562</Latitude>
     <Longitude>34.8463105</Longitude>
   </Order>
   <Order>
     <Id>12</Id>
-    <Type>Clothing</Type>
+    <Type>Food</Type>
     <Description>Package delivery for Michal Golan</Description>
     <Address>Haatzmaut 34 Sderot</Address>
     <CustomerName>Michal Golan</CustomerName>
-    <CustomerPhone>054-3697066</CustomerPhone>
-    <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-14T06:21:21</CreatedAt>
+    <CustomerPhone>054-1995985</CustomerPhone>
+    <IsFragile>false</IsFragile>
+    <CreatedAt>2025-12-18T07:11:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>31.5299873</Latitude>
     <Longitude>34.5898489</Longitude>
   </Order>
   <Order>
     <Id>13</Id>
-    <Type>Clothing</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Itay Sapir</Description>
     <Address>Tchernichovsky 7 Netanya</Address>
     <CustomerName>Itay Sapir</CustomerName>
-    <CustomerPhone>054-4924266</CustomerPhone>
+    <CustomerPhone>054-4587825</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-18T04:31:21</CreatedAt>
+    <CreatedAt>2025-12-14T20:54:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.3219882</Latitude>
     <Longitude>34.8527841</Longitude>
   </Order>
   <Order>
     <Id>14</Id>
-    <Type>Dishes</Type>
+    <Type>Flowers</Type>
     <Description>Package delivery for Lior Shimon</Description>
     <Address>Dizengoff 16 Netanya</Address>
     <CustomerName>Lior Shimon</CustomerName>
-    <CustomerPhone>054-9256890</CustomerPhone>
+    <CustomerPhone>054-1048282</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-15T22:50:21</CreatedAt>
+    <CreatedAt>2025-12-16T06:28:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.3306489</Latitude>
     <Longitude>34.8543225</Longitude>
   </Order>
   <Order>
     <Id>15</Id>
-    <Type>Clothing</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Avital Ben-David</Description>
     <Address>Sheshet Hayamim 3 Netanya</Address>
     <CustomerName>Avital Ben-David</CustomerName>
-    <CustomerPhone>054-3881348</CustomerPhone>
+    <CustomerPhone>054-4775013</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-12T11:51:21</CreatedAt>
+    <CreatedAt>2025-12-18T23:30:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.3321008</Latitude>
     <Longitude>34.8569846</Longitude>
@@ -214,74 +214,74 @@
     <Description>Package delivery for Gal Noy</Description>
     <Address>Ruppin 21 Netanya</Address>
     <CustomerName>Gal Noy</CustomerName>
-    <CustomerPhone>054-9832617</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T05:29:21</CreatedAt>
+    <CustomerPhone>054-1472366</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-16T15:13:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.2804355</Latitude>
     <Longitude>34.8553028</Longitude>
   </Order>
   <Order>
     <Id>17</Id>
-    <Type>Dishes</Type>
+    <Type>General</Type>
     <Description>Package delivery for Tzvika Mor</Description>
     <Address>HaNeviim 18 Netanya</Address>
     <CustomerName>Tzvika Mor</CustomerName>
-    <CustomerPhone>054-4149885</CustomerPhone>
+    <CustomerPhone>054-1717393</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-18T17:08:21</CreatedAt>
+    <CreatedAt>2025-12-16T13:34:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.2969114</Latitude>
     <Longitude>34.8587489</Longitude>
   </Order>
   <Order>
     <Id>18</Id>
-    <Type>Clothing</Type>
+    <Type>Flowers</Type>
     <Description>Package delivery for Adi Malka</Description>
     <Address>Ben Ami 28 Netanya</Address>
     <CustomerName>Adi Malka</CustomerName>
-    <CustomerPhone>054-4320964</CustomerPhone>
+    <CustomerPhone>054-4930648</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T07:41:21</CreatedAt>
+    <CreatedAt>2025-12-15T10:06:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.2970494</Latitude>
     <Longitude>34.840948</Longitude>
   </Order>
   <Order>
     <Id>19</Id>
-    <Type>Dishes</Type>
+    <Type>Flowers</Type>
     <Description>Package delivery for Eden Levi</Description>
     <Address>Tchernichovsky 32 Netanya</Address>
     <CustomerName>Eden Levi</CustomerName>
-    <CustomerPhone>054-6361930</CustomerPhone>
-    <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-17T17:44:21</CreatedAt>
+    <CustomerPhone>054-1235650</CustomerPhone>
+    <IsFragile>false</IsFragile>
+    <CreatedAt>2025-12-16T17:04:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.3216431</Latitude>
     <Longitude>34.8537926</Longitude>
   </Order>
   <Order>
     <Id>20</Id>
-    <Type>Flowers</Type>
+    <Type>General</Type>
     <Description>Package delivery for Shani Alon</Description>
     <Address>Ahuza 124 Raanana</Address>
     <CustomerName>Shani Alon</CustomerName>
-    <CustomerPhone>054-4176022</CustomerPhone>
-    <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-14T07:49:21</CreatedAt>
+    <CustomerPhone>054-6777391</CustomerPhone>
+    <IsFragile>false</IsFragile>
+    <CreatedAt>2025-12-16T00:55:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1809533</Latitude>
     <Longitude>34.8739581</Longitude>
   </Order>
   <Order>
     <Id>21</Id>
-    <Type>Flowers</Type>
+    <Type>Clothing</Type>
     <Description>Package delivery for David Cohen</Description>
     <Address>HaPalmach 18 Raanana</Address>
     <CustomerName>David Cohen</CustomerName>
-    <CustomerPhone>054-7357459</CustomerPhone>
+    <CustomerPhone>054-6880292</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-17T04:05:21</CreatedAt>
+    <CreatedAt>2025-12-15T01:22:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1905668</Latitude>
     <Longitude>34.8760488</Longitude>
@@ -292,100 +292,100 @@
     <Description>Package delivery for Ella Sapir</Description>
     <Address>Weizmann 40 Kfar Saba</Address>
     <CustomerName>Ella Sapir</CustomerName>
-    <CustomerPhone>054-9345374</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T08:11:21</CreatedAt>
+    <CustomerPhone>054-6486738</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-16T22:07:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1755487</Latitude>
     <Longitude>34.9071512</Longitude>
   </Order>
   <Order>
     <Id>23</Id>
-    <Type>General</Type>
+    <Type>Clothing</Type>
     <Description>Package delivery for Roi Bachar</Description>
     <Address>Herzl 53 Raanana</Address>
     <CustomerName>Roi Bachar</CustomerName>
-    <CustomerPhone>054-5644154</CustomerPhone>
+    <CustomerPhone>054-6559806</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T05:28:21</CreatedAt>
+    <CreatedAt>2025-12-19T12:39:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1785542</Latitude>
     <Longitude>34.868054</Longitude>
   </Order>
   <Order>
     <Id>24</Id>
-    <Type>General</Type>
+    <Type>Clothing</Type>
     <Description>Package delivery for Rotem Menashe</Description>
     <Address>Nordau 5 Raanana</Address>
     <CustomerName>Rotem Menashe</CustomerName>
-    <CustomerPhone>054-1414485</CustomerPhone>
+    <CustomerPhone>054-8180691</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T18:20:21</CreatedAt>
+    <CreatedAt>2025-12-20T02:28:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1858117</Latitude>
     <Longitude>34.8852079</Longitude>
   </Order>
   <Order>
     <Id>25</Id>
-    <Type>Food</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Tal Shapiro</Description>
     <Address>HaRav Kook 10 Raanana</Address>
     <CustomerName>Tal Shapiro</CustomerName>
-    <CustomerPhone>054-4877240</CustomerPhone>
+    <CustomerPhone>054-3631578</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-12T22:14:21</CreatedAt>
+    <CreatedAt>2025-12-19T16:44:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1961853</Latitude>
     <Longitude>34.8741632</Longitude>
   </Order>
   <Order>
     <Id>26</Id>
-    <Type>Food</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Ariel Ben-Ami</Description>
     <Address>HaYovel 16 Raanana</Address>
     <CustomerName>Ariel Ben-Ami</CustomerName>
-    <CustomerPhone>054-3979255</CustomerPhone>
+    <CustomerPhone>054-1059477</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T15:09:21</CreatedAt>
+    <CreatedAt>2025-12-16T04:29:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1849828</Latitude>
     <Longitude>34.8727788</Longitude>
   </Order>
   <Order>
     <Id>27</Id>
-    <Type>Dishes</Type>
+    <Type>Clothing</Type>
     <Description>Package delivery for Hadar Silver</Description>
     <Address>Ben Gurion 5 Raanana</Address>
     <CustomerName>Hadar Silver</CustomerName>
-    <CustomerPhone>054-5692380</CustomerPhone>
+    <CustomerPhone>054-1403493</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-14T05:17:21</CreatedAt>
+    <CreatedAt>2025-12-14T18:45:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1764927</Latitude>
     <Longitude>34.8695331</Longitude>
   </Order>
   <Order>
     <Id>28</Id>
-    <Type>Food</Type>
+    <Type>General</Type>
     <Description>Package delivery for Ofir Gil</Description>
     <Address>HaEshel 7 Raanana</Address>
     <CustomerName>Ofir Gil</CustomerName>
-    <CustomerPhone>054-1120652</CustomerPhone>
-    <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-18T19:03:21</CreatedAt>
+    <CustomerPhone>054-2207611</CustomerPhone>
+    <IsFragile>false</IsFragile>
+    <CreatedAt>2025-12-19T10:42:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1915795</Latitude>
     <Longitude>34.8582171</Longitude>
   </Order>
   <Order>
     <Id>29</Id>
-    <Type>General</Type>
+    <Type>Flowers</Type>
     <Description>Package delivery for Nofar Ben-Atar</Description>
     <Address>Dizengoff 48 Tel Aviv</Address>
     <CustomerName>Nofar Ben-Atar</CustomerName>
-    <CustomerPhone>054-8944317</CustomerPhone>
+    <CustomerPhone>054-7434902</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-16T09:50:21</CreatedAt>
+    <CreatedAt>2025-12-16T19:08:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.074881</Latitude>
     <Longitude>34.776184</Longitude>
@@ -396,61 +396,61 @@
     <Description>Package delivery for Yael Katz</Description>
     <Address>Rothschild 22 Tel Aviv</Address>
     <CustomerName>Yael Katz</CustomerName>
-    <CustomerPhone>054-8004855</CustomerPhone>
+    <CustomerPhone>054-4840255</CustomerPhone>
     <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-13T03:27:21</CreatedAt>
+    <CreatedAt>2025-12-20T21:20:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.0627782</Latitude>
     <Longitude>34.771653</Longitude>
   </Order>
   <Order>
     <Id>31</Id>
-    <Type>Dishes</Type>
+    <Type>Flowers</Type>
     <Description>Package delivery for Shira Ben-David</Description>
     <Address>Ibn Gabirol 15 Tel Aviv</Address>
     <CustomerName>Shira Ben-David</CustomerName>
-    <CustomerPhone>054-6365195</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-14T20:11:21</CreatedAt>
+    <CustomerPhone>054-1949270</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-15T21:31:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.0899271</Latitude>
     <Longitude>34.83199</Longitude>
   </Order>
   <Order>
     <Id>32</Id>
-    <Type>Flowers</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Michal Avraham</Description>
     <Address>Dizengoff 102 Tel Aviv</Address>
     <CustomerName>Michal Avraham</CustomerName>
-    <CustomerPhone>054-1079829</CustomerPhone>
+    <CustomerPhone>054-5849113</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-15T09:34:21</CreatedAt>
+    <CreatedAt>2025-12-14T13:45:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.079366</Latitude>
     <Longitude>34.774141</Longitude>
   </Order>
   <Order>
     <Id>33</Id>
-    <Type>Food</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Ronen Fisher</Description>
     <Address>Allenby 99 Tel Aviv</Address>
     <CustomerName>Ronen Fisher</CustomerName>
-    <CustomerPhone>054-5404533</CustomerPhone>
+    <CustomerPhone>054-6724295</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T13:18:21</CreatedAt>
+    <CreatedAt>2025-12-14T11:21:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.064609</Latitude>
     <Longitude>34.772695</Longitude>
   </Order>
   <Order>
     <Id>34</Id>
-    <Type>General</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Oded Tal</Description>
     <Address>King George 29 Tel Aviv</Address>
     <CustomerName>Oded Tal</CustomerName>
-    <CustomerPhone>054-4919236</CustomerPhone>
+    <CustomerPhone>054-7431362</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-18T01:37:21</CreatedAt>
+    <CreatedAt>2025-12-18T11:57:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.0717498</Latitude>
     <Longitude>34.7730106</Longitude>
@@ -461,87 +461,87 @@
     <Description>Package delivery for Maayan Sasson</Description>
     <Address>Shenkin 17 Tel Aviv</Address>
     <CustomerName>Maayan Sasson</CustomerName>
-    <CustomerPhone>054-4934687</CustomerPhone>
+    <CustomerPhone>054-8433970</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-17T07:40:21</CreatedAt>
+    <CreatedAt>2025-12-17T09:06:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.0695492</Latitude>
     <Longitude>34.7723065</Longitude>
   </Order>
   <Order>
     <Id>36</Id>
-    <Type>General</Type>
+    <Type>Food</Type>
     <Description>Package delivery for Hanan Ravid</Description>
     <Address>Bograshov 20 Tel Aviv</Address>
     <CustomerName>Hanan Ravid</CustomerName>
-    <CustomerPhone>054-6941714</CustomerPhone>
+    <CustomerPhone>054-2079039</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T18:45:21</CreatedAt>
+    <CreatedAt>2025-12-18T12:27:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.077031</Latitude>
     <Longitude>34.769242</Longitude>
   </Order>
   <Order>
     <Id>37</Id>
-    <Type>Food</Type>
+    <Type>General</Type>
     <Description>Package delivery for Dana Biran</Description>
     <Address>Frishman 22 Tel Aviv</Address>
     <CustomerName>Dana Biran</CustomerName>
-    <CustomerPhone>054-1896709</CustomerPhone>
+    <CustomerPhone>054-3426536</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T21:31:21</CreatedAt>
+    <CreatedAt>2025-12-20T08:38:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.079749</Latitude>
     <Longitude>34.770612</Longitude>
   </Order>
   <Order>
     <Id>38</Id>
-    <Type>General</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Elad Rozen</Description>
     <Address>Yehuda HaMaccabi 15 Tel Aviv</Address>
     <CustomerName>Elad Rozen</CustomerName>
-    <CustomerPhone>054-9071713</CustomerPhone>
+    <CustomerPhone>054-2618121</CustomerPhone>
     <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-13T21:34:21</CreatedAt>
+    <CreatedAt>2025-12-15T04:42:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.093894</Latitude>
     <Longitude>34.785878</Longitude>
   </Order>
   <Order>
     <Id>39</Id>
-    <Type>Flowers</Type>
+    <Type>General</Type>
     <Description>Package delivery for Linor Yaakov</Description>
     <Address>Mikve Israel 19 Tel Aviv</Address>
     <CustomerName>Linor Yaakov</CustomerName>
-    <CustomerPhone>054-3260436</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-12T23:10:21</CreatedAt>
+    <CustomerPhone>054-9481543</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-18T22:12:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.0626109</Latitude>
     <Longitude>34.7762599</Longitude>
   </Order>
   <Order>
     <Id>40</Id>
-    <Type>Clothing</Type>
+    <Type>Flowers</Type>
     <Description>Package delivery for Benny Tal</Description>
     <Address>Weizmann 35 Kfar Saba</Address>
     <CustomerName>Benny Tal</CustomerName>
-    <CustomerPhone>054-9153957</CustomerPhone>
+    <CustomerPhone>054-1233776</CustomerPhone>
     <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-16T03:45:21</CreatedAt>
+    <CreatedAt>2025-12-18T11:55:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1775858</Latitude>
     <Longitude>34.8997917</Longitude>
   </Order>
   <Order>
     <Id>41</Id>
-    <Type>Flowers</Type>
+    <Type>Clothing</Type>
     <Description>Package delivery for Gali Levy</Description>
     <Address>Herzl 12 Kfar Saba</Address>
     <CustomerName>Gali Levy</CustomerName>
-    <CustomerPhone>054-2011380</CustomerPhone>
+    <CustomerPhone>054-4780221</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-14T16:28:21</CreatedAt>
+    <CreatedAt>2025-12-16T11:01:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1746003</Latitude>
     <Longitude>34.911144</Longitude>
@@ -552,48 +552,48 @@
     <Description>Package delivery for Tomer Brill</Description>
     <Address>Weizmann 50 Kfar Saba</Address>
     <CustomerName>Tomer Brill</CustomerName>
-    <CustomerPhone>054-1705122</CustomerPhone>
+    <CustomerPhone>054-6250186</CustomerPhone>
     <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-15T05:54:21</CreatedAt>
+    <CreatedAt>2025-12-20T21:38:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1755487</Latitude>
     <Longitude>34.9071512</Longitude>
   </Order>
   <Order>
     <Id>43</Id>
-    <Type>Food</Type>
+    <Type>Flowers</Type>
     <Description>Package delivery for Itamar Cohen</Description>
     <Address>Arlozorov 25 Kfar Saba</Address>
     <CustomerName>Itamar Cohen</CustomerName>
-    <CustomerPhone>054-4524038</CustomerPhone>
+    <CustomerPhone>054-4001809</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-13T00:29:21</CreatedAt>
+    <CreatedAt>2025-12-18T08:56:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1709052</Latitude>
     <Longitude>34.9047941</Longitude>
   </Order>
   <Order>
     <Id>44</Id>
-    <Type>Food</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Yael Ben-Zvi</Description>
     <Address>Dizengoff 55 Tel Aviv</Address>
     <CustomerName>Yael Ben-Zvi</CustomerName>
-    <CustomerPhone>054-5391262</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-17T12:30:21</CreatedAt>
+    <CustomerPhone>054-5566407</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-15T17:36:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.075133</Latitude>
     <Longitude>34.775122</Longitude>
   </Order>
   <Order>
     <Id>45</Id>
-    <Type>Flowers</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Sarah Cohen</Description>
     <Address>Herzl 78 Kfar Saba</Address>
     <CustomerName>Sarah Cohen</CustomerName>
-    <CustomerPhone>054-7326811</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-14T13:36:21</CreatedAt>
+    <CustomerPhone>054-5597096</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-15T06:54:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1746003</Latitude>
     <Longitude>34.911144</Longitude>
@@ -604,48 +604,48 @@
     <Description>Package delivery for Erez Ben-Yosef</Description>
     <Address>Tel Hai 33 Kfar Saba</Address>
     <CustomerName>Erez Ben-Yosef</CustomerName>
-    <CustomerPhone>054-4758151</CustomerPhone>
-    <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-17T11:12:21</CreatedAt>
+    <CustomerPhone>054-7416834</CustomerPhone>
+    <IsFragile>true</IsFragile>
+    <CreatedAt>2025-12-18T14:35:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1690083</Latitude>
     <Longitude>34.9124815</Longitude>
   </Order>
   <Order>
     <Id>47</Id>
-    <Type>General</Type>
+    <Type>Dishes</Type>
     <Description>Package delivery for Avital Ashkenazi</Description>
     <Address>HaRav Maimon 6 Herzliya</Address>
     <CustomerName>Avital Ashkenazi</CustomerName>
-    <CustomerPhone>054-5223213</CustomerPhone>
-    <IsFragile>true</IsFragile>
-    <CreatedAt>2025-12-16T01:35:21</CreatedAt>
+    <CustomerPhone>054-8780940</CustomerPhone>
+    <IsFragile>false</IsFragile>
+    <CreatedAt>2025-12-17T16:37:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1658819</Latitude>
     <Longitude>34.8315119</Longitude>
   </Order>
   <Order>
     <Id>48</Id>
-    <Type>General</Type>
+    <Type>Flowers</Type>
     <Description>Package delivery for Nir Carmi</Description>
     <Address>Rothschild 9 Kfar Saba</Address>
     <CustomerName>Nir Carmi</CustomerName>
-    <CustomerPhone>054-2151614</CustomerPhone>
+    <CustomerPhone>054-1087212</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-18T03:26:21</CreatedAt>
+    <CreatedAt>2025-12-15T03:16:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1752104</Latitude>
     <Longitude>34.908524</Longitude>
   </Order>
   <Order>
     <Id>49</Id>
-    <Type>Flowers</Type>
+    <Type>Clothing</Type>
     <Description>Package delivery for Gal Noy</Description>
     <Address>Sokolov 3 Kfar Saba</Address>
     <CustomerName>Gal Noy</CustomerName>
-    <CustomerPhone>054-1575998</CustomerPhone>
+    <CustomerPhone>054-6257203</CustomerPhone>
     <IsFragile>false</IsFragile>
-    <CreatedAt>2025-12-17T16:25:21</CreatedAt>
+    <CreatedAt>2025-12-15T07:21:05</CreatedAt>
     <Status>Closed</Status>
     <Latitude>32.1740255</Latitude>
     <Longitude>34.9019234</Longitude>

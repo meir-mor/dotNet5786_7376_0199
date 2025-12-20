@@ -146,6 +146,44 @@ internal static class OrderManager
     {
         try
         {
+            var existing = s_dal.Order.Read(bo.Id)
+                ?? throw new BO.BlDoesNotExistException($"Order {bo.Id} not found");
+
+            if (existing.Status != DO.OrderStatus.Open)
+                throw new BO.BlInvalidOperationException( "Only open orders can be updated");
+
+            var doOrder = new DO.Order(
+                bo.Id,
+                (DO.OrderType)(int)bo.OrderType,
+                bo.Description,
+                bo.FullAddress,
+                bo.CustomerFullName,
+                bo.CustomerPhone,
+                false,
+                existing.CreatedAt,   
+                existing.Status,      
+                bo.Latitude,
+                bo.Longitude
+            );
+
+            s_dal.Order.Update(doOrder);
+
+            Observers.NotifyItemUpdated(bo.Id);
+            Observers.NotifyListUpdated();
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException($"DAL: order {bo.Id} not found", ex);
+        }
+    }
+
+    /// <summary>
+    /// Update order (maps BO -> DO).
+    /// </summary>
+    /*internal static void UpdateOrder(BO.Order bo)
+    {
+        try
+        {
             var doOrder = new DO.Order(
                 bo.Id,
                 (DO.OrderType)(int)bo.OrderType,
@@ -168,7 +206,7 @@ internal static class OrderManager
         {
             throw new BO.BlDoesNotExistException($"DAL: order {bo.Id} not found", ex);
         }
-    }
+    }*/
 
     /// <summary>
     /// Delete order by id.
