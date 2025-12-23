@@ -67,7 +67,7 @@
                             Padding="6,2"
                             Margin="4"
                             CommandParameter="{Binding Id}"
-                            Click="DeleteCourier_Click"
+                            Click="CancelOrder_Click"
                             Visibility="{Binding OrderStatus, Converter={StaticResource CancelButtonVisibilityConverter}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

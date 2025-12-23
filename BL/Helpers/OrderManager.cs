@@ -101,11 +101,11 @@ internal static class OrderManager
     /// <summary>
     /// Create order (maps BO -> DO).
     /// </summary>
-    internal static void CreateOrder(BO.Order bo)
+    internal static void CreateOrder(BO.Order order)
     {
         try
         {
-            var (lat, lon) = DistanceCalculator.GetCoordinates(bo.FullAddress);
+            var (lat, lon) = DistanceCalculator.GetCoordinates(order.FullAddress);
             if (lat is null || lon is null)
             {
                 throw new BO.BlUnexpectedException("DAL: invalid coordinates");
@@ -113,14 +113,14 @@ internal static class OrderManager
             
             var doOrder = new DO.Order(
                 0,
-                (DO.OrderType)(int)bo.OrderType,
-                bo.Description,
-                bo.FullAddress,
-                bo.CustomerFullName,
-                bo.CustomerPhone,
+                (DO.OrderType)(int)order.OrderType,
+                order.Description,
+                order.FullAddress,
+                order.CustomerFullName,
+                order.CustomerPhone,
                 false, // BO doesn't expose IsFragile; default false
-                bo.OrderOpenTime,
-                bo.OrderStatus,
+                order.OrderOpenTime,
+                (DO.OrderStatus)order.OrderStatus,
                 lat ?? 0,
                 lon ?? 0
             );
@@ -264,7 +264,7 @@ internal static class OrderManager
             OrderOpenTime = o.CreatedAt,
             ExpectedDeliveryTime = DateTime.MinValue,
             MaxDeliveryTime = TimeSpan.Zero,
-            OrderStatus = (DO.OrderStatus)(int)o.Status,
+            OrderStatus = (BO.OrderStatus)(int)o.Status,
             ScheduleStatus = DO.ScheduleStatus.OnTime,
             TimeRemaining = TimeSpan.Zero,
             Deliveries = new List<BO.DeliveryPerOrderInList>()

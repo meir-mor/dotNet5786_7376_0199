@@ -76,7 +76,7 @@ public partial class OrderListWindow : Window
         }
     }
 
-    private void Order_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         try
         {
@@ -113,7 +113,7 @@ public partial class OrderListWindow : Window
 
             var order = s_bl.Order.GetOrderDetails(_managerId, orderId);
 
-            if (order.OrderStatus == DO.OrderStatus.InProgress)
+            if (order.OrderStatus == BO.OrderStatus.InProgress)
             {
                 NotifyCourierOrderCancelled(order);
             }

@@ -70,7 +70,7 @@ internal static class CourierManager
             CustomerPhone = order.CustomerPhone,
             DeliveryStartTime = delivery.StartTime,
             OrderType = (BO.OrderType)(int)order.Type,
-            OrderStatus = order.Status,
+            OrderStatus = (BO.OrderStatus)order.Status,
             Description = "",
             AerialDistance = 0, //TODo
             OrderOpenTime = order.CreatedAt,
