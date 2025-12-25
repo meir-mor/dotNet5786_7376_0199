@@ -13,6 +13,7 @@
         
         <!-- Converter to control Cancel button visibility -->
         <local:CancelButtonVisibilityConverter x:Key="CancelButtonVisibilityConverter"/>
-
+        <local:NullToHiddenConverter x:Key="NullToHiddenConverter" />
+        <local:NullToBoolConverter x:Key="NullToBoolConverter" />
     </Application.Resources>
 </Application>

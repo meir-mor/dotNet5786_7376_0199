@@ -42,7 +42,6 @@ public partial class LoginWindow : Window
             {
                 var wnd = new MainWindow();
                 wnd.Show();
-                Close();
                 return;
             }
 
@@ -58,7 +57,6 @@ public partial class LoginWindow : Window
                 {
                     var wnd = new PL.Courier.CourierMainWindow(courierId);
                     wnd.Show();
-                    Close();
                     return;
                 }
                 catch (BO.BlException ex)
@@ -74,8 +72,9 @@ public partial class LoginWindow : Window
         {
             MessageBox.Show($"Login failed: {ex.Message}", "Login Error", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex);
             MessageBox.Show("An unexpected error occurred during login. Please try again or contact support.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 }

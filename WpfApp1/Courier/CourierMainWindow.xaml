@@ -4,25 +4,20 @@
         Title="Courier Dashboard" Height="520" Width="640"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Loaded="Window_Loaded" Closed="Window_Closed">
+    
     <Grid Margin="12">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    <RowDefinition Height="Auto"/> </Grid.RowDefinitions>
 
-        <TextBlock Text="Courier Dashboard" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+        <TextBlock Text="Courier Dashboard" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
 
-        <!-- Form: two-column aligned labels + controls -->
         <Grid Grid.Row="1" Margin="0,6,0,6">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="140"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="140"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -30,55 +25,70 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Full Name:" VerticalAlignment="Center" Margin="4"/>
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentCourier.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentCourier.FullName, Mode=TwoWay}" Margin="4"/>
 
             <TextBlock Grid.Row="0" Grid.Column="2" Text="Phone:" VerticalAlignment="Center" Margin="4"/>
-            <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding CurrentCourier.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4"/>
+            <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding CurrentCourier.PhoneNumber, Mode=TwoWay}" Margin="4"/>
 
             <TextBlock Grid.Row="1" Grid.Column="0" Text="Email:" VerticalAlignment="Center" Margin="4"/>
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentCourier.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentCourier.Email, Mode=TwoWay}" Margin="4"/>
 
             <TextBlock Grid.Row="1" Grid.Column="2" Text="Max Distance (km):" VerticalAlignment="Center" Margin="4"/>
-            <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding CurrentCourier.MaxDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4"/>
+            <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding CurrentCourier.MaxDistance, Mode=TwoWay}" Margin="4"/>
 
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Shipment Type:" VerticalAlignment="Center" Margin="4"/>
             <ComboBox Grid.Row="2" Grid.Column="1"
-                      ItemsSource="{Binding Source={StaticResource ShipmentTypeItemsKey}}"
-                      DisplayMemberPath="Name"
-                      SelectedValuePath="Value"
-                      SelectedValue="{Binding CurrentCourier.ShipmentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding Source={StaticResource ShipmentTypeItemsKey}}" 
+                      SelectedValue="{Binding CurrentCourier.ShipmentType, Mode=TwoWay}"
                       Margin="4"/>
 
             <TextBlock Grid.Row="2" Grid.Column="2" Text="Start Work:" VerticalAlignment="Center" Margin="4"/>
             <DatePicker Grid.Row="2" Grid.Column="3"
-                        SelectedDate="{Binding CurrentCourier.StartWorkTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedDate="{Binding CurrentCourier.StartWorkTime, Mode=TwoWay}"
+                        IsEnabled="False"
                         Margin="4"/>
         </Grid>
 
-        <!-- Current order in progress -->
-        <GroupBox Grid.Row="2" Header="Current Order (In Progress)" Margin="0,6,0,6">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <GroupBox Grid.Row="2" Header="Current Order Status" Margin="0,10,0,10">
+            <StackPanel Margin="10">
+                <StackPanel Visibility="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToVisibilityConverter}}">
+                    <TextBlock Text="Order In Progress Details (View Only):" FontWeight="SemiBold" TextDecorations="Underline" Margin="0,0,0,5"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.OrderId, StringFormat='Order ID: {0}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.FullAddress, StringFormat='Address: {0}'}" FontSize="14" TextWrapping="Wrap"/>
+                    </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="6">
-                    <TextBlock Text="If there is an order in progress it will show here (read-only)." Foreground="Gray" Margin="0,0,0,8"/>
-                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.FullAddress, FallbackValue='No current order'}" TextWrapping="Wrap" Margin="0,0,0,6"/>
-                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.OrderId, StringFormat=Order ID: {0}, FallbackValue=''}" Margin="0,0,0,4"/>
-                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.DeliveryId, StringFormat=Delivery ID: {0}, FallbackValue=''}" Margin="0,0,0,4"/>
-                </StackPanel>
-            </Grid>
+                <TextBlock Text="No current order in progress." 
+                           Visibility="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToHiddenConverter}}" 
+                           Foreground="Gray" FontStyle="Italic" HorizontalAlignment="Center" Margin="10"/>
+            </StackPanel>
         </GroupBox>
 
-        <!-- Actions -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
-            <Button Content="Update" Width="110" Margin="6" Click="BtnUpdate_Click"/>
-            <Button Content="Pick Order" Width="110" Margin="6" Click="BtnPickOrder_Click"/>
-            <Button Content="Finish Delivery" Width="130" Margin="6" Click="BtnFinishDelivery_Click"/>
-            <Button Content="History" Width="110" Margin="6" Click="BtnHistory_Click"/>
-            <Button Content="Close" Width="110" Margin="6" Click="BtnClose_Click"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10">
+            
+            <Button Content="Update Details" Width="100" Margin="5" Click="BtnUpdate_Click"/>
+            
+            <Button Content="Pick Order" Width="110" Margin="5" Click="BtnPickOrder_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding CurrentCourier.IsActive}" Value="True"/>
+                                    <Condition Binding="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToBoolConverter}}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <Button Content="Finish Delivery" Width="110" Margin="5" Click="BtnFinishDelivery_Click"
+                    IsEnabled="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToBoolConverter}}"/>
+
+            <Button Content="History" Width="100" Margin="5" Click="BtnHistory_Click"/>
+            <Button Content="Close" Width="80" Margin="5" Click="BtnClose_Click"/>
         </StackPanel>
     </Grid>
 </Window>

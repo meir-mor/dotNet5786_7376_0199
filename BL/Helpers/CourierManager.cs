@@ -1,7 +1,9 @@
 ﻿using BO;
 using DalApi;
 using System;
+using DeliveryEndType = DO.DeliveryEndType;
 using Factory = DalApi.Factory;
+using OrderStatus = DO.OrderStatus;
 
 namespace Helpers;
 
@@ -21,33 +23,36 @@ internal static class CourierManager
     {
         try
         {
-            var d = s_dal.Courier.Read(id); // may return null
-            
-            var order = s_dal.Order.ReadAll(o =>
+            var courier = s_dal.Courier.Read(id);
+
+            var orders = s_dal.Order.ReadAll(o =>
                 s_dal.Delivery.ReadAll(d =>
-                    d.CourierId == id).
-                    Select(d => d.OrderId).
-                    Contains(o.Id))
-                .FirstOrDefault(o => o.Status == DO.OrderStatus.InProgress);
+                    d.CourierId == id).Select(d => d.OrderId).Contains(o.Id)).ToArray();
+
+            var ordersIds = orders.Select(o => o.Id).ToArray();
+            var deliveries = s_dal.Delivery.ReadAll(d => ordersIds.Contains(d.OrderId)).ToArray();
+
+            var totalDeliveredOnTime = deliveries.Where(d =>d.DeliveryEndType == DeliveryEndType.Supplied && d.EndTime - d.StartTime <= s_dal.Config.MaxDeliveryTime)?.ToArray().Length;
+            var totalDeliveredLate = deliveries.Where(d =>d.DeliveryEndType == DeliveryEndType.Supplied && d.EndTime - d.StartTime > s_dal.Config.MaxDeliveryTime)?.ToArray().Length;
             
-            var delivery = s_dal.Delivery.ReadAll(d => d.OrderId == order.Id).FirstOrDefault();
-            
-            if (d == null) return null;
+            var order = orders.FirstOrDefault(o => o.Status == OrderStatus.InProgress);
+            var delivery = deliveries.FirstOrDefault(d => d.OrderId == order?.Id);
+            if (courier == null) return null;
 
             // map DO.Courier -> BO.Courier
             var bo = new BO.Courier
             {
-                Id = d.Id,
-                FullName = d.Name,
-                PhoneNumber = d.Phone,
-                Email = d.Email,
-                Password = d.Password,
-                IsActive = d.IsActive,
-                MaxDistance = d.MaximumDistance ?? null,
-                ShipmentType = (BO.ShipmentType)(int)d.ShipmentType,
-                StartWorkTime = d.StartingWork,
-                TotalDeliveredOnTime = 0,
-                TotalDeliveredLate = 0,
+                Id = courier.Id,
+                FullName = courier.Name,
+                PhoneNumber = courier.Phone,
+                Email = courier.Email,
+                Password = courier.Password,
+                IsActive = courier.IsActive,
+                MaxDistance = courier.MaximumDistance ?? null,
+                ShipmentType = (BO.ShipmentType)(int)courier.ShipmentType,
+                StartWorkTime = courier.StartingWork,
+                TotalDeliveredOnTime = totalDeliveredOnTime ?? 0,
+                TotalDeliveredLate = totalDeliveredLate ?? 0,
                 OrderInProgress = CreateOrderInProgress(order, delivery),
             };
 
@@ -59,8 +64,9 @@ internal static class CourierManager
         }
     }
 
-    public static BO.OrderInProgress CreateOrderInProgress(DO.Order order, DO.Delivery delivery)
+    public static OrderInProgress? CreateOrderInProgress(DO.Order? order, DO.Delivery? delivery)
     {
+        if (order == null || delivery == null) return null;
         return new BO.OrderInProgress
         {
             OrderId = order.Id,
