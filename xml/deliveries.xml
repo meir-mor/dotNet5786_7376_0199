@@ -301,22 +301,22 @@
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
-    <Id>31</Id>
-    <OrderId>2</OrderId>
-    <CourierId>309800668</CourierId>
-    <ShipmentType>Motorcycle</ShipmentType>
-    <StartTime>2025-12-25T19:18:31</StartTime>
-    <ActualDistance>8.8385</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
-    <EndTime xsi:nil="true" />
-  </Delivery>
-  <Delivery>
     <Id>30</Id>
     <OrderId>1</OrderId>
     <CourierId>309800668</CourierId>
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-25T19:18:31</StartTime>
     <ActualDistance>10.7726</ActualDistance>
+    <DeliveryEndType>Supplied</DeliveryEndType>
+    <EndTime>2025-12-25T19:18:31</EndTime>
+  </Delivery>
+  <Delivery>
+    <Id>31</Id>
+    <OrderId>2</OrderId>
+    <CourierId>309800668</CourierId>
+    <ShipmentType>Motorcycle</ShipmentType>
+    <StartTime>2025-12-25T19:18:31</StartTime>
+    <ActualDistance>8.8385</ActualDistance>
     <DeliveryEndType>Supplied</DeliveryEndType>
     <EndTime>2025-12-25T19:18:31</EndTime>
   </Delivery>

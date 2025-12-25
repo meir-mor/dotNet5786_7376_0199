@@ -379,11 +379,15 @@ internal static class OrderManager
 
             if (delivery.CourierId != courierId)
                 throw new BO.BlInvalidOperationException("Requester is not the courier of this delivery");
-
+            
+            var order = s_dal.Order.Read(delivery.OrderId);
+            if (order is null || order.Status != DO.OrderStatus.InProgress)
+                throw new BO.BlException("Order is not in progress");
+            
             // update delivery end and type
             var updated = delivery with { EndTime = now, DeliveryEndType = DO.DeliveryEndType.Supplied };
             s_dal.Delivery.Update(updated);
-
+            s_dal.Order.Update(order with { Status = DO.OrderStatus.Closed, });
         }
         catch (DO.DalDoesNotExistException ex)
         {
