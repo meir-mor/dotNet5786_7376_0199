@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Reflection;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Mail;
 using System.Windows.Shapes;
 using System.Windows.Media;
 
@@ -214,24 +216,16 @@ public partial class OpenOrdersWindow : Window
             var confirm = MessageBox.Show("Pick this order for delivery?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (confirm != MessageBoxResult.Yes) return;
 
+            var order = OpenOrders?.FirstOrDefault(o => o.OrderId == orderId);
             s_bl.Order.AssignOrderToCourier(_courierId, _courierId, orderId);
 
             MessageBox.Show("Order assigned to you.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            // Simulation of Email
-            var order = OpenOrders?.FirstOrDefault(o => o.OrderId == orderId);
-            string emailBody = $@"
-Subject: New Order Assigned #{orderId}
-
-Dear Courier,
-You have been assigned order #{orderId}.
-Address: {order?.FullAddress}
-Type: {order?.OrderType}
-Max Time: {order?.MaxDeliveryTime}
-
-Good luck!
-";
-            MessageBox.Show($"[Email Sent to Courier]\n{emailBody}", "Email Simulation", MessageBoxButton.OK, MessageBoxImage.Information);
+            // Send Email
+            if (order != null) 
+            {
+                SendEmail(order);
+            }
 
             // refresh lists (observer will likely also trigger, but explicit refresh ensures immediate feedback)
             LoadOpenOrders();
@@ -246,6 +240,47 @@ Good luck!
         catch (Exception ex)
         {
             MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+    
+    private void SendEmail(BO.OpenOrderInList order)
+    {
+        try
+        {
+            string toEmail = "arioren100@gmail.com";   // אליך
+
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress("arioren100@gmail.com");
+            mail.To.Add(toEmail);
+            mail.Subject = $"New Order Assigned #{order.OrderId}";
+            mail.Body = $@"
+Hello Aharon,
+
+You have successfully assigned Order #{order.OrderId}.
+
+Details:
+Type: {order.OrderType}
+Address: {order.FullAddress}
+Max Delivery Time: {order.MaxDeliveryTime}
+
+Safe Travels!
+";
+
+            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+            smtp.EnableSsl = true;
+
+            smtp.Credentials = new NetworkCredential(
+                "arioren100@gmail.com",
+                "xxxxxxxxx"
+            );
+
+            smtp.Send(mail);  
+
+            MessageBox.Show("Email sent successfully!", "Email", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Email failed: " + ex.Message);
         }
     }
 }
