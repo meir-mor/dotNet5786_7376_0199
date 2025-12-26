@@ -68,6 +68,18 @@
                   SelectedValue="{Binding CurrentCourier.ShipmentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   Margin="3" VerticalAlignment="Center"/>
 
+        <!-- Password -->
+        <Label Grid.Row="6" Grid.Column="0" Content="Password:" VerticalAlignment="Center" Margin="3"/>
+        <TextBox Grid.Row="6" Grid.Column="1"
+                 Text="{Binding CurrentCourier.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="3"/>
+        
+        <!-- Max Distance -->
+        <Label Grid.Row="7" Grid.Column="0" Content="Max Distance:" VerticalAlignment="Center" Margin="3"/>
+        <TextBox Grid.Row="7" Grid.Column="1"
+                 Text="{Binding CurrentCourier.MaxDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="3"/>
+        
         <!-- Save Button -->
         <Button Grid.Row="8" Grid.ColumnSpan="2"
                 Content="Save"

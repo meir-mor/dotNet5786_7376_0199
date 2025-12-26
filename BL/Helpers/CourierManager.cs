@@ -167,11 +167,11 @@ internal static class CourierManager
                 boCourier.FullName,
                 boCourier.PhoneNumber,
                 boCourier.Email,
-                boCourier.Password ?? string.Empty,
+                boCourier.Password ?? "1234",
                 boCourier.IsActive,
                 boCourier.MaxDistance,
                 (DO.ShipmentType)(int)boCourier.ShipmentType,
-                boCourier.StartWorkTime
+                s_dal.Config.Clock
             );
 
             s_dal.Courier.Create(doCourier);
