@@ -53,8 +53,22 @@
             <StackPanel Margin="10">
                 <StackPanel Visibility="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToVisibilityConverter}}">
                     <TextBlock Text="Order In Progress Details (View Only):" FontWeight="SemiBold" TextDecorations="Underline" Margin="0,0,0,5"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.DeliveryId, StringFormat='Delivery ID: {0}'}" FontSize="14"/>
                     <TextBlock Text="{Binding CurrentCourier.OrderInProgress.OrderId, StringFormat='Order ID: {0}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.OrderType, StringFormat='Type: {0}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.Description, StringFormat='Description: {0}'}" FontSize="14" Visibility="{Binding CurrentCourier.OrderInProgress.Description, Converter={StaticResource NullToVisibilityConverter}}"/>
                     <TextBlock Text="{Binding CurrentCourier.OrderInProgress.FullAddress, StringFormat='Address: {0}'}" FontSize="14" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.AerialDistance, StringFormat='Aerial Distance: {0:F2} km'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.ActualDistance, StringFormat='Actual Distance: {0:F2} km', TargetNullValue='Actual Distance: N/A'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.CustomerFullName, StringFormat='Customer Name: {0}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.CustomerPhone, StringFormat='Customer Phone: {0}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.OrderOpenTime, StringFormat='Open Time: {0:g}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.DeliveryStartTime, StringFormat='Delivery Start: {0:g}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.ExpectedDeliveryTime, StringFormat='Expected: {0:g}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.MaxDeliveryTime, StringFormat='Max Time: {0:g}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.OrderStatus, StringFormat='Status: {0}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.ScheduleStatus, StringFormat='Schedule: {0}'}" FontSize="14"/>
+                    <TextBlock Text="{Binding CurrentCourier.OrderInProgress.TimeRemaining, StringFormat='Time Remaining: {0:hh\\:mm\\:ss}'}" FontSize="14" FontWeight="Bold"/>
                     </StackPanel>
 
                 <TextBlock Text="No current order in progress." 

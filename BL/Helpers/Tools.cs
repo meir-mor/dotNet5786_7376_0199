@@ -119,7 +119,7 @@ internal static class Tools
     /// <param name="lat2">The latitude of the second coordinate.</param>
     /// <param name="lon2">The longitude of the second coordinate.</param>
     /// <returns>The distance in kilometers between the two coordinates.</returns>
-    private static double CalculateHaversineDistance(double lat1, double lon1, double lat2, double lon2)
+    public static double CalculateHaversineDistance(double lat1, double lon1, double lat2, double lon2)
     {
         const double R = 6371; // Earth's radius in kilometers
         double dLat = DegreesToRadians(lat2 - lat1);

@@ -77,13 +77,15 @@ internal static class CourierManager
             DeliveryStartTime = delivery.StartTime,
             OrderType = (BO.OrderType)(int)order.Type,
             OrderStatus = (BO.OrderStatus)order.Status,
-            Description = "",
-            AerialDistance = 0, //TODo
+            Description = order.Description,
+            AerialDistance = Tools.CalculateHaversineDistance(s_dal.Config.Latitude ?? 0, s_dal.Config.Longitude ?? 0, order.Latitude, order.Longitude),
             OrderOpenTime = order.CreatedAt,
-            ExpectedDeliveryTime = order.CreatedAt, //TODO+ ,
+            ExpectedDeliveryTime = order.CreatedAt + TimeSpan.FromHours(delivery.ActualDistance ?? 0 / s_dal.Config.GetAverageSpeed(delivery.ShipmentType)
+            ),
             MaxDeliveryTime = order.CreatedAt + s_dal.Config.MaxDeliveryTime,
             ScheduleStatus = DO.ScheduleStatus.OnTime,
-            TimeRemaining = order.CreatedAt + s_dal.Config.MaxDeliveryTime - s_dal.Config.Clock
+            TimeRemaining = order.CreatedAt + s_dal.Config.MaxDeliveryTime - s_dal.Config.Clock,
+            FullAddress = order.Address,
         };
     }
     /// <summary>
