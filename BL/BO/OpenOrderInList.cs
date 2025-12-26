@@ -28,6 +28,8 @@ public class OpenOrderInList
     public string FullAddress { get; set; } = string.Empty;
     public double AerialDistance { get; set; }
     public double? ActualDistance { get; set; } = null;
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public TimeSpan? EstimatedActualTime { get; set; } = null;
     public ScheduleStatus ScheduleStatus { get; set; }
     public TimeSpan TimeRemaining { get; set; }

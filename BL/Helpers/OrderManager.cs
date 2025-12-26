@@ -575,7 +575,9 @@ internal static class OrderManager
                             TimeRemaining = timeRemaining > TimeSpan.Zero ? timeRemaining : TimeSpan.Zero,
                             MaxDeliveryTime = maxDeliveryDate,
                             Volume = o.Volume,
-                            CourierId = null
+                            CourierId = null,
+                            Latitude = o.Latitude,
+                            Longitude = o.Longitude
                         };
 
                         return (Open: open, CreatedAt: o.CreatedAt);
