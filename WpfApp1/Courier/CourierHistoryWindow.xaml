@@ -5,16 +5,34 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Loaded="Window_Loaded">
     <Grid Margin="8">
-        <TextBlock Text="Closed Deliveries (History)" FontSize="16" FontWeight="Bold" Margin="4"/>
-        <DataGrid ItemsSource="{Binding Deliveries}" AutoGenerateColumns="False" Margin="4,36,4,4" IsReadOnly="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Closed Deliveries (History)" FontSize="16" FontWeight="Bold" Margin="4"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="4">
+            <TextBlock Text="Filter by Type:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox x:Name="CmbFilterType" Width="120" SelectionChanged="CmbFilterType_SelectionChanged" Margin="0,0,15,0"/>
+
+            <TextBlock Text="Sort By:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox x:Name="CmbSortBy" Width="120" SelectionChanged="CmbSortBy_SelectionChanged" Margin="0,0,15,0"/>
+            
+            <Button Content="Refresh" Click="BtnRefresh_Click" Width="80"/>
+        </StackPanel>
+
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Deliveries}" AutoGenerateColumns="False" Margin="4" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Delivery ID" Binding="{Binding DeliveryId}" Width="*"/>
-                <DataGridTextColumn Header="Order ID" Binding="{Binding OrderId}" Width="*"/>
+                <DataGridTextColumn Header="Delivery ID" Binding="{Binding DeliveryId}" Width="auto"/>
+                <DataGridTextColumn Header="Order ID" Binding="{Binding OrderId}" Width="auto"/>
+                <DataGridTextColumn Header="Actual Distance" Binding="{Binding ActualDistance}" Width="auto"/>
+                <DataGridTextColumn Header="Order Type" Binding="{Binding OrderType }" Width="auto"/>
                 <DataGridTextColumn Header="Address" Binding="{Binding FullAddress}" Width="2*"/>
-                <DataGridTextColumn Header="Type" Binding="{Binding shipmentType}" Width="*"/>
-                <DataGridTextColumn Header="Start" Binding="{Binding DeliveryStartTime}" Width="*"/>
-                <DataGridTextColumn Header="End" Binding="{Binding DeliveryEndTime}" Width="*"/>
-                <DataGridTextColumn Header="End Type" Binding="{Binding DeliveryEndType}" Width="*"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding shipmentType}" Width="auto"/>
+                <DataGridTextColumn Header="End Type" Binding="{Binding DeliveryEndType}" Width="auto"/>
+                <DataGridTextColumn Header="Handling Time" Binding="{Binding TotalHandlingTime, StringFormat='hh\\:mm\\:ss'}" Width="auto"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

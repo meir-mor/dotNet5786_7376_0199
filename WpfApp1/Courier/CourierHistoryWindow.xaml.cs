@@ -22,23 +22,65 @@ public partial class CourierHistoryWindow : Window
     {
         _courierId = courierId;
         InitializeComponent();
+        
+        // Register observer for automatic updates
+        s_bl.Order.AddObserver(NotificationCallback);
+    }
+
+    private void NotificationCallback()
+    {
+        // Dispatch to UI thread if needed
+        Dispatcher.Invoke(() => LoadHistory());
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
+        // Populate Filter ComboBox
+        var types = Enum.GetValues(typeof(BO.ShipmentType)).Cast<BO.ShipmentType>().ToList();
+        CmbFilterType.ItemsSource = types;
+        
+        // Populate Sort ComboBox
+        var sorts = Enum.GetValues(typeof(BO.ClosedDeliverySortBy)).Cast<BO.ClosedDeliverySortBy>().ToList();
+        CmbSortBy.ItemsSource = sorts;
+        CmbSortBy.SelectedItem = BO.ClosedDeliverySortBy.DeliveryEndTime; // Default sort
+
         LoadHistory();
+    }
+    
+    // Unsubscribe when window closes to avoid memory leaks/errors
+    protected override void OnClosed(EventArgs e)
+    {
+        s_bl.Order.RemoveObserver(NotificationCallback);
+        base.OnClosed(e);
     }
 
     private void LoadHistory()
     {
         try
         {
-            // requester = courierId
-            Deliveries = s_bl.Order.GetClosedDeliveriesForCourier(_courierId, _courierId, null, null)?.ToList();
+            var filterType = CmbFilterType.SelectedItem as BO.ShipmentType?;
+            var sortBy = CmbSortBy.SelectedItem as BO.ClosedDeliverySortBy?;
+
+            Deliveries = s_bl.Order.GetClosedDeliveriesForCourier(_courierId, _courierId, filterType, sortBy)?.ToList();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed loading history: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
-}
+
+    private void CmbFilterType_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        LoadHistory();
+    }
+
+    private void CmbSortBy_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        LoadHistory();
+    }
+
+    private void BtnRefresh_Click(object sender, RoutedEventArgs e)
+    {
+        CmbFilterType.SelectedItem = null;
+        LoadHistory();
+    }
+}   
