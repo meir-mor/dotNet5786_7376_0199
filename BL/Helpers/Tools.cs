@@ -88,8 +88,8 @@ internal static class Tools
         // Handle walking/driving distance using an external API
         string url = distanceType switch
         {
-            DO.ShipmentType.Walk => $"https://routing.openstreetmap.de/routed-foot/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
-            DO.ShipmentType.Car => $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
+            DO.ShipmentType.Walk or DO.ShipmentType.Bicycle => $"https://routing.openstreetmap.de/routed-foot/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
+            DO.ShipmentType.Car or DO.ShipmentType.Motorcycle => $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
             _ => throw new BlInvalidOperationException("Invalid DistanceType provided.")
         };
 

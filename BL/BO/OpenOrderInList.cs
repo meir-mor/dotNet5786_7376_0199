@@ -24,7 +24,7 @@ public class OpenOrderInList
     public int? CourierId { get; set; } = null;
     public int OrderId { get; init; }
     public OrderType OrderType { get; set; }
-    public string? Volume { get; set; } = null;
+    public double? Volume { get; set; } = null;
     public string FullAddress { get; set; } = string.Empty;
     public double AerialDistance { get; set; }
     public double? ActualDistance { get; set; } = null;

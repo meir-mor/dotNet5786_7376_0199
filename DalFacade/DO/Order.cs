@@ -25,10 +25,11 @@ public record Order(
     DateTime CreatedAt,
     OrderStatus Status,
     double Latitude,
-    double Longitude
+    double Longitude,
+    double Volume
 )
 {
-    public Order() : this(0, default, null, "", "", "", false, DateTime.Now, OrderStatus.Open, 0.0, 0.0)
+    public Order() : this(0, default, null, "", "", "", false, DateTime.Now, OrderStatus.Open, 0.0, 0.0, 0.0)
     {
     }
 }

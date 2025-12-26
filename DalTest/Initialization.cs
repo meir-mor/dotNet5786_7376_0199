@@ -47,8 +47,10 @@ public static class Initialization
                 _ => OrderStatus.Closed
             };
 
-            DateTime createdAt = s_dal.Config.Clock.AddMinutes(-s_rand.Next(60, 10080));
+            var createdAt = s_dal.Config.Clock.AddMinutes(-s_rand.Next(60, 10080));
 
+            var volume = s_rand.Next(1, 100);
+            
             s_dal.Order?.Create(new Order(
                 0,
                 (OrderType)s_rand.Next(Enum.GetValues<OrderType>().Length),
@@ -60,7 +62,8 @@ public static class Initialization
                 createdAt,
                 status,
                 lat ?? 0,
-                lon ?? 0
+                lon ?? 0,
+                volume
             ));
         }
     }
@@ -84,10 +87,10 @@ public static class Initialization
 
             double? maxDistance = shipmentType switch
             {
-                ShipmentType.Walk => s_rand.Next(1, 6),
-                ShipmentType.Bicycle => s_rand.Next(3, 16),
-                ShipmentType.Motorcycle => s_rand.Next(10, 41),
-                ShipmentType.Car => s_rand.Next(30, 101),
+                ShipmentType.Walk => s_rand.Next(10, 60),
+                ShipmentType.Bicycle => s_rand.Next(30, 160),
+                ShipmentType.Motorcycle => s_rand.Next(100, 410),
+                ShipmentType.Car => s_rand.Next(300, 1010),
                 _ => null
             };
 

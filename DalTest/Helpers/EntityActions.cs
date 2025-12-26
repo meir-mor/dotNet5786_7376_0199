@@ -168,6 +168,9 @@ internal static class EntityActions
 
         Console.Write("Is Fragile? (true/false): ");
         var isFragile = bool.TryParse(Console.ReadLine(), out var tmpFragile) && tmpFragile;
+        
+        Console.Write("Enter Volume: ");
+        var volume = double.TryParse(Console.ReadLine(), out var tmpVolume) ? tmpVolume : 0;
 
         var (lat, lon) = DistanceCalculator.GetCoordinates(address);
         
@@ -178,7 +181,7 @@ internal static class EntityActions
         }
 
         return new Order(orderId, type, description, address, customerName, customerPhone, isFragile,
-            dal.Config.Clock, OrderStatus.Open, lat ?? 0, lon ?? 0);
+            dal.Config.Clock, OrderStatus.Open, lat ?? 0, lon ?? 0, volume);
     }
 
     private static Delivery CreateDelivery(IDal dal)

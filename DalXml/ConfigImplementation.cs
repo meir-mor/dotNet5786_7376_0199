@@ -1,4 +1,6 @@
-﻿namespace Dal;
+﻿using DO;
+
+namespace Dal;
 
 using DalApi;
 
@@ -96,4 +98,13 @@ internal class ConfigImplementation : IConfig
     {
         Config.Reset();
     }
+
+    public double GetAverageSpeed(ShipmentType type) =>
+        type switch
+        {
+            ShipmentType.Bicycle => AverageBicycleSpeed,
+            ShipmentType.Car => AverageCarSpeed,
+            ShipmentType.Motorcycle => AverageBikeSpeedBike,
+            ShipmentType.Walk or ShipmentType.Aerial => AverageWalkSpeed,
+        };
 }

@@ -110,7 +110,8 @@ internal class OrderImplementation : IOrder
             (DateTime?)o.Element("CreatedAt") ?? DateTime.Now,
             o.ToEnumNullable<OrderStatus>("Status") ?? OrderStatus.Open,
             (double?)o.Element("Latitude") ?? 0.0,
-            (double?)o.Element("Longitude") ?? 0.0
+            (double?)o.Element("Longitude") ?? 0.0,
+            (double?)o.Element("Volume") ?? 0.0
         );
     }
 }

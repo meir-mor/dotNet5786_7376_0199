@@ -25,4 +25,5 @@ public interface IConfig
     int NextDeliveryId { get; }
     int NextOrderId { get; }
     void Reset();
+    double GetAverageSpeed(DO.ShipmentType type);
 }

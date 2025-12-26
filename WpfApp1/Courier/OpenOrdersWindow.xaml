@@ -4,24 +4,42 @@
         Title="Open Orders" Height="520" Width="820"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Loaded="Window_Loaded">
-    <Grid Margin="8">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Open Orders Available" FontSize="16" FontWeight="Bold" Margin="4"/>
+        <TextBlock Text="Open Orders Available for You" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
 
-        <DataGrid Grid.Row="1" ItemsSource="{Binding OpenOrders}" AutoGenerateColumns="False" Margin="4" CanUserAddRows="False" IsReadOnly="True">
+        <!-- Filters and Sorting -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Filter by Type:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox x:Name="CbFilterType" Width="120" SelectionChanged="CbFilterType_SelectionChanged" Margin="0,0,15,0"/>
+
+            <TextBlock Text="Sort by:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox x:Name="CbSortBy" Width="120" SelectionChanged="CbSortBy_SelectionChanged" Margin="0,0,15,0"/>
+
+            <Button Content="Refresh" Click="BtnRefresh_Click" Padding="10,2"/>
+        </StackPanel>
+
+        <DataGrid Grid.Row="2" ItemsSource="{Binding OpenOrders}" AutoGenerateColumns="False" 
+                  CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
+                  HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                  BorderThickness="1" BorderBrush="#DDDDDD">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Order ID" Binding="{Binding OrderId}" Width="*"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="50"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding OrderType}" Width="80"/>
                 <DataGridTextColumn Header="Address" Binding="{Binding FullAddress}" Width="2*"/>
-                <DataGridTextColumn Header="Aerial (km)" Binding="{Binding AerialDistance}" Width="*"/>
-                <DataGridTextColumn Header="Time Remaining" Binding="{Binding TimeRemaining}" Width="*"/>
-                <DataGridTemplateColumn Header="Actions" Width="Auto">
+                <DataGridTextColumn Header="Aerial Dist. (km)" Binding="{Binding AerialDistance, StringFormat=N2}" Width="100"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding ScheduleStatus}" Width="100"/>
+                <DataGridTextColumn Header="Max Time" Binding="{Binding MaxDeliveryTime, StringFormat='dd/MM HH:mm'}" Width="110"/>
+                
+                <DataGridTemplateColumn Header="Action" Width="80">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Pick" Padding="6,2" Margin="4" Click="BtnPick_Click" CommandParameter="{Binding OrderId}"/>
+                            <Button Content="Select" Padding="5,2" Click="BtnPick_Click" CommandParameter="{Binding OrderId}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

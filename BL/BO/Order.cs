@@ -35,7 +35,7 @@ public class Order
     public double AerialDistance { get; set; }
     public string CustomerFullName { get; set; } = string.Empty;
     public string CustomerPhone { get; set; } = string.Empty;
-    public string? Volume { get; set; } = null; // free-form: volume/weight/fragile notes
+    public double Volume { get; set; }
     public DateTime OrderOpenTime { get; set; }
     public DateTime ExpectedDeliveryTime { get; set; }
     public TimeSpan MaxDeliveryTime { get; set; }

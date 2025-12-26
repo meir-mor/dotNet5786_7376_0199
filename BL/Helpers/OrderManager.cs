@@ -122,7 +122,8 @@ internal static class OrderManager
                 order.OrderOpenTime,
                 (DO.OrderStatus)order.OrderStatus,
                 lat ?? 0,
-                lon ?? 0
+                lon ?? 0,
+                order.Volume
             );
 
             s_dal.Order.Create(doOrder);
@@ -163,7 +164,8 @@ internal static class OrderManager
                 existing.CreatedAt,   
                 existing.Status,      
                 bo.Latitude,
-                bo.Longitude
+                bo.Longitude,
+                bo.Volume
             );
 
             s_dal.Order.Update(doOrder);
@@ -257,10 +259,10 @@ internal static class OrderManager
             FullAddress = o.Address,
             Latitude = o.Latitude,
             Longitude = o.Longitude,
-            AerialDistance = 0, // computed elsewhere if needed
+            AerialDistance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude, o.Latitude, o.Longitude, DO.ShipmentType.Aerial), // computed elsewhere if needed
             CustomerFullName = o.CustomerName,
             CustomerPhone = o.CustomerPhone,
-            Volume = null,
+            Volume = o.Volume,
             OrderOpenTime = o.CreatedAt,
             ExpectedDeliveryTime = DateTime.MinValue,
             MaxDeliveryTime = TimeSpan.Zero,
@@ -556,6 +558,8 @@ internal static class OrderManager
                         var maxDeliveryDate = o.CreatedAt + cfg.MaxDeliveryTime;
                         var timeRemaining = maxDeliveryDate - now;
                         var scheduleStatus = ComputeScheduleStatus(timeRemaining, riskRange);
+                        var actualDistance = Tools.CalculateDistance(companyLat, companyLon, o.Latitude, o.Longitude,
+                            courierDo.ShipmentType);
 
                         var open = new BO.OpenOrderInList
                         {
@@ -563,22 +567,23 @@ internal static class OrderManager
                             OrderType = (BO.OrderType)(int)o.Type,
                             FullAddress = o.Address,
                             AerialDistance = aerialKm,
-                            ActualDistance = null,
-                            EstimatedActualTime = null,
+                            ActualDistance = actualDistance,
+                            EstimatedActualTime =
+                                TimeSpan.FromHours(
+                                    actualDistance / s_dal.Config.GetAverageSpeed(courierDo.ShipmentType)),
                             ScheduleStatus = scheduleStatus,
                             TimeRemaining = timeRemaining > TimeSpan.Zero ? timeRemaining : TimeSpan.Zero,
                             MaxDeliveryTime = maxDeliveryDate,
-                            Volume = null,
+                            Volume = o.Volume,
                             CourierId = null
                         };
 
                         return (Open: open, CreatedAt: o.CreatedAt);
                     })
                     // filter by courier max distance
-                    .Where(t => courierMaxDistance == null || t.Open.AerialDistance <= courierMaxDistance.Value)
+                    .Where(t => courierMaxDistance == null || t.Open.ActualDistance <= courierMaxDistance.Value)
                     // filter by type if requested
-                    .Where(t => typeFilter == null || t.Open.OrderType == typeFilter.Value)
-                    .ToList();
+                    .Where(t => typeFilter == null || t.Open.OrderType == typeFilter.Value);
 
             // sorting
             IEnumerable<(BO.OpenOrderInList Open, DateTime CreatedAt)> sorted = sortBy switch
