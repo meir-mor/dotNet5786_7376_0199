@@ -5,6 +5,10 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Loaded="Window_Loaded" Closed="Window_Closed">
     
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    <RowDefinition Height="Auto"/> </Grid.RowDefinitions>
@@ -81,25 +85,33 @@
             
             <Button Content="Update Details" Width="100" Margin="5" Click="BtnUpdate_Click"/>
             
-            <Button Content="Pick Order" Width="110" Margin="5" Click="BtnPickOrder_Click">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="IsEnabled" Value="False"/>
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding CurrentCourier.IsActive}" Value="True"/>
-                                    <Condition Binding="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToBoolConverter}}" Value="False"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="IsEnabled" Value="True"/>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
+            <!-- Courier actions: Pick Order, Finish Delivery -->
+            <StackPanel Orientation="Horizontal" Visibility="{Binding IsCourier, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Button Content="Pick Order" Width="110" Margin="5" Click="BtnPickOrder_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding CurrentCourier.IsActive}" Value="True"/>
+                                        <Condition Binding="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToBoolConverter}}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
 
-            <Button Content="Finish Delivery" Width="110" Margin="5" Click="BtnFinishDelivery_Click"
-                    IsEnabled="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToBoolConverter}}"/>
+                <Button Content="Finish Delivery" Width="110" Margin="5" Click="BtnFinishDelivery_Click"
+                        IsEnabled="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToBoolConverter}}"/>
+            </StackPanel>
+
+            <!-- Manager action: Delete -->
+            <Button Content="Delete Courier" Width="100" Margin="5" Click="BtnDelete_Click" 
+                    Visibility="{Binding IsManager, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Background="#FFDDDD" BorderBrush="Red" Foreground="DarkRed"/>
 
             <Button Content="History" Width="100" Margin="5" Click="BtnHistory_Click"/>
             <Button Content="Close" Width="80" Margin="5" Click="BtnClose_Click"/>

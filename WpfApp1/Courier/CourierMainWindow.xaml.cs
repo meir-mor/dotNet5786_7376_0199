@@ -9,6 +9,7 @@ namespace PL.Courier
         // גישה לשכבת ה-BL
         private static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
         private readonly int _courierId;
+        private readonly UserRole _userRole;
         
         // משתנה לשמירת ה-Observer לעדכון אוטומטי
         private Action? _observer;
@@ -26,9 +27,10 @@ namespace PL.Courier
         public static readonly DependencyProperty CurrentCourierProperty =
             DependencyProperty.Register(nameof(CurrentCourier), typeof(BO.Courier), typeof(CourierMainWindow));
 
-        public CourierMainWindow(int courierId)
+        public CourierMainWindow(int courierId, UserRole userRole)
         {
             _courierId = courierId;
+            _userRole = userRole;
             InitializeComponent();
         }
 
@@ -122,9 +124,29 @@ namespace PL.Courier
             }
         }
 
+        public bool IsManager => _userRole == UserRole.Manager;
+        public bool IsCourier => _userRole == UserRole.Courier;
+
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
         {
             new CourierHistoryWindow(_courierId) { Owner = this }.Show();
+        }
+
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to delete this courier?", "Delete Courier", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    s_bl.Courier.DeleteCourier(s_bl.Admin.GetConfig().ManagerId, _courierId);
+                    MessageBox.Show("Courier deleted successfully.", "Success");
+                    Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error deleting courier: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e) => Close();

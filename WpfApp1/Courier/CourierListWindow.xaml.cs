@@ -142,7 +142,7 @@ public partial class CourierListWindow : Window
         {
             if (SelectedCourier != null)
             {
-                var wnd = new CourierWindow(SelectedCourier.Id);
+                var wnd = new CourierMainWindow(SelectedCourier.Id, UserRole.Manager);
                 wnd.Show();
             }
         }

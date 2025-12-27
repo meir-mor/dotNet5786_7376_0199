@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using BO;
 
 namespace PL;
 
@@ -55,7 +56,7 @@ public partial class LoginWindow : Window
 
                 try
                 {
-                    var wnd = new PL.Courier.CourierMainWindow(courierId);
+                    var wnd = new PL.Courier.CourierMainWindow(courierId, UserRole.Courier);
                     wnd.Show();
                     return;
                 }
@@ -77,5 +78,5 @@ public partial class LoginWindow : Window
             Console.WriteLine(ex);
             MessageBox.Show("An unexpected error occurred during login. Please try again or contact support.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-}
+    }
 }
