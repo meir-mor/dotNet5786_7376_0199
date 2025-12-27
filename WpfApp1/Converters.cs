@@ -57,3 +57,28 @@ public class NullToBoolConverter : IValueConverter
         throw new NotImplementedException();
     }
 }
+
+public class StatusToBrushConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is not Enum e) return System.Windows.Media.Brushes.Transparent;
+        return e.ToString() switch
+        {
+            "Car" => System.Windows.Media.Brushes.LightSkyBlue,
+            "Motorcycle" => System.Windows.Media.Brushes.LightGreen,
+            "Bicycle" => System.Windows.Media.Brushes.LightYellow,
+            "Foot" => System.Windows.Media.Brushes.Wheat,
+            "Van" => System.Windows.Media.Brushes.Plum,
+            "Pending" => System.Windows.Media.Brushes.LightGray,
+            "Associated" => System.Windows.Media.Brushes.LemonChiffon,
+            "PickedUp" => System.Windows.Media.Brushes.LightBlue,
+            "Delivered" => System.Windows.Media.Brushes.LightGreen,
+            "Unscheduled" => System.Windows.Media.Brushes.Orange,
+            _ => System.Windows.Media.Brushes.White
+        };
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}

@@ -55,7 +55,15 @@
                 <DataGridTextColumn Header="Courier ID" Binding="{Binding Id}" Width="*" />
                 <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="2*" />
                 <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive}" Width="*" />
-                <DataGridTextColumn Header="Type" Binding="{Binding ShipmentType}" Width="*" />
+                <DataGridTemplateColumn Header="Type" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ShipmentType}" 
+                                       Background="{Binding ShipmentType, Converter={StaticResource StatusToBrushConverter}}" 
+                                       Padding="5,0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Started" Binding="{Binding StartWorkTime}" Width="2*" />
                 <DataGridTextColumn Header="Delivered On Time" Binding="{Binding TotalDeliveredOnTime}" Width="*" />
                 <DataGridTextColumn Header="Delivered Late" Binding="{Binding TotalDeliveredLate}" Width="*" />
