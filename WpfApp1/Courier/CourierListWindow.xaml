@@ -76,8 +76,8 @@
                             <Button Content="Delete"
                                     Padding="6,2"
                                     Margin="4"
-                                    CommandParameter="{Binding Id}"
-                                    Click="DeleteCourier_Click"/>
+                                    Command="{Binding DataContext.DeleteCourierCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding Id}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

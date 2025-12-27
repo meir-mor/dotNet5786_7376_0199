@@ -131,9 +131,9 @@ public partial class MainWindow : Window
         {
             MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageBox.Show($"Error during load: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("An error occurred while loading the application data.", "Initialization Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -292,9 +292,9 @@ public partial class MainWindow : Window
         {
             MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageBox.Show($"Error updating configuration: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("An error occurred while updating the configuration.", "Configuration Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -313,9 +313,9 @@ public partial class MainWindow : Window
             var wnd = new PL.Courier.CourierListWindow();
             wnd.Show();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageBox.Show($"Error opening list view: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Could not open the requested list view.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -352,9 +352,9 @@ public partial class MainWindow : Window
         {
             MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageBox.Show($"Error initializing DB: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Could not initialize the database.", "System Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
         {
@@ -389,9 +389,9 @@ public partial class MainWindow : Window
         {
             MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageBox.Show($"Error resetting DB: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Could not reset the database.", "System Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
         {

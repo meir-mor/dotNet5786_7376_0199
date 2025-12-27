@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using BO;
 namespace PL.Courier;
 
@@ -45,13 +46,19 @@ public partial class CourierListWindow : Window
     public static readonly DependencyProperty CouriersProperty =
         DependencyProperty.Register(nameof(Couriers), typeof(IEnumerable<BO.CourierInList>), typeof(CourierListWindow), new PropertyMetadata(null));
 
+    public BO.CourierInList? SelectedCourier { get; set; }
+
+    // Command for Deleting a Courier
+    public ICommand DeleteCourierCommand { get; private set; }
+
     /// <summary>
     /// Initializes a new instance of <see cref="CourierListWindow"/>.
     /// </summary>
     public CourierListWindow()
     {
         InitializeComponent();
-        DataContext = this;
+
+        DeleteCourierCommand = new RelayCommand(ExecuteDeleteCourier);
     }
     
 
@@ -67,13 +74,9 @@ public partial class CourierListWindow : Window
             _allCouriers = s_bl.Courier.GetCouriersList(managerId).ToList();
             ApplyShipmentFilter();
         }
-        catch (BO.BlException ex)
-        {
-            MessageBox.Show($"Unable to load couriers", "Load Couriers", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
         catch (Exception)
         {
-            MessageBox.Show("An unexpected error occurred while loading couriers. Please try again or contact support.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("We could not refresh the courier list. Please check your connection or contact support.", "System Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -84,8 +87,8 @@ public partial class CourierListWindow : Window
     private void ApplyShipmentFilter()
     {
         Couriers = SelectedShipment == null
-         ? s_bl?.Courier.GetAllCouriersInList()!
-         : s_bl?.Courier.GetAllCouriersInList(null, SelectedShipment.Value)!;
+         ? _allCouriers
+         : _allCouriers.Where(c => c.ShipmentType == SelectedShipment).ToList();
     }
 
     /// <summary>
@@ -106,9 +109,10 @@ public partial class CourierListWindow : Window
             s_bl.Courier.AddObserver(RefreshCouriers);
             RefreshCouriers();
         }
-        catch (Exception)
+        catch
         {
-            MessageBox.Show("Failed to initialize courier list view. Please try again.", "Initialization Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Unable to load data. The window will close.", "Initialization Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Close();
         }
     }
 
@@ -117,38 +121,22 @@ public partial class CourierListWindow : Window
     /// </summary>
     private void Window_Closed(object? sender, EventArgs e)
     {
-        try
-        {
-            s_bl.Courier.RemoveObserver(RefreshCouriers);
-        }
-        catch
-        {
-            // ignore cleanup errors
-        }
+        try { s_bl.Courier.RemoveObserver(RefreshCouriers); } catch { }
     }
 
-    /// <summary>
-    /// The currently selected item in the DataGrid (bound from XAML).
-    /// Regular property (updated by binding from view -> code-behind).
-    /// </summary>
-    public BO.CourierInList? SelectedCourier { get; set; }
-
-    /// <summary>
-    /// DataGrid MouseDoubleClick handler: open selected courier in detail window (update mode).
-    /// </summary>
     private void DataGrid_MouseDoubleClick(object? sender, System.Windows.Input.MouseButtonEventArgs e)
     {
+        // Using Property Binding (SelectedCourier) instead of sender
         try
         {
             if (SelectedCourier != null)
             {
-                var wnd = new CourierMainWindow(SelectedCourier.Id, UserRole.Manager);
-                wnd.Show();
+                new CourierMainWindow(SelectedCourier.Id, UserRole.Manager).Show();
             }
         }
-        catch (Exception )
+        catch
         {
-            MessageBox.Show($"Cannot open courier details", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Could not open courier details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -159,12 +147,11 @@ public partial class CourierListWindow : Window
     {
         try
         {
-            var wnd = new CourierWindow(0); // id=0 -> add mode
-            wnd.Show();
+            new CourierWindow(0).Show();
         }
-        catch (Exception ex)
+        catch
         {
-            MessageBox.Show($"Cannot open add-courier window", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Could not open the add courier window.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -172,31 +159,28 @@ public partial class CourierListWindow : Window
     /// Delete button handler for a row. CommandParameter is bound to the courier Id in XAML.
     /// Asks for confirmation, calls BL.DeleteCourier and refreshes the list on success.
     /// </summary>
-    private void DeleteCourier_Click(object? sender, RoutedEventArgs e)
+    private void ExecuteDeleteCourier(object? parameter)
     {
+        if (parameter is not int courierId) return;
+
+        var confirm = MessageBox.Show("Are you sure you want to delete this courier?", "Delete Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (confirm != MessageBoxResult.Yes) return;
+
         try
         {
-            if (sender is not Button btn || btn.CommandParameter is not int courierId)
-                return;
-
-            var confirm = MessageBox.Show("Are you sure you want to delete the selected courier?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (confirm != MessageBoxResult.Yes) return;
-
             var managerId = s_bl.Admin.GetConfig().ManagerId;
             s_bl.Courier.DeleteCourier(managerId, courierId);
-
-            // BL should notify observers and update the list; refresh here to ensure immediate feedback.
-            RefreshCouriers();
-
-            MessageBox.Show("Courier deleted.", "Deleted", MessageBoxButton.OK, MessageBoxImage.Information);
+            
+            MessageBox.Show("The courier was successfully deleted.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            // Observer will refresh the list automatically
         }
         catch (BO.BlException ex)
         {
-            MessageBox.Show($"Delete failed", "Delete Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show($"Could not delete courier: {ex.Message}", "Operation Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (Exception)
         {
-            MessageBox.Show("Unexpected error while deleting courier. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("An unexpected error occurred while deleting the courier.", "System Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
