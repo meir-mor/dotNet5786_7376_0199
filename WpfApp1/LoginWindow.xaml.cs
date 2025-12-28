@@ -4,10 +4,7 @@ using BO;
 namespace PL;
 
 /// <summary>
-/// Simple login window using username/password flow.
-/// Manager -> opens MainWindow.
-/// Courier -> opens CourierWindow with courier id parsed from username (username expected to be Tz integer).
-/// All errors shown with friendly MessageBox messages per PL rules.
+/// Simple login window with role-based navigation and "one manager" concurrency rule.
 /// </summary>
 public partial class LoginWindow : Window
 {
@@ -23,6 +20,12 @@ public partial class LoginWindow : Window
         Close();
     }
 
+    private void ShowError(string message)
+    {
+        TxtError.Text = message;
+        TxtError.Visibility = Visibility.Visible;
+    }
+
     private void BtnLogin_Click(object sender, RoutedEventArgs e)
     {
         var username = TxtUsername.Text?.Trim() ?? string.Empty;
@@ -30,53 +33,68 @@ public partial class LoginWindow : Window
 
         if (string.IsNullOrWhiteSpace(username))
         {
-            MessageBox.Show("Please enter username.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowError("Please enter username.");
             return;
         }
 
         try
         {
-            // Attempt authentication via BL
+            TxtError.Visibility = Visibility.Collapsed;
             var role = s_bl.Courier.Login(username, password);
 
-            if (role == BO.UserRole.Manager)
+            if (role == UserRole.Manager)
             {
-                var wnd = new MainWindow();
-                wnd.Show();
-                return;
+                OpenManagerWindow();
             }
-
-            if (role == BO.UserRole.Courier)
+            else if (role == UserRole.Courier)
             {
-                if (!int.TryParse(username, out var courierId))
+                if (int.TryParse(username, out var id))
                 {
-                    MessageBox.Show("Courier login requires numeric username (Tz). Please enter your Tz as username.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                    OpenCourierWindow(id, role);
                 }
-
-                try
+                else
                 {
-                    var wnd = new PL.Courier.CourierMainWindow(courierId, UserRole.Courier);
-                    wnd.Show();
-                    return;
-                }
-                catch (BO.BlException ex)
-                {
-                    MessageBox.Show($"Cannot open courier view: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
+                    ShowError("Courier login requires numeric ID.");
                 }
             }
+        }
+        catch (BlException ex)
+        {
+            ShowError(ex.Message);
+        }
+        catch (Exception)
+        {
+            ShowError("An unexpected error occurred.");
+        }
+    }
 
-            MessageBox.Show("Login succeeded but role is not supported by this UI.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        catch (BO.BlException ex)
+    private void OpenManagerWindow()
+    {
+        // Enforce one manager window at a time
+        var existing = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+        if (existing != null)
         {
-            MessageBox.Show($"Login failed: {ex.Message}", "Login Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            existing.Activate();
+            if (existing.WindowState == WindowState.Minimized)
+                existing.WindowState = WindowState.Normal;
+            
+            MessageBox.Show("Administrator is already logged in.", "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
         }
-        catch (Exception ex)
+
+        new MainWindow().Show();
+    }
+
+    private void OpenCourierWindow(int id, UserRole role)
+    {
+        try
         {
-            Console.WriteLine(ex);
-            MessageBox.Show("An unexpected error occurred during login. Please try again or contact support.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            var wnd = new PL.Courier.CourierMainWindow(id, role);
+            wnd.Show();
+        }
+        catch (BlException ex)
+        {
+            ShowError($"Could not open courier view: {ex.Message}");
         }
     }
 }
