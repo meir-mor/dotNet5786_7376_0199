@@ -11,14 +11,16 @@ public partial class OrderListWindow : Window
 {
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-    public BO.ShipmentType? SelectedShipment { get; set; }
+    public BO.ShipmentType? SelectedShipment { get; set; } = null;
 
     public BO.OrderInList? SelectedOrder { get; set; }
 
     public IEnumerable<BO.OrderInList>? OrderList
     {
-        get => (IEnumerable<BO.OrderInList>)GetValue(OrderListProperty);
-        set => SetValue(OrderListProperty, value);
+       
+        get  =>   (IEnumerable<BO.OrderInList>)GetValue(OrderListProperty); 
+        set  =>  SetValue(OrderListProperty, value); 
+
     }
 
     public static readonly DependencyProperty OrderListProperty =
@@ -56,7 +58,10 @@ public partial class OrderListWindow : Window
         catch { }
     }
 
-    private void ShipmentFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void ShipmentFilter_SelectionChanged(object? sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        => ApplyShipmentFilter();
+
+    private void ApplyShipmentFilter()
     {
         RefreshOrders();
     }
@@ -65,16 +70,28 @@ public partial class OrderListWindow : Window
     {
         try
         {
-            BO.OrderListFilterBy? filterBy = SelectedShipment.HasValue ? BO.OrderListFilterBy.ShipmentType : null;
-            object? filterValue = SelectedShipment;
+            var managerId = s_bl.Admin.GetConfig().ManagerId;
 
-            OrderList = s_bl.Order.GetOrdersList(_managerId, filterBy, filterValue).ToList();
+            OrderList = SelectedShipment == null
+                ? s_bl.Order.GetOrdersList(managerId).ToList()
+                : s_bl.Order.GetOrdersList(
+                    managerId,
+                    filterBy: BO.OrderListFilterBy.ShipmentType,
+                    filterValue: SelectedShipment
+                  ).ToList();
         }
-        catch (Exception ex)
+        catch (BO.BlException)
         {
-            MessageBox.Show($"Failed to load orders: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Unable to load orders", "Load Orders",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("An unexpected error occurred while loading orders.",
+                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+
 
     private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {

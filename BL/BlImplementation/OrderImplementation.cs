@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using BlApi;
 using Helpers;
 
+
 internal class OrderImplementation : IOrder
 {
 
@@ -43,6 +44,8 @@ internal class OrderImplementation : IOrder
                         StringComparison.OrdinalIgnoreCase)).ToList(),
                 BO.OrderListFilterBy.OrderStatus => orders.Where(o => o.OrderStatus.Equals((DO.OrderStatus)filterValue))
                     .ToList(),
+                BO.OrderListFilterBy.ShipmentType => orders.Where(o =>
+                    o.Deliveries != null && o.Deliveries.Any(d => d.ShipmentType == (BO.ShipmentType)filterValue)).ToList(),
                 _ => orders
             };
 
@@ -56,20 +59,26 @@ internal class OrderImplementation : IOrder
         };
 
         return orders.Select(o => new BO.OrderInList
-            {
-                OrderType = o.OrderType,
-                OrderStatus = o.Deliveries.Any(d => d.DeliveryEndType == null)
-                    ? BO.OrderStatus.InProgress
-                    : o.OrderStatus,
-                AerialDistance = o.AerialDistance,
-                ScheduleStatus = o.ScheduleStatus,
-                TimeRemaining = o.TimeRemaining,
-                DeliveryId = o.Deliveries?.FirstOrDefault()?.DeliveryId,
-                OrderId = o.Id,
-                TotalDeliveriesCount = o.Deliveries?.Count ?? 0,
-                TotalHandlingTime = o.Deliveries.Where(d => d.DeliveryEndTime.HasValue)
+        {
+            OrderType = o.OrderType,
+            OrderStatus =
+                o.Deliveries == null || !o.Deliveries.Any()
+                 ? BO.OrderStatus.Open
+                : o.Deliveries.Any(d => d.DeliveryEndType == null)
+                   ? BO.OrderStatus.InProgress
+                     : BO.OrderStatus.Closed,
+            ShipmentType = o.Deliveries?
+                .FirstOrDefault(d => d.DeliveryEndType == null)?.ShipmentType
+                ?? o.Deliveries?.FirstOrDefault()?.ShipmentType,
+            AerialDistance = o.AerialDistance,
+            ScheduleStatus = o.ScheduleStatus,
+            TimeRemaining = o.TimeRemaining,
+            DeliveryId = o.Deliveries?.FirstOrDefault()?.DeliveryId,
+            OrderId = o.Id,
+            TotalDeliveriesCount = o.Deliveries?.Count ?? 0,
+            TotalHandlingTime = o.Deliveries.Where(d => d.DeliveryEndTime.HasValue)
                     .Aggregate(TimeSpan.Zero, (sum, d) => sum + (d.DeliveryEndTime.Value - d.DeliveryStartTime))
-            }
+        }
         );
     }
 

@@ -51,6 +51,7 @@ internal static class OrderManager
         }
     }
 
+
     /// <summary>
     /// Get single order by id, mapping DO -> BO and including deliveries (query syntax: grouping example).
     /// </summary>

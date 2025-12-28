@@ -19,16 +19,20 @@ public class CancelButtonVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is OrderStatus status)
+        if (value is BO.OrderStatus status)
         {
-            return status != OrderStatus.Closed ? Visibility.Visible : Visibility.Collapsed;
+            return status == BO.OrderStatus.Closed
+                ? Visibility.Collapsed
+                : Visibility.Visible;
         }
+
         return Visibility.Collapsed;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => throw new NotImplementedException();
 }
+
 
 public class NullToHiddenConverter : IValueConverter
 {

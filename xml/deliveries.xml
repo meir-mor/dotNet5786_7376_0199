@@ -207,7 +207,7 @@
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-24T00:45:36</StartTime>
     <ActualDistance>15.3834</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
@@ -217,7 +217,7 @@
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-26T07:48:36</StartTime>
     <ActualDistance>16.468</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
@@ -227,7 +227,7 @@
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-25T11:13:36</StartTime>
     <ActualDistance>16.0012</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
@@ -237,7 +237,7 @@
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-20T16:25:36</StartTime>
     <ActualDistance>16.226</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
@@ -247,7 +247,7 @@
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-25T16:34:36</StartTime>
     <ActualDistance>15.3246</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
@@ -257,7 +257,7 @@
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-24T03:46:36</StartTime>
     <ActualDistance>17.3592</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
@@ -267,7 +267,7 @@
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-25T04:25:36</StartTime>
     <ActualDistance>16.754099999999998</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
@@ -277,7 +277,7 @@
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-23T21:32:36</StartTime>
     <ActualDistance>16.144</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
@@ -287,7 +287,7 @@
     <ShipmentType>Motorcycle</ShipmentType>
     <StartTime>2025-12-25T05:27:36</StartTime>
     <ActualDistance>13.7256</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
@@ -297,7 +297,7 @@
     <ShipmentType>Bicycle</ShipmentType>
     <StartTime>2025-12-25T02:01:36</StartTime>
     <ActualDistance>9.039200000000001</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
+    <DeliveryEndType>Failed</DeliveryEndType>
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>

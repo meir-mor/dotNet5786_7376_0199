@@ -61,7 +61,7 @@
     <Phone>052-8505516</Phone>
     <Email>sarah.cohen@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
+    <IsActive>false</IsActive>
     <MaximumDistance xsi:nil="true" />
     <ShipmentType>Aerial</ShipmentType>
     <StartingWork>2024-08-02T09:28:36</StartingWork>
@@ -171,7 +171,7 @@
     <Phone>052-3978958</Phone>
     <Email>avital.ashkenazi@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
+    <IsActive>false</IsActive>
     <MaximumDistance xsi:nil="true" />
     <ShipmentType>Car</ShipmentType>
     <StartingWork>2023-07-07T09:28:36</StartingWork>
@@ -182,7 +182,7 @@
     <Phone>052-1809633</Phone>
     <Email>ariel.ben-ami@gmail.com</Email>
     <Password>1234</Password>
-    <IsActive>true</IsActive>
+    <IsActive>false</IsActive>
     <MaximumDistance xsi:nil="true" />
     <ShipmentType>Bicycle</ShipmentType>
     <StartingWork>2025-05-02T09:28:36</StartingWork>

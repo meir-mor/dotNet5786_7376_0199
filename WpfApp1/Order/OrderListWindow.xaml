@@ -29,7 +29,7 @@
             <Label Content="Filter by Shipment Type:" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
             <ComboBox Grid.Column="1"
-                      ItemsSource="{StaticResource ShipmentTypeItemsKey}"                     
+                      ItemsSource="{Binding Source={StaticResource ShipmentTypeItemsKey}}"                     
                       DisplayMemberPath="Name"
                       SelectedValuePath="Value"
                       SelectedValue="{Binding Path=SelectedShipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -55,8 +55,16 @@
                 <DataGridTextColumn Header="Order ID" Binding="{Binding OrderId}" Width="*" />
                 <DataGridTextColumn Header="Order Type" Binding="{Binding OrderType}" Width="2*" />
                 <DataGridTextColumn Header="Order Status" Binding="{Binding OrderStatus}" Width="*" />
+                <DataGridTemplateColumn Header="Shipment Type"  Width="*" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ShipmentType}" 
+                                    Background="{Binding ShipmentType, Converter={StaticResource StatusToBrushConverter}}" 
+                                    Padding="5,0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Schedule Status" Binding="{Binding ScheduleStatus}" Width="*" />
-                <DataGridTextColumn Header="Shipment Type" Binding="{Binding ShipmentType, TargetNullValue=—}" Width="*" />
                 <DataGridTextColumn Header="Time Remaining" Binding="{Binding TimeRemaining}" Width="*" />
                 <DataGridTextColumn Header="Total Deliveries" Binding="{Binding TotalDeliveriesCount}" Width="*" />
 
@@ -66,7 +74,7 @@
                             <Button Content="Delete"
                             Padding="6,2"
                             Margin="4"
-                            CommandParameter="{Binding Id}"
+                            CommandParameter="{Binding OrderId}"
                             Click="CancelOrder_Click"
                             Visibility="{Binding OrderStatus, Converter={StaticResource CancelButtonVisibilityConverter}}"/>
                         </DataTemplate>
