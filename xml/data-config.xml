@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
   <NextOrderId>50</NextOrderId>
-  <NextDeliveryId>30</NextDeliveryId>
-  <Clock>28/12/2025 00:18:57</Clock>
+  <NextDeliveryId>38</NextDeliveryId>
+  <Clock>26/12/2025 09:28:36</Clock>
   <ManagerId>1234</ManagerId>
   <ManagerPassword>1234</ManagerPassword>
   <ComponyAddress>Bar Cochva 2 BneiBrak Israel</ComponyAddress>
