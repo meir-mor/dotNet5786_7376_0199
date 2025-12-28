@@ -26,41 +26,42 @@
             </Grid.ColumnDefinitions>
 
             <!-- Filter label -->
-            <Label Content="Filter by Shipment Type:" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <Label Content="Filter by Shipment Type:" Grid.Column="0" HorizontalAlignment="Left"
+                   VerticalAlignment="Center" />
 
             <ComboBox Grid.Column="1"
-                      ItemsSource="{Binding Source={StaticResource ShipmentTypeItemsKey}}"                     
+                      ItemsSource="{Binding Source={StaticResource ShipmentTypeItemsKey}}"
                       DisplayMemberPath="Name"
                       SelectedValuePath="Value"
                       SelectedValue="{Binding Path=SelectedShipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       SelectionChanged="ShipmentFilter_SelectionChanged"
                       HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"/>
+                      VerticalAlignment="Stretch" />
         </Grid>
 
 
         <!-- DataGrid bound to Order DP -->
         <DataGrid Grid.Row="1"
-           ItemsSource="{Binding Path=OrderList}"
-           SelectedItem="{Binding Path=SelectedOrder}"
-           MouseDoubleClick="DataGrid_MouseDoubleClick"
-           AutoGenerateColumns="False"
-           CanUserAddRows="False"
-           CanUserDeleteRows="False"
-           HeadersVisibility="Column"
-           Margin="5"
-           SelectionMode="Single"
-           GridLinesVisibility="Horizontal">
+                  ItemsSource="{Binding Path=OrderList}"
+                  SelectedItem="{Binding Path=SelectedOrder}"
+                  MouseDoubleClick="DataGrid_MouseDoubleClick"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  HeadersVisibility="Column"
+                  Margin="5"
+                  SelectionMode="Single"
+                  GridLinesVisibility="Horizontal">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Order ID" Binding="{Binding OrderId}" Width="*" />
                 <DataGridTextColumn Header="Order Type" Binding="{Binding OrderType}" Width="2*" />
                 <DataGridTextColumn Header="Order Status" Binding="{Binding OrderStatus}" Width="*" />
-                <DataGridTemplateColumn Header="Shipment Type"  Width="*" >
+                <DataGridTemplateColumn Header="Shipment Type" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding ShipmentType}" 
-                                    Background="{Binding ShipmentType, Converter={StaticResource StatusToBrushConverter}}" 
-                                    Padding="5,0"/>
+                            <TextBlock Text="{Binding ShipmentType}"
+                                       Background="{Binding ShipmentType, Converter={StaticResource StatusToBrushConverter}}"
+                                       Padding="5,0" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -72,11 +73,11 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Delete"
-                            Padding="6,2"
-                            Margin="4"
-                            CommandParameter="{Binding OrderId}"
-                            Click="CancelOrder_Click"
-                            Visibility="{Binding OrderStatus, Converter={StaticResource CancelButtonVisibilityConverter}}"/>
+                                    Padding="6,2"
+                                    Margin="4"
+                                    CommandParameter="{Binding OrderId}"
+                                    Click="CancelOrder_Click"
+                                    Visibility="{Binding OrderStatus, Converter={StaticResource CancelButtonVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

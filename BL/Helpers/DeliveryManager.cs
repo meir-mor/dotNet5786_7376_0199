@@ -210,6 +210,7 @@ internal static class DeliveryManager
                 Observers.NotifyItemUpdated(doDelivery.Id);
             }
         }
+
         if (updated)
             Observers.NotifyListUpdated();
     }

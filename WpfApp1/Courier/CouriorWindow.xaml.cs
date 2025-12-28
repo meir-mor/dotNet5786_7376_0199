@@ -24,8 +24,10 @@ namespace PL.Courier
             get => (BO.Courier?)GetValue(CurrentCourierProperty);
             set => SetValue(CurrentCourierProperty, value);
         }
+
         public static readonly DependencyProperty CurrentCourierProperty =
-            DependencyProperty.Register(nameof(CurrentCourier), typeof(BO.Courier), typeof(CourierWindow), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(CurrentCourier), typeof(BO.Courier), typeof(CourierWindow),
+                new PropertyMetadata(null));
 
         /// <summary>
         /// Text shown on the Add/Update button. Set in the constructor depending on id.
@@ -35,8 +37,10 @@ namespace PL.Courier
             get => (string)GetValue(ButtonTextProperty);
             set => SetValue(ButtonTextProperty, value);
         }
+
         public static readonly DependencyProperty ButtonTextProperty =
-            DependencyProperty.Register(nameof(ButtonText), typeof(string), typeof(CourierWindow), new PropertyMetadata("Add"));
+            DependencyProperty.Register(nameof(ButtonText), typeof(string), typeof(CourierWindow),
+                new PropertyMetadata("Add"));
 
         /// <summary>
         /// Controls whether Id textbox is read-only. True when updating existing courier.
@@ -46,8 +50,10 @@ namespace PL.Courier
             get => (bool)GetValue(IdIsReadOnlyProperty);
             set => SetValue(IdIsReadOnlyProperty, value);
         }
+
         public static readonly DependencyProperty IdIsReadOnlyProperty =
-            DependencyProperty.Register(nameof(IdIsReadOnly), typeof(bool), typeof(CourierWindow), new PropertyMetadata(true));
+            DependencyProperty.Register(nameof(IdIsReadOnly), typeof(bool), typeof(CourierWindow),
+                new PropertyMetadata(true));
 
         // Observer callback for this courier id
         private Action? _courierObserver;
@@ -81,12 +87,14 @@ namespace PL.Courier
                 }
                 catch (BO.BlException ex)
                 {
-                    MessageBox.Show($"Unable to load courier: {ex.Message}", "Load Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Unable to load courier: {ex.Message}", "Load Error", MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
                     CurrentCourier = null;
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Unexpected error while loading courier.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Unexpected error while loading courier.", "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                     CurrentCourier = null;
                 }
             }
@@ -108,13 +116,24 @@ namespace PL.Courier
                                 var id = CurrentCourier!.Id;
                                 CurrentCourier = s_bl.Courier.GetCourierDetails(id);
                             }
-                            catch { /* ignore reload errors */ }
+                            catch
+                            {
+                                /* ignore reload errors */
+                            }
                         });
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 };
 
-                try { s_bl.Courier.AddObserver(CurrentCourier!.Id, _courierObserver); } catch { }
+                try
+                {
+                    s_bl.Courier.AddObserver(CurrentCourier!.Id, _courierObserver);
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -123,7 +142,13 @@ namespace PL.Courier
             // unregister observer
             if (_courierObserver != null && CurrentCourier?.Id != 0)
             {
-                try { s_bl.Courier.RemoveObserver(CurrentCourier.Id, _courierObserver); } catch { }
+                try
+                {
+                    s_bl.Courier.RemoveObserver(CurrentCourier.Id, _courierObserver);
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -145,7 +170,8 @@ namespace PL.Courier
                 {
                     if (CurrentCourier.Id == 0)
                     {
-                        MessageBox.Show("Please enter a valid ID for the new courier.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Please enter a valid ID for the new courier.", "Validation",
+                            MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
@@ -156,7 +182,8 @@ namespace PL.Courier
                         var exists = s_bl.Courier.GetCouriersList(managerId).Any(c => c.Id == CurrentCourier.Id);
                         if (exists)
                         {
-                            MessageBox.Show("A courier with this ID already exists. Choose a different ID.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show("A courier with this ID already exists. Choose a different ID.",
+                                "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                         }
 
@@ -166,7 +193,8 @@ namespace PL.Courier
                     }
                     catch (BO.BlException ex)
                     {
-                        MessageBox.Show($"Add failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show($"Add failed: {ex.Message}", "Error", MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
                     }
                 }
                 else // Update
@@ -179,11 +207,13 @@ namespace PL.Courier
             }
             catch (BO.BlException ex)
             {
-                MessageBox.Show($"Operation failed: {ex.Message}", "Operation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Operation failed: {ex.Message}", "Operation Error", MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
             catch (Exception)
             {
-                MessageBox.Show("Unexpected error during save. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Unexpected error during save. Please try again.", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -194,7 +224,8 @@ namespace PL.Courier
         {
             if (CurrentCourier == null || CurrentCourier.Id == 0) return;
 
-            var confirm = MessageBox.Show("Are you sure you want to delete this courier?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var confirm = MessageBox.Show("Are you sure you want to delete this courier?", "Confirm Delete",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (confirm != MessageBoxResult.Yes) return;
 
             try
@@ -206,11 +237,13 @@ namespace PL.Courier
             }
             catch (BO.BlException ex)
             {
-                MessageBox.Show($"Delete failed: {ex.Message}", "Delete Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Delete failed: {ex.Message}", "Delete Error", MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
             catch (Exception)
             {
-                MessageBox.Show("Unexpected error while deleting courier. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Unexpected error while deleting courier. Please try again.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

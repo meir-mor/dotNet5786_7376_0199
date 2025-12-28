@@ -42,7 +42,7 @@ internal class ConfigImplementation : IConfig
         set => Config.Latitude = value;
     }
 
-    public double? Longitude 
+    public double? Longitude
     {
         get => Config.Longitude;
         set => Config.Longitude = value;
@@ -107,5 +107,4 @@ internal class ConfigImplementation : IConfig
             ShipmentType.Motorcycle => AverageBikeSpeedBike,
             ShipmentType.Walk or ShipmentType.Aerial => AverageWalkSpeed,
         };
-
 }

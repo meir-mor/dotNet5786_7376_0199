@@ -22,7 +22,7 @@ public static class DistanceCalculator
             var url = $"https://geocode.maps.co/search?q={address}&api_key=69304622ebba1769305894zyn57146b";
 
             var response = Client.GetAsync(url).GetAwaiter().GetResult();
-            if (!response.IsSuccessStatusCode) 
+            if (!response.IsSuccessStatusCode)
                 return (null, null);
 
             var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
@@ -36,8 +36,10 @@ public static class DistanceCalculator
             var latStr = first.GetProperty("lat").GetString();
             var lonStr = first.GetProperty("lon").GetString();
 
-            var latOk = double.TryParse(latStr, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var lat);
-            var lonOk = double.TryParse(lonStr, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var lon);
+            var latOk = double.TryParse(latStr, NumberStyles.Float | NumberStyles.AllowThousands,
+                CultureInfo.InvariantCulture, out var lat);
+            var lonOk = double.TryParse(lonStr, NumberStyles.Float | NumberStyles.AllowThousands,
+                CultureInfo.InvariantCulture, out var lon);
 
             if (!latOk || !lonOk) return (null, null);
             if (lat is < -90 or > 90 || lon is < -180 or > 180) return (null, null);
@@ -55,22 +57,29 @@ public static class DistanceCalculator
     /// Calculate route distance (kilometers) between two coordinates using routing service.
     /// Returns 0 on missing data or service failure; unexpected exceptions are wrapped as <see cref="BO.BlException"/>.
     /// </summary>
-    public static double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2, DO.ShipmentType distanceType)
+    public static double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2,
+        DO.ShipmentType distanceType)
     {
         try
         {
             if (lat1 == null || lon1 == null || lat2 == null || lon2 == null)
                 return 0.0;
 
-            var coordA = $"{lon1.Value.ToString(CultureInfo.InvariantCulture)},{lat1.Value.ToString(CultureInfo.InvariantCulture)}";
-            var coordB = $"{lon2.Value.ToString(CultureInfo.InvariantCulture)},{lat2.Value.ToString(CultureInfo.InvariantCulture)}";
+            var coordA =
+                $"{lon1.Value.ToString(CultureInfo.InvariantCulture)},{lat1.Value.ToString(CultureInfo.InvariantCulture)}";
+            var coordB =
+                $"{lon2.Value.ToString(CultureInfo.InvariantCulture)},{lat2.Value.ToString(CultureInfo.InvariantCulture)}";
 
             var url = distanceType switch
             {
-                DO.ShipmentType.Walk => $"https://routing.openstreetmap.de/routed-foot/route/v1/driving/{coordA};{coordB}?overview=false",
-                DO.ShipmentType.Car => $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{coordA};{coordB}?overview=false",
-                DO.ShipmentType.Bicycle => $"https://routing.openstreetmap.de/routed-bike/route/v1/driving/{coordA};{coordB}?overview=false",
-                DO.ShipmentType.Motorcycle => $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{coordA};{coordB}?overview=false",
+                DO.ShipmentType.Walk =>
+                    $"https://routing.openstreetmap.de/routed-foot/route/v1/driving/{coordA};{coordB}?overview=false",
+                DO.ShipmentType.Car =>
+                    $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{coordA};{coordB}?overview=false",
+                DO.ShipmentType.Bicycle =>
+                    $"https://routing.openstreetmap.de/routed-bike/route/v1/driving/{coordA};{coordB}?overview=false",
+                DO.ShipmentType.Motorcycle =>
+                    $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{coordA};{coordB}?overview=false",
                 _ => null
             };
 
@@ -82,7 +91,8 @@ public static class DistanceCalculator
             var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             using var doc = JsonDocument.Parse(json);
 
-            if (!doc.RootElement.TryGetProperty("routes", out var routes) || routes.ValueKind != JsonValueKind.Array || routes.GetArrayLength() == 0)
+            if (!doc.RootElement.TryGetProperty("routes", out var routes) || routes.ValueKind != JsonValueKind.Array ||
+                routes.GetArrayLength() == 0)
                 return 0.0;
 
             var firstRoute = routes[0];

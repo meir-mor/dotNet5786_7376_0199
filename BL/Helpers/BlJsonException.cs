@@ -1,5 +1,4 @@
-﻿
-namespace Helpers
+﻿namespace Helpers
 {
     [Serializable]
     internal class BlJsonException : Exception

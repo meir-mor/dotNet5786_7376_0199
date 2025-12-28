@@ -32,9 +32,14 @@ internal static class CourierManager
             var ordersIds = orders.Select(o => o.Id).ToArray();
             var deliveries = s_dal.Delivery.ReadAll(d => ordersIds.Contains(d.OrderId)).ToArray();
 
-            var totalDeliveredOnTime = deliveries.Where(d =>d.DeliveryEndType == DeliveryEndType.Supplied && d.EndTime - d.StartTime <= s_dal.Config.MaxDeliveryTime)?.ToArray().Length;
-            var totalDeliveredLate = deliveries.Where(d =>d.DeliveryEndType == DeliveryEndType.Supplied && d.EndTime - d.StartTime > s_dal.Config.MaxDeliveryTime)?.ToArray().Length;
-            
+            var totalDeliveredOnTime = deliveries.Where(d =>
+                d.DeliveryEndType == DeliveryEndType.Supplied &&
+                d.EndTime - d.StartTime <= s_dal.Config.MaxDeliveryTime)?.ToArray().Length;
+            var totalDeliveredLate = deliveries.Where(d =>
+                    d.DeliveryEndType == DeliveryEndType.Supplied &&
+                    d.EndTime - d.StartTime > s_dal.Config.MaxDeliveryTime)
+                ?.ToArray().Length;
+
             var order = orders.FirstOrDefault(o => o.Status == OrderStatus.InProgress);
             var delivery = deliveries.FirstOrDefault(d => d.OrderId == order?.Id);
             if (courier == null) return null;
@@ -78,9 +83,11 @@ internal static class CourierManager
             OrderType = (BO.OrderType)(int)order.Type,
             OrderStatus = (BO.OrderStatus)order.Status,
             Description = order.Description,
-            AerialDistance = Tools.CalculateHaversineDistance(s_dal.Config.Latitude ?? 0, s_dal.Config.Longitude ?? 0, order.Latitude, order.Longitude),
+            AerialDistance = Tools.CalculateHaversineDistance(s_dal.Config.Latitude ?? 0, s_dal.Config.Longitude ?? 0,
+                order.Latitude, order.Longitude),
             OrderOpenTime = order.CreatedAt,
-            ExpectedDeliveryTime = order.CreatedAt + TimeSpan.FromHours(delivery.ActualDistance ?? 0 / s_dal.Config.GetAverageSpeed(delivery.ShipmentType)
+            ExpectedDeliveryTime = order.CreatedAt + TimeSpan.FromHours(
+                delivery.ActualDistance ?? 0 / s_dal.Config.GetAverageSpeed(delivery.ShipmentType)
             ),
             MaxDeliveryTime = order.CreatedAt + s_dal.Config.MaxDeliveryTime,
             ScheduleStatus = DO.ScheduleStatus.OnTime,
@@ -88,6 +95,7 @@ internal static class CourierManager
             FullAddress = order.Address,
         };
     }
+
     /// <summary>
     /// Return all couriers converted to BO.CourierInList.
     /// Uses LINQ extension methods (Where, Select, OrderBy, ToList).

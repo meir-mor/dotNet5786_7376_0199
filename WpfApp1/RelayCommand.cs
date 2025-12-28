@@ -2,6 +2,7 @@
 using System.Windows.Input;
 
 namespace PL;
+
 public class RelayCommand : ICommand
 {
     private readonly Action<object?> _execute;

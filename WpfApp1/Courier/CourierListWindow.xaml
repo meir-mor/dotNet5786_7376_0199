@@ -27,16 +27,17 @@
             </Grid.ColumnDefinitions>
 
             <!-- Filter label -->
-            <Label Content="Filter by Shipment Type:" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <Label Content="Filter by Shipment Type:" Grid.Column="0" HorizontalAlignment="Left"
+                   VerticalAlignment="Center" />
 
             <ComboBox Grid.Column="1"
-                      ItemsSource="{StaticResource ShipmentTypeItemsKey}"                     
+                      ItemsSource="{StaticResource ShipmentTypeItemsKey}"
                       DisplayMemberPath="Name"
                       SelectedValuePath="Value"
                       SelectedValue="{Binding Path=SelectedShipment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       SelectionChanged="ShipmentFilter_SelectionChanged"
                       HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"/>
+                      VerticalAlignment="Stretch" />
         </Grid>
 
         <!-- DataGrid bound to Couriers DP -->
@@ -58,9 +59,9 @@
                 <DataGridTemplateColumn Header="Type" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding ShipmentType}" 
-                                       Background="{Binding ShipmentType, Converter={StaticResource StatusToBrushConverter}}" 
-                                       Padding="5,0"/>
+                            <TextBlock Text="{Binding ShipmentType}"
+                                       Background="{Binding ShipmentType, Converter={StaticResource StatusToBrushConverter}}"
+                                       Padding="5,0" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -77,7 +78,7 @@
                                     Padding="6,2"
                                     Margin="4"
                                     CommandParameter="{Binding Id}"
-                                    Click="DeleteCourier_Click"/>
+                                    Click="DeleteCourier_Click" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

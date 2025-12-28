@@ -1,5 +1,4 @@
-﻿
-namespace Helpers
+﻿namespace Helpers
 {
     [Serializable]
     internal class BlInvalidAddressCoordinatesException : Exception
@@ -12,7 +11,8 @@ namespace Helpers
         {
         }
 
-        public BlInvalidAddressCoordinatesException(string? message, Exception? innerException) : base(message, innerException)
+        public BlInvalidAddressCoordinatesException(string? message, Exception? innerException) : base(message,
+            innerException)
         {
         }
     }

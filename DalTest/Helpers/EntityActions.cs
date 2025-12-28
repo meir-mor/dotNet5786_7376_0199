@@ -168,12 +168,12 @@ internal static class EntityActions
 
         Console.Write("Is Fragile? (true/false): ");
         var isFragile = bool.TryParse(Console.ReadLine(), out var tmpFragile) && tmpFragile;
-        
+
         Console.Write("Enter Volume: ");
         var volume = double.TryParse(Console.ReadLine(), out var tmpVolume) ? tmpVolume : 0;
 
         var (lat, lon) = DistanceCalculator.GetCoordinates(address);
-        
+
         if (lat is null || lon is null)
         {
             Console.WriteLine("Invalid coordinates. Order not created.");
@@ -198,9 +198,10 @@ internal static class EntityActions
         var shipmentType = Enum.TryParse<ShipmentType>(Console.ReadLine(), out var tmpShipment) ? tmpShipment : default;
 
         var order = dal.Order.Read(d => d.Id == tmpOrderId);
-        
-        var actualDistance = DistanceCalculator.CalculateDistance(dal.Config.Latitude, dal.Config.Longitude, order.Latitude, order.Longitude, tmpShipment);
-        
+
+        var actualDistance = DistanceCalculator.CalculateDistance(dal.Config.Latitude, dal.Config.Longitude,
+            order.Latitude, order.Longitude, tmpShipment);
+
         return new Delivery(deliveryId, orderId, courierId, shipmentType, dal.Config.Clock, actualDistance,
             null, DateTime.MinValue);
     }

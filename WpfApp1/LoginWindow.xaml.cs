@@ -77,8 +77,9 @@ public partial class LoginWindow : Window
             existing.Activate();
             if (existing.WindowState == WindowState.Minimized)
                 existing.WindowState = WindowState.Normal;
-            
-            MessageBox.Show("Administrator is already logged in.", "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            MessageBox.Show("Administrator is already logged in.", "Notice", MessageBoxButton.OK,
+                MessageBoxImage.Information);
             return;
         }
 

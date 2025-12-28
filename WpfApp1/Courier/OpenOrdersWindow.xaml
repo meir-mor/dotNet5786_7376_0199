@@ -6,60 +6,68 @@
         Loaded="Window_Loaded">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Open Orders Available for You" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+        <TextBlock Text="Open Orders Available for You" FontSize="20" FontWeight="Bold" Margin="0,0,0,10" />
 
         <!-- Filters and Sorting -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Filter by Type:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <ComboBox x:Name="CbFilterType" Width="120" SelectionChanged="CbFilterType_SelectionChanged" Margin="0,0,15,0"/>
+            <TextBlock Text="Filter by Type:" VerticalAlignment="Center" Margin="0,0,5,0" />
+            <ComboBox x:Name="CbFilterType" Width="120" SelectionChanged="CbFilterType_SelectionChanged"
+                      Margin="0,0,15,0" />
 
-            <TextBlock Text="Sort by:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <ComboBox x:Name="CbSortBy" Width="120" SelectionChanged="CbSortBy_SelectionChanged" Margin="0,0,15,0"/>
+            <TextBlock Text="Sort by:" VerticalAlignment="Center" Margin="0,0,5,0" />
+            <ComboBox x:Name="CbSortBy" Width="120" SelectionChanged="CbSortBy_SelectionChanged" Margin="0,0,15,0" />
 
-            <Button Content="Refresh" Click="BtnRefresh_Click" Padding="10,2"/>
+            <Button Content="Refresh" Click="BtnRefresh_Click" Padding="10,2" />
         </StackPanel>
 
         <!-- Main Content Area: Split Map and List -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="1.5*" />
             </Grid.ColumnDefinitions>
 
             <!-- Map View (Fixed Map) -->
             <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="0,0,5,0">
-                <Canvas x:Name="CnvMap" ClipToBounds="True" SizeChanged="CnvMap_SizeChanged" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Canvas x:Name="CnvMap" ClipToBounds="True" SizeChanged="CnvMap_SizeChanged"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Canvas.Background>
-                        <ImageBrush ImageSource="C:\Users\ARI\source\repos\dotNet5786_7376_0199\WpfApp1\Images\israel_map.png" Stretch="Fill" Opacity="0.5"/>
+                        <ImageBrush
+                            ImageSource="C:\Users\ARI\source\repos\dotNet5786_7376_0199\WpfApp1\Images\israel_map.png"
+                            Stretch="Fill" Opacity="0.5" />
                     </Canvas.Background>
-                    <TextBlock Text="Select an order to view map" Canvas.Left="10" Canvas.Top="10" Foreground="Black" FontWeight="Bold" x:Name="TxtMapPlaceholder"/>
+                    <TextBlock Text="Select an order to view map" Canvas.Left="10" Canvas.Top="10" Foreground="Black"
+                               FontWeight="Bold" x:Name="TxtMapPlaceholder" />
                 </Canvas>
             </Border>
 
             <!-- List View -->
-            <DataGrid Grid.Column="2" ItemsSource="{Binding OpenOrders}" AutoGenerateColumns="False" 
-                  CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
-                  HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                  BorderThickness="1" BorderBrush="#DDDDDD"
-                  SelectionChanged="DataGrid_SelectionChanged">
+            <DataGrid Grid.Column="2" ItemsSource="{Binding OpenOrders}" AutoGenerateColumns="False"
+                      CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
+                      HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                      BorderThickness="1" BorderBrush="#DDDDDD"
+                      SelectionChanged="DataGrid_SelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="40"/>
-                    <DataGridTextColumn Header="Type" Binding="{Binding OrderType}" Width="70"/>
-                    <DataGridTextColumn Header="Address" Binding="{Binding FullAddress}" Width="*"/>
-                    <DataGridTextColumn Header="Aerial (km)" Binding="{Binding AerialDistance, StringFormat=N2}" Width="70"/>
-                    <DataGridTextColumn Header="Status" Binding="{Binding ScheduleStatus}" Width="70"/>
-                    <DataGridTextColumn Header="Max Time" Binding="{Binding MaxDeliveryTime, StringFormat='HH:mm'}" Width="80"/>
-                    
+                    <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="40" />
+                    <DataGridTextColumn Header="Type" Binding="{Binding OrderType}" Width="70" />
+                    <DataGridTextColumn Header="Address" Binding="{Binding FullAddress}" Width="*" />
+                    <DataGridTextColumn Header="Aerial (km)" Binding="{Binding AerialDistance, StringFormat=N2}"
+                                        Width="70" />
+                    <DataGridTextColumn Header="Status" Binding="{Binding ScheduleStatus}" Width="70" />
+                    <DataGridTextColumn Header="Max Time" Binding="{Binding MaxDeliveryTime, StringFormat='HH:mm'}"
+                                        Width="80" />
+
                     <DataGridTemplateColumn Header="Action" Width="70">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Select" Padding="5,2" Click="BtnPick_Click" CommandParameter="{Binding OrderId}"/>
+                                <Button Content="Select" Padding="5,2" Click="BtnPick_Click"
+                                        CommandParameter="{Binding OrderId}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
