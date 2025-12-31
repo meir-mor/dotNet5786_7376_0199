@@ -1,5 +1,6 @@
 ﻿
 using DO;
+using System.Linq;
 using System;
 using System.Globalization;
 using System.Windows;
@@ -33,6 +34,25 @@ public class CancelButtonVisibilityConverter : IValueConverter
         => throw new NotImplementedException();
 }
 
+public class CancelOrderEnabledConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is not BO.Order order)
+            return false;
+
+        if (order.OrderStatus == BO.OrderStatus.Closed)
+            return false;
+
+        if (order.Deliveries?.Any(d => d.DeliveryEndType == BO.DeliveryEndType.Supplied) == true)
+            return false;
+
+        return true;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}
 
 public class NullToHiddenConverter : IValueConverter
 {

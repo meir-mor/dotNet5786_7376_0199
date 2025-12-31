@@ -91,6 +91,13 @@ internal static class OrderManager
             // flatten grouped results to a single list of deliveries
             bo.Deliveries = deliveries.SelectMany(g => g.Items).ToList();
 
+            if (bo.Deliveries == null || bo.Deliveries.Count == 0)
+                bo.OrderStatus = BO.OrderStatus.Open;
+            else if (bo.Deliveries.Any(d => d.DeliveryEndType == null))
+                bo.OrderStatus = BO.OrderStatus.InProgress;
+            else
+                bo.OrderStatus = BO.OrderStatus.Closed;
+
             return bo;
         }
         catch (BO.BlException ex)
@@ -111,7 +118,8 @@ internal static class OrderManager
             {
                 throw new BO.BlUnexpectedException("DAL: invalid coordinates");
             }
-            
+            DO.OrderStatus initialStatus = DO.OrderStatus.Open;
+
             var doOrder = new DO.Order(
                 0,
                 (DO.OrderType)(int)order.OrderType,
@@ -121,7 +129,7 @@ internal static class OrderManager
                 order.CustomerPhone,
                 false, // BO doesn't expose IsFragile; default false
                 order.OrderOpenTime,
-                (DO.OrderStatus)order.OrderStatus,
+                initialStatus,
                 lat ?? 0,
                 lon ?? 0,
                 order.Volume
@@ -151,8 +159,18 @@ internal static class OrderManager
             var existing = s_dal.Order.Read(bo.Id)
                 ?? throw new BO.BlDoesNotExistException($"Order {bo.Id} not found");
 
-            if (existing.Status != DO.OrderStatus.Open)
-                throw new BO.BlInvalidOperationException( "Only open orders can be updated");
+            if (existing.Status == DO.OrderStatus.Closed)
+                throw new BO.BlInvalidOperationException("Cannot update a closed order");
+
+            var deliveries = s_dal.Delivery.ReadAll().Where(d => d.OrderId == bo.Id).ToList();
+
+            DO.OrderStatus newStatus;
+            if (deliveries.Count == 0)
+                newStatus = DO.OrderStatus.Open;
+            else if (deliveries.Any(d => d.EndTime == null || d.DeliveryEndType == null))
+                newStatus = DO.OrderStatus.InProgress;
+            else
+                newStatus = DO.OrderStatus.Closed;
 
             var doOrder = new DO.Order(
                 bo.Id,
@@ -161,9 +179,9 @@ internal static class OrderManager
                 bo.FullAddress,
                 bo.CustomerFullName,
                 bo.CustomerPhone,
-                false,
-                existing.CreatedAt,   
-                existing.Status,      
+                false,                
+                existing.CreatedAt,
+                newStatus,             
                 bo.Latitude,
                 bo.Longitude,
                 bo.Volume
@@ -179,6 +197,42 @@ internal static class OrderManager
             throw new BO.BlDoesNotExistException($"DAL: order {bo.Id} not found", ex);
         }
     }
+
+    /* internal static void UpdateOrder(BO.Order bo)
+     {
+         try
+         {
+             var existing = s_dal.Order.Read(bo.Id)
+                 ?? throw new BO.BlDoesNotExistException($"Order {bo.Id} not found");
+
+             if (existing.Status != DO.OrderStatus.Open)
+                 throw new BO.BlInvalidOperationException( "Only open orders can be updated");
+
+             var doOrder = new DO.Order(
+                 bo.Id,
+                 (DO.OrderType)(int)bo.OrderType,
+                 bo.Description,
+                 bo.FullAddress,
+                 bo.CustomerFullName,
+                 bo.CustomerPhone,
+                 false,
+                 existing.CreatedAt,   
+                 existing.Status,      
+                 bo.Latitude,
+                 bo.Longitude,
+                 bo.Volume
+             );
+
+             s_dal.Order.Update(doOrder);
+
+             Observers.NotifyItemUpdated(bo.Id);
+             Observers.NotifyListUpdated();
+         }
+         catch (DO.DalDoesNotExistException ex)
+         {
+             throw new BO.BlDoesNotExistException($"DAL: order {bo.Id} not found", ex);
+         }
+     }*/
 
     /// <summary>
     /// Update order (maps BO -> DO).

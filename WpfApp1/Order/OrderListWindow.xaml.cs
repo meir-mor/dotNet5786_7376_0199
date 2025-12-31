@@ -113,7 +113,7 @@ public partial class OrderListWindow : Window
     {
         var wnd = new AddOrderWindow();
         wnd.ShowDialog();
-        RefreshOrders();
+       //RefreshOrders();
     }
 
     private void CancelOrder_Click(object sender, RoutedEventArgs e)

@@ -10,7 +10,9 @@
         <pl:ShipmentTypeItemsCollection x:Key="ShipmentTypeItemsKey" />
 
 		<local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
-        
+        <!-- Converter to control Cancel order button enabled state -->
+        <local:CancelOrderEnabledConverter x:Key="CancelOrderEnabledConverter"/>
+
         <!-- Converter to control Cancel button visibility -->
         <local:CancelButtonVisibilityConverter x:Key="CancelButtonVisibilityConverter"/>
         <local:NullToHiddenConverter x:Key="NullToHiddenConverter" />

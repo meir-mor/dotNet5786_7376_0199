@@ -1,4 +1,8 @@
-﻿using System;
+﻿using BO;
+using DO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace PL.Order
@@ -16,6 +20,7 @@ namespace PL.Order
         public static readonly DependencyProperty CurrentOrderProperty =
             DependencyProperty.Register(nameof(CurrentOrder), typeof(BO.Order), typeof(AddOrderWindow),
                 new PropertyMetadata(null));
+        public IEnumerable<BO.OrderType> OrderTypes => Enum.GetValues(typeof(BO.OrderType)).Cast<BO.OrderType>();
 
         public AddOrderWindow()
         {
