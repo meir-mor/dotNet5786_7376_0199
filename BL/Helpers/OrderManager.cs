@@ -157,7 +157,7 @@ internal static class OrderManager
         try
         {
             var existing = s_dal.Order.Read(bo.Id)
-                ?? throw new BO.BlDoesNotExistException($"Order {bo.Id} not found");
+                           ?? throw new BO.BlDoesNotExistException($"Order {bo.Id} not found");
 
             if (existing.Status == DO.OrderStatus.Closed)
                 throw new BO.BlInvalidOperationException("Cannot update a closed order");
@@ -299,6 +299,7 @@ internal static class OrderManager
                 updated = true;
                 Observers.NotifyItemUpdated(doOrder.Id);
             }
+
             if (updated)
                 Observers.NotifyListUpdated();
         }
@@ -314,7 +315,8 @@ internal static class OrderManager
             FullAddress = o.Address,
             Latitude = o.Latitude,
             Longitude = o.Longitude,
-            AerialDistance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude, o.Latitude, o.Longitude, DO.ShipmentType.Aerial), // computed elsewhere if needed
+            AerialDistance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
+                o.Latitude, o.Longitude, DO.ShipmentType.Aerial), // computed elsewhere if needed
             CustomerFullName = o.CustomerName,
             CustomerPhone = o.CustomerPhone,
             Volume = o.Volume,
@@ -392,7 +394,6 @@ internal static class OrderManager
                     now
                 );
                 s_dal.Delivery.Create(dummy);
-               
             }
             else if (status == DO.OrderStatus.InProgress)
             {
@@ -409,6 +410,7 @@ internal static class OrderManager
             {
                 throw new BO.BlInvalidOperationException($"Order {orderId} cannot be cancelled (status {status})");
             }
+
             Observers.NotifyItemUpdated(orderId);
             Observers.NotifyListUpdated();
         }
@@ -436,11 +438,11 @@ internal static class OrderManager
 
             if (delivery.CourierId != courierId)
                 throw new BO.BlInvalidOperationException("Requester is not the courier of this delivery");
-            
+
             var order = s_dal.Order.Read(delivery.OrderId);
             if (order is null || order.Status != DO.OrderStatus.InProgress)
                 throw new BO.BlException("Order is not in progress");
-            
+
             // update delivery end and type
             var updated = delivery with { EndTime = now, DeliveryEndType = DO.DeliveryEndType.Supplied };
             s_dal.Delivery.Update(updated);
@@ -468,9 +470,10 @@ internal static class OrderManager
                 .FirstOrDefault();
             if (active != null)
                 throw new BO.BlException("Order already has an active delivery");
-            
-            var distance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude, order.Latitude, order.Longitude, DO.ShipmentType.Motorcycle);
-            
+
+            var distance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
+                order.Latitude, order.Longitude, DO.ShipmentType.Motorcycle);
+
             // create delivery (use default ShipmentType - can be improved)
             var delivery = new DO.Delivery(
                 0,
