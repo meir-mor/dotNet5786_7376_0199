@@ -35,7 +35,8 @@ namespace PL.Order
             {
                 var managerId = s_bl.Admin.GetConfig().ManagerId;
                 s_bl.Order.AddOrder(managerId, CurrentOrder);
-                MessageBox.Show("Order added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Order added successfully", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
                 Close();
             }
             catch (Exception ex)

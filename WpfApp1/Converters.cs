@@ -1,5 +1,4 @@
-﻿
-using DO;
+﻿using DO;
 using System.Linq;
 using System;
 using System.Globalization;
@@ -16,6 +15,7 @@ public class NullToVisibilityConverter : IValueConverter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => throw new NotImplementedException();
 }
+
 public class CancelButtonVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

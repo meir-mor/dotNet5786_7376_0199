@@ -72,6 +72,7 @@ internal class Program
     }
 
     #region Courier Menu
+
     /// <summary>
     /// Manages the BO operations for Couriers.
     /// </summary>
@@ -103,7 +104,11 @@ internal class Program
 
                     case 1: // Add Courier
                         Console.Write("Enter requester (manager) ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int addReqId)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int addReqId))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         BO.Courier newCourier = GetCourierInput(-1);
                         s_bl.Courier.AddCourier(newCourier);
@@ -112,9 +117,18 @@ internal class Program
 
                     case 2: // Read Courier details
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int readReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int readReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Courier ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int courierId)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int courierId))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         var courier = s_bl.Courier.GetCourierDetails(courierId);
                         Console.WriteLine(courier);
@@ -122,7 +136,11 @@ internal class Program
 
                     case 3: // List all Couriers
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int listReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int listReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         var allCouriers = s_bl.Courier.GetCouriersList(listReq);
                         foreach (var c in allCouriers)
@@ -131,9 +149,18 @@ internal class Program
 
                     case 4: // Update Courier
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int updReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int updReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Courier ID to update: ");
-                        if (!int.TryParse(Console.ReadLine(), out int updateId)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int updateId))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         // show current (optional)
                         var current = s_bl.Courier.GetCourierDetails(updateId);
@@ -146,9 +173,18 @@ internal class Program
 
                     case 5: // Delete Courier
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int delReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int delReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Courier ID to delete: ");
-                        if (!int.TryParse(Console.ReadLine(), out int deleteId)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int deleteId))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         s_bl.Courier.DeleteCourier(delReq, deleteId);
                         Console.WriteLine("Courier deleted successfully.");
@@ -190,6 +226,7 @@ internal class Program
             while (!int.TryParse(Console.ReadLine(), out id))
                 Console.WriteLine("Invalid input! Courier ID must be an integer.");
         }
+
         Console.Write("Enter Full Name: ");
         string fullName;
         while (string.IsNullOrWhiteSpace(fullName = Console.ReadLine()))
@@ -214,7 +251,10 @@ internal class Program
                 var addr = new System.Net.Mail.MailAddress(email);
                 if (addr.Address == email) break;
             }
-            catch { }
+            catch
+            {
+            }
+
             Console.WriteLine("Invalid email format! Please try again.");
         }
 
@@ -224,7 +264,9 @@ internal class Program
 
         Console.Write("Is Active (true/false, default true): ");
         string isActiveInput = Console.ReadLine();
-        bool isActive = string.IsNullOrWhiteSpace(isActiveInput) ? true : bool.TryParse(isActiveInput, out bool tmpA) && tmpA;
+        bool isActive = string.IsNullOrWhiteSpace(isActiveInput)
+            ? true
+            : bool.TryParse(isActiveInput, out bool tmpA) && tmpA;
 
         Console.Write("Enter Max Distance (optional, in km): ");
         string? maxDistanceInput = Console.ReadLine();
@@ -259,9 +301,11 @@ internal class Program
             OrderInProgress = null
         };
     }
+
     #endregion
 
     #region Orders Menu
+
     private static void ManageOrders()
     {
         while (true)
@@ -293,7 +337,11 @@ internal class Program
 
                     case 1: // Create Order
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int addReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int addReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         var newOrder = GetOrderInput(-1);
                         s_bl.Order.AddOrder(addReq, newOrder);
@@ -302,9 +350,18 @@ internal class Program
 
                     case 2: // Read Order
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int readReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int readReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Order ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int id))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         var order = s_bl.Order.GetOrderDetails(readReq, id);
                         Console.WriteLine(order);
@@ -312,7 +369,11 @@ internal class Program
 
                     case 3: // List all Orders
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int listReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int listReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         var allOrders = s_bl.Order.GetOrdersList(listReq);
                         foreach (var o in allOrders)
@@ -321,9 +382,18 @@ internal class Program
 
                     case 4: // Update Order
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int updReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int updReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Order ID to update: ");
-                        if (!int.TryParse(Console.ReadLine(), out int updateId)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int updateId))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         var updatedOrder = GetOrderInput(updateId);
                         s_bl.Order.UpdateOrder(updReq, updatedOrder);
@@ -332,9 +402,18 @@ internal class Program
 
                     case 5: // Delete Order
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int delReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int delReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Order ID to delete: ");
-                        if (!int.TryParse(Console.ReadLine(), out int deleteId)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int deleteId))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         s_bl.Order.DeleteOrder(delReq, deleteId);
                         Console.WriteLine("Order deleted successfully.");
@@ -342,9 +421,18 @@ internal class Program
 
                     case 6: // Cancel Order
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int cancelReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int cancelReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Order ID to cancel: ");
-                        if (!int.TryParse(Console.ReadLine(), out int cancelId)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int cancelId))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         s_bl.Order.CancelOrder(cancelReq, cancelId);
                         Console.WriteLine("Order cancelled successfully.");
@@ -352,11 +440,25 @@ internal class Program
 
                     case 7: // Assign order to courier
                         Console.Write("Enter requester ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int assignReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int assignReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Courier ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int courierId)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int courierId))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Order ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int orderIdAssign)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int orderIdAssign))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         s_bl.Order.AssignOrderToCourier(assignReq, courierId, orderIdAssign);
                         Console.WriteLine("Order assigned to courier.");
@@ -364,11 +466,25 @@ internal class Program
 
                     case 8: // Complete delivery
                         Console.Write("Enter requester (courier) ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int completeReq)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int completeReq))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Courier ID (must match requester): ");
-                        if (!int.TryParse(Console.ReadLine(), out int completeCourier)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int completeCourier))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
+
                         Console.Write("Enter Delivery ID: ");
-                        if (!int.TryParse(Console.ReadLine(), out int deliveryId)) { Console.WriteLine("Invalid input!"); break; }
+                        if (!int.TryParse(Console.ReadLine(), out int deliveryId))
+                        {
+                            Console.WriteLine("Invalid input!");
+                            break;
+                        }
 
                         s_bl.Order.CompleteDelivery(completeReq, completeCourier, deliveryId);
                         Console.WriteLine("Delivery completed.");
@@ -392,7 +508,6 @@ internal class Program
     /// </summary>
     private static BO.Order GetOrderInput(int id)
     {
-        
         Console.Write("Enter Order Type (e.g., General) - optional, press Enter to skip: ");
         string typeInput = Console.ReadLine();
         OrderType orderType = OrderType.General;
@@ -410,7 +525,7 @@ internal class Program
 
         Console.Write("Enter Customer Phone: ");
         string customerPhone = Console.ReadLine() ?? "";
-        
+
         return new BO.Order
         {
             Id = id,
@@ -424,9 +539,11 @@ internal class Program
             OrderOpenTime = DateTime.Now
         };
     }
+
     #endregion
 
     #region Admin Menu
+
     /// <summary>
     /// Manages the BO operations for the admin.
     /// </summary>
@@ -477,6 +594,7 @@ internal class Program
                             Console.WriteLine("Invalid choice.");
                             break;
                         }
+
                         TimeUnit tu = (TimeUnit)(unitChoice - 1);
                         s_bl.Admin.ForwardClock(tu);
                         Console.WriteLine($"New clock: {s_bl.Admin.GetClock()}");
@@ -500,7 +618,7 @@ internal class Program
                         Console.Write("Enter Manager Password (optional): ");
                         var managerPwd = Console.ReadLine();
                         var hasManagerPwd = !string.IsNullOrWhiteSpace(managerPwd);
-                        
+
                         Console.Write("Enter Max Distance (optional): ");
                         var hasMaxDist = double.TryParse(Console.ReadLine(), out var maxDist);
 
@@ -532,6 +650,7 @@ internal class Program
                             newCfg.Latitude = lat;
                             newCfg.Longitude = lon;
                         }
+
                         if (hasManagerPwd) newCfg.ManagerPassword = managerPwd;
                         if (hasMaxDist) newCfg.MaxDistance = maxDist;
                         if (hasAvgCar) newCfg.AverageCarSpeed = avgCar;
@@ -558,16 +677,19 @@ internal class Program
             }
         }
     }
+
     #endregion
 
     #region Helpers & Print
+
     /// <summary>
     /// Print BL exception details (type, message, inner).
     /// </summary>
     private static void PrintBlException(BO.BlException ex)
     {
         Console.WriteLine($"BL Exception: {ex.GetType().Name} - {ex.Message}");
-        if (ex.InnerException != null) Console.WriteLine($"Inner Exception: {ex.InnerException.GetType().Name} - {ex.InnerException.Message}");
+        if (ex.InnerException != null)
+            Console.WriteLine($"Inner Exception: {ex.InnerException.GetType().Name} - {ex.InnerException.Message}");
     }
 
     /// <summary>
@@ -579,7 +701,12 @@ internal class Program
         try
         {
             Console.Write("Enter requester ID to list couriers: ");
-            if (!int.TryParse(Console.ReadLine(), out int req)) { Console.WriteLine("Invalid input!"); return; }
+            if (!int.TryParse(Console.ReadLine(), out int req))
+            {
+                Console.WriteLine("Invalid input!");
+                return;
+            }
+
             var couriers = s_bl.Courier.GetCouriersList(req);
             if (couriers != null && couriers.Any())
             {
@@ -599,7 +726,12 @@ internal class Program
         try
         {
             Console.Write("Enter requester ID to list orders: ");
-            if (!int.TryParse(Console.ReadLine(), out int reqO)) { Console.WriteLine("Invalid input!"); return; }
+            if (!int.TryParse(Console.ReadLine(), out int reqO))
+            {
+                Console.WriteLine("Invalid input!");
+                return;
+            }
+
             var orders = s_bl.Order.GetOrdersList(reqO);
             if (orders != null && orders.Any())
             {
@@ -615,5 +747,6 @@ internal class Program
             PrintBlException(ex);
         }
     }
+
     #endregion
 }

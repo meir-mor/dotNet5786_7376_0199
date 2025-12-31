@@ -12,79 +12,79 @@
         Closed="Window_Closed">
     <Grid Margin="12">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="160" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Id (editable in Add mode, read-only in Update mode) -->
-        <Label Grid.Row="0" Grid.Column="0" Content="Id:" VerticalAlignment="Center" Margin="3"/>
+        <Label Grid.Row="0" Grid.Column="0" Content="Id:" VerticalAlignment="Center" Margin="3" />
         <TextBox Grid.Row="0" Grid.Column="1"
                  Text="{Binding CurrentCourier.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  IsReadOnly="{Binding IdIsReadOnly}"
                  PreviewTextInput="Id_PreviewTextInput"
-                 Margin="3"/>
+                 Margin="3" />
 
         <!-- Full name -->
-        <Label Grid.Row="1" Grid.Column="0" Content="Full Name:" VerticalAlignment="Center" Margin="3"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Full Name:" VerticalAlignment="Center" Margin="3" />
         <TextBox Grid.Row="1" Grid.Column="1"
                  Text="{Binding CurrentCourier.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="3"/>
+                 Margin="3" />
 
         <!-- Phone -->
-        <Label Grid.Row="2" Grid.Column="0" Content="Phone:" VerticalAlignment="Center" Margin="3"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Phone:" VerticalAlignment="Center" Margin="3" />
         <TextBox Grid.Row="2" Grid.Column="1"
                  Text="{Binding CurrentCourier.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="3"/>
+                 Margin="3" />
 
         <!-- Email -->
-        <Label Grid.Row="3" Grid.Column="0" Content="Email:" VerticalAlignment="Center" Margin="3"/>
+        <Label Grid.Row="3" Grid.Column="0" Content="Email:" VerticalAlignment="Center" Margin="3" />
         <TextBox Grid.Row="3" Grid.Column="1"
                  Text="{Binding CurrentCourier.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="3"/>
+                 Margin="3" />
 
         <!-- IsActive -->
-        <Label Grid.Row="4" Grid.Column="0" Content="Is Active:" VerticalAlignment="Center" Margin="3"/>
+        <Label Grid.Row="4" Grid.Column="0" Content="Is Active:" VerticalAlignment="Center" Margin="3" />
         <CheckBox Grid.Row="4" Grid.Column="1"
                   IsChecked="{Binding CurrentCourier.IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  VerticalAlignment="Center" Margin="3"/>
+                  VerticalAlignment="Center" Margin="3" />
 
         <!-- Shipment type (enum) -->
-        <Label Grid.Row="5" Grid.Column="0" Content="Shipment Type:" VerticalAlignment="Center" Margin="3"/>
+        <Label Grid.Row="5" Grid.Column="0" Content="Shipment Type:" VerticalAlignment="Center" Margin="3" />
         <ComboBox Grid.Row="5" Grid.Column="1"
                   ItemsSource="{Binding Source={StaticResource ShipmentTypeItemsKey}}"
                   DisplayMemberPath="Name"
                   SelectedValuePath="Value"
                   SelectedValue="{Binding CurrentCourier.ShipmentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  Margin="3" VerticalAlignment="Center"/>
+                  Margin="3" VerticalAlignment="Center" />
 
         <!-- Password -->
-        <Label Grid.Row="6" Grid.Column="0" Content="Password:" VerticalAlignment="Center" Margin="3"/>
+        <Label Grid.Row="6" Grid.Column="0" Content="Password:" VerticalAlignment="Center" Margin="3" />
         <TextBox Grid.Row="6" Grid.Column="1"
                  Text="{Binding CurrentCourier.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="3"/>
-        
+                 Margin="3" />
+
         <!-- Max Distance -->
-        <Label Grid.Row="7" Grid.Column="0" Content="Max Distance:" VerticalAlignment="Center" Margin="3"/>
+        <Label Grid.Row="7" Grid.Column="0" Content="Max Distance:" VerticalAlignment="Center" Margin="3" />
         <TextBox Grid.Row="7" Grid.Column="1"
                  Text="{Binding CurrentCourier.MaxDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="3"/>
-        
+                 Margin="3" />
+
         <!-- Save Button -->
         <Button Grid.Row="8" Grid.ColumnSpan="2"
                 Content="Save"
                 Height="36" Width="120" Margin="10"
                 HorizontalAlignment="Center"
-                Click="BtnAddUpdate_Click"/>
+                Click="BtnAddUpdate_Click" />
     </Grid>
 </Window>

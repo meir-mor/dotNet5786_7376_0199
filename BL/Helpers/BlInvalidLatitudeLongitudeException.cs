@@ -1,5 +1,4 @@
-﻿
-namespace Helpers
+﻿namespace Helpers
 {
     [Serializable]
     internal class BlInvalidLatitudeLongitudeException : Exception
@@ -12,7 +11,8 @@ namespace Helpers
         {
         }
 
-        public BlInvalidLatitudeLongitudeException(string? message, Exception? innerException) : base(message, innerException)
+        public BlInvalidLatitudeLongitudeException(string? message, Exception? innerException) : base(message,
+            innerException)
         {
         }
     }

@@ -15,14 +15,16 @@ public partial class CourierHistoryWindow : Window
         get => (IEnumerable<BO.ClosedDeliveryInList>?)GetValue(DeliveriesProperty);
         set => SetValue(DeliveriesProperty, value);
     }
+
     public static readonly DependencyProperty DeliveriesProperty =
-        DependencyProperty.Register(nameof(Deliveries), typeof(IEnumerable<BO.ClosedDeliveryInList>), typeof(CourierHistoryWindow), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(Deliveries), typeof(IEnumerable<BO.ClosedDeliveryInList>),
+            typeof(CourierHistoryWindow), new PropertyMetadata(null));
 
     public CourierHistoryWindow(int courierId)
     {
         _courierId = courierId;
         InitializeComponent();
-        
+
         // Register observer for automatic updates
         s_bl.Order.AddObserver(NotificationCallback);
     }
@@ -38,7 +40,7 @@ public partial class CourierHistoryWindow : Window
         // Populate Filter ComboBox
         var types = Enum.GetValues(typeof(BO.ShipmentType)).Cast<BO.ShipmentType>().ToList();
         CmbFilterType.ItemsSource = types;
-        
+
         // Populate Sort ComboBox
         var sorts = Enum.GetValues(typeof(BO.ClosedDeliverySortBy)).Cast<BO.ClosedDeliverySortBy>().ToList();
         CmbSortBy.ItemsSource = sorts;
@@ -46,7 +48,7 @@ public partial class CourierHistoryWindow : Window
 
         LoadHistory();
     }
-    
+
     // Unsubscribe when window closes to avoid memory leaks/errors
     protected override void OnClosed(EventArgs e)
     {
@@ -83,4 +85,4 @@ public partial class CourierHistoryWindow : Window
         CmbFilterType.SelectedItem = null;
         LoadHistory();
     }
-}   
+}

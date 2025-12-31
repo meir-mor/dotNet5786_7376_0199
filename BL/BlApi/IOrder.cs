@@ -1,4 +1,3 @@
-
 namespace BlApi;
 
 /// <summary>

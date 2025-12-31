@@ -1,30 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
-	   <BaseOutputPath>$(SolutionDir)\bin\</BaseOutputPath>
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
-	  <BaseOutputPath>$(SolutionDir)\bin\</BaseOutputPath>
-	  <OutputPath>$(SolutionDir)\bin\</OutputPath>
-	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-	  <NuGetAuditLevel>critical</NuGetAuditLevel>
-	  
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <BaseOutputPath>$(SolutionDir)\bin\</BaseOutputPath>
+        <OutputPath>$(SolutionDir)\bin\</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+        <BaseOutputPath>$(SolutionDir)\bin\</BaseOutputPath>
+        <OutputPath>$(SolutionDir)\bin\</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <NuGetAuditLevel>critical</NuGetAuditLevel>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BL\BL.csproj" />
-  </ItemGroup>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CSharpMarkup.WinUI.LiveChartsCore.SkiaSharpView" Version="3.1.2" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\BL\BL.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CSharpMarkup.WinUI.LiveChartsCore.SkiaSharpView" Version="3.1.2"/>
+    </ItemGroup>
 
 </Project>

@@ -20,11 +20,11 @@ namespace PL.Order
         }
 
         public static readonly DependencyProperty CurrentOrderProperty =
-            DependencyProperty.Register(  nameof(CurrentOrder),  typeof(BO.Order),  typeof(OrderWindow),
-               new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(CurrentOrder), typeof(BO.Order), typeof(OrderWindow),
+                new PropertyMetadata(null));
 
         public IEnumerable<BO.OrderType> OrderTypes => Enum.GetValues(typeof(BO.OrderType)).Cast<BO.OrderType>();
-     
+
         public OrderWindow(int orderId)
         {
             InitializeComponent();
@@ -38,7 +38,8 @@ namespace PL.Order
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load order: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to load order: {ex.Message}", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 Close();
             }
         }
@@ -71,7 +72,8 @@ namespace PL.Order
             try
             {
                 s_bl.Order.UpdateOrder(_managerId, CurrentOrder);
-                MessageBox.Show("Order updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Order updated successfully", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
             catch (Exception ex)
             {

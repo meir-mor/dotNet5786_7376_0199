@@ -8,19 +8,22 @@ using System.Collections.Generic;
 using BlApi;
 using Helpers;
 
-
 internal class OrderImplementation : IOrder
 {
-
     #region Stage 5
+
     public void AddObserver(Action listObserver) =>
-    OrderManager.Observers.AddListObserver(listObserver); //stage 5
+        OrderManager.Observers.AddListObserver(listObserver); //stage 5
+
     public void AddObserver(int id, Action observer) =>
-    OrderManager.Observers.AddObserver(id, observer); //stage 5
+        OrderManager.Observers.AddObserver(id, observer); //stage 5
+
     public void RemoveObserver(Action listObserver) =>
-    OrderManager.Observers.RemoveListObserver(listObserver); //stage 5
+        OrderManager.Observers.RemoveListObserver(listObserver); //stage 5
+
     public void RemoveObserver(int id, Action observer) =>
-    OrderManager.Observers.RemoveObserver(id, observer); //stage 5
+        OrderManager.Observers.RemoveObserver(id, observer); //stage 5
+
     #endregion Stage 5
 
     public int[,] GetOrdersCountsSummary(int requesterId)
@@ -38,14 +41,16 @@ internal class OrderImplementation : IOrder
         if (filterBy.HasValue && filterBy.Value != BO.OrderListFilterBy.None && filterValue is not null)
             orders = filterBy.Value switch
             {
-                BO.OrderListFilterBy.OrderType => orders.Where(o => o.OrderType.Equals((DO.OrderType)filterValue)).ToList(),
+                BO.OrderListFilterBy.OrderType => orders.Where(o => o.OrderType.Equals((DO.OrderType)filterValue))
+                    .ToList(),
                 BO.OrderListFilterBy.CustomerFullName => orders.Where(o =>
                     o.CustomerFullName.Contains(filterValue.ToString() ?? string.Empty,
                         StringComparison.OrdinalIgnoreCase)).ToList(),
                 BO.OrderListFilterBy.OrderStatus => orders.Where(o => o.OrderStatus.Equals((DO.OrderStatus)filterValue))
                     .ToList(),
                 BO.OrderListFilterBy.ShipmentType => orders.Where(o =>
-                    o.Deliveries != null && o.Deliveries.Any(d => d.ShipmentType == (BO.ShipmentType)filterValue)).ToList(),
+                        o.Deliveries != null && o.Deliveries.Any(d => d.ShipmentType == (BO.ShipmentType)filterValue))
+                    .ToList(),
                 _ => orders
             };
 
@@ -59,26 +64,26 @@ internal class OrderImplementation : IOrder
         };
 
         return orders.Select(o => new BO.OrderInList
-        {
-            OrderType = o.OrderType,
-            OrderStatus =
-                o.Deliveries == null || !o.Deliveries.Any()
-                 ? BO.OrderStatus.Open
-                : o.Deliveries.Any(d => d.DeliveryEndType == null)
-                   ? BO.OrderStatus.InProgress
-                     : BO.OrderStatus.Closed,
-            ShipmentType = o.Deliveries?
-                .FirstOrDefault(d => d.DeliveryEndType == null)?.ShipmentType
-                ?? o.Deliveries?.FirstOrDefault()?.ShipmentType,
-            AerialDistance = o.AerialDistance,
-            ScheduleStatus = o.ScheduleStatus,
-            TimeRemaining = o.TimeRemaining,
-            DeliveryId = o.Deliveries?.FirstOrDefault()?.DeliveryId,
-            OrderId = o.Id,
-            TotalDeliveriesCount = o.Deliveries?.Count ?? 0,
-            TotalHandlingTime = o.Deliveries.Where(d => d.DeliveryEndTime.HasValue)
+            {
+                OrderType = o.OrderType,
+                OrderStatus =
+                    o.Deliveries == null || !o.Deliveries.Any()
+                        ? BO.OrderStatus.Open
+                        : o.Deliveries.Any(d => d.DeliveryEndType == null)
+                            ? BO.OrderStatus.InProgress
+                            : BO.OrderStatus.Closed,
+                ShipmentType = o.Deliveries?
+                                   .FirstOrDefault(d => d.DeliveryEndType == null)?.ShipmentType
+                               ?? o.Deliveries?.FirstOrDefault()?.ShipmentType,
+                AerialDistance = o.AerialDistance,
+                ScheduleStatus = o.ScheduleStatus,
+                TimeRemaining = o.TimeRemaining,
+                DeliveryId = o.Deliveries?.FirstOrDefault()?.DeliveryId,
+                OrderId = o.Id,
+                TotalDeliveriesCount = o.Deliveries?.Count ?? 0,
+                TotalHandlingTime = o.Deliveries.Where(d => d.DeliveryEndTime.HasValue)
                     .Aggregate(TimeSpan.Zero, (sum, d) => sum + (d.DeliveryEndTime.Value - d.DeliveryStartTime))
-        }
+            }
         );
     }
 

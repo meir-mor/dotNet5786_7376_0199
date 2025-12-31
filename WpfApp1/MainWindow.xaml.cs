@@ -129,7 +129,8 @@ public partial class MainWindow : Window
         }
         catch (BO.BlException ex)
         {
-            MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
         catch (Exception ex)
         {
@@ -252,7 +253,8 @@ public partial class MainWindow : Window
         {
             if (Configuration is null)
             {
-                MessageBox.Show("Configuration is not available.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Configuration is not available.", "Warning", MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
@@ -290,11 +292,13 @@ public partial class MainWindow : Window
         }
         catch (BO.BlException ex)
         {
-            MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error updating configuration: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Error updating configuration: {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
     }
 
@@ -315,7 +319,8 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error opening list view: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Error opening list view: {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
     }
 
@@ -332,7 +337,8 @@ public partial class MainWindow : Window
     /// <param name="e">Event arguments.</param>
     private void BtnInitializeDb_Click(object sender, RoutedEventArgs e)
     {
-        var res = MessageBox.Show("Initialize database with sample data? This will overwrite existing data.", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        var res = MessageBox.Show("Initialize database with sample data? This will overwrite existing data.", "Confirm",
+            MessageBoxButton.YesNo, MessageBoxImage.Question);
         if (res != MessageBoxResult.Yes) return;
 
         try
@@ -340,7 +346,7 @@ public partial class MainWindow : Window
             Mouse.OverrideCursor = Cursors.Wait;
             // Close other windows except this main window
             CloseOtherWindows();
-            
+
             s_bl.Admin.InitializeDB();
             // Refresh local view
             Configuration = s_bl.Admin.GetConfig();
@@ -350,11 +356,13 @@ public partial class MainWindow : Window
         }
         catch (BO.BlException ex)
         {
-            MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error initializing DB: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Error initializing DB: {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
         finally
         {
@@ -371,7 +379,8 @@ public partial class MainWindow : Window
     /// <param name="e">Event arguments.</param>
     private async void BtnResetDb_Click(object sender, RoutedEventArgs e)
     {
-        var res = MessageBox.Show("Reset (clear) database? This operation cannot be undone.", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        var res = MessageBox.Show("Reset (clear) database? This operation cannot be undone.", "Confirm",
+            MessageBoxButton.YesNo, MessageBoxImage.Warning);
         if (res != MessageBoxResult.Yes) return;
 
         try
@@ -387,7 +396,8 @@ public partial class MainWindow : Window
         }
         catch (BO.BlException ex)
         {
-            MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"BL Exception: {ex.GetType().Name} - {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
         catch (Exception ex)
         {
@@ -410,8 +420,14 @@ public partial class MainWindow : Window
         {
             if (w != this)
             {
-                try { w.Close(); }
-                catch { /* ignore errors closing other windows */ }
+                try
+                {
+                    w.Close();
+                }
+                catch
+                {
+                    /* ignore errors closing other windows */
+                }
             }
         }
     }
@@ -427,7 +443,8 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error opening list view: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Error opening list view: {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
     }
 }

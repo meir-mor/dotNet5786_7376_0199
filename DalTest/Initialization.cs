@@ -33,7 +33,7 @@ public static class Initialization
             var (address, _) = Mock.Addresses[i % Mock.Addresses.Length];
 
             var (lat, lon) = DistanceCalculator.GetCoordinates(address);
-            
+
             if (lat is null || lon is null)
             {
                 Console.WriteLine("Invalid coordinates. Order not created.");
@@ -50,7 +50,7 @@ public static class Initialization
             var createdAt = s_dal.Config.Clock.AddMinutes(-s_rand.Next(60, 10080));
 
             var volume = s_rand.Next(1, 100);
-            
+
             s_dal.Order?.Create(new Order(
                 0,
                 (OrderType)s_rand.Next(Enum.GetValues<OrderType>().Length),
@@ -111,7 +111,7 @@ public static class Initialization
         }
     }
 
-private static void CreateDelivery()
+    private static void CreateDelivery()
     {
         if (s_dal is null) return;
 
@@ -140,14 +140,17 @@ private static void CreateDelivery()
         }
     }
 
-    private static void AssignDelivery(Order order, List<Courier> couriers, Dictionary<int, DateTime> busyTracker, bool isFinished)
+    private static void AssignDelivery(Order order, List<Courier> couriers, Dictionary<int, DateTime> busyTracker,
+        bool isFinished)
     {
         // Calculate distance first to filter couriers
         var (_, shipmentType) = Mock.Addresses.FirstOrDefault(a => a.Address == order.Address);
-        var dist = DistanceCalculator.CalculateDistance(s_dal!.Config.Latitude, s_dal.Config.Longitude, order.Latitude, order.Longitude, shipmentType);
+        var dist = DistanceCalculator.CalculateDistance(s_dal!.Config.Latitude, s_dal.Config.Longitude, order.Latitude,
+            order.Longitude, shipmentType);
 
         // Filter couriers: Active AND (No limit OR limit >= distance)
-        var validCouriers = couriers.Where(c => c.IsActive && (c.MaximumDistance == null || c.MaximumDistance >= dist)).ToList();
+        var validCouriers = couriers.Where(c => c.IsActive && (c.MaximumDistance == null || c.MaximumDistance >= dist))
+            .ToList();
 
         if (!validCouriers.Any()) return;
 

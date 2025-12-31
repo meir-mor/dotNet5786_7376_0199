@@ -17,10 +17,8 @@ public partial class OrderListWindow : Window
 
     public IEnumerable<BO.OrderInList>? OrderList
     {
-       
-        get  =>   (IEnumerable<BO.OrderInList>)GetValue(OrderListProperty); 
-        set  =>  SetValue(OrderListProperty, value); 
-
+        get => (IEnumerable<BO.OrderInList>)GetValue(OrderListProperty);
+        set => SetValue(OrderListProperty, value);
     }
 
     public static readonly DependencyProperty OrderListProperty =
@@ -45,7 +43,8 @@ public partial class OrderListWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to load orders: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Failed to load orders: {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
     }
 
@@ -55,7 +54,9 @@ public partial class OrderListWindow : Window
         {
             s_bl.Order.RemoveObserver(RefreshOrders);
         }
-        catch { }
+        catch
+        {
+        }
     }
 
     private void ShipmentFilter_SelectionChanged(object? sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -78,7 +79,7 @@ public partial class OrderListWindow : Window
                     managerId,
                     filterBy: BO.OrderListFilterBy.ShipmentType,
                     filterValue: SelectedShipment
-                  ).ToList();
+                ).ToList();
         }
         catch (BO.BlException)
         {
@@ -124,8 +125,8 @@ public partial class OrderListWindow : Window
                 return;
 
             var confirm = MessageBox.Show("Are you sure you want to cancel the selected order?",
-                 "Confirm Cancel", MessageBoxButton.YesNo, MessageBoxImage.Question);
-   
+                "Confirm Cancel", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
             if (confirm != MessageBoxResult.Yes) return;
 
             var order = s_bl.Order.GetOrderDetails(_managerId, orderId);
@@ -155,5 +156,5 @@ public partial class OrderListWindow : Window
             return;
 
         // מייל:
-        }
+    }
 }

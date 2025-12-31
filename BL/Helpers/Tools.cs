@@ -1,4 +1,5 @@
 namespace Helpers;
+
 using BO;
 using DO;
 using System.Net.Http;
@@ -26,6 +27,7 @@ internal static class Tools
             return $"{p.Name}: {value}";
         }));
     }
+
     /// <summary>
     /// Synchronously retrieves the latitude and longitude for a given address.
     /// </summary>
@@ -73,7 +75,8 @@ internal static class Tools
     /// <returns>The distance in kilometers between the two addresses.</returns>
     /// <exception cref="BlInvalidAddressException">Thrown if one or both addresses are invalid or if the distance type is invalid.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the API request for walking or driving distance fails.</exception>
-    internal static double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2, DO.ShipmentType distanceType)
+    internal static double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2,
+        DO.ShipmentType distanceType)
     {
         // Check if the addresses are valid.
         if (lat1 == null || lon1 == null || lat2 == null || lon2 == null)
@@ -88,8 +91,10 @@ internal static class Tools
         // Handle walking/driving distance using an external API
         string url = distanceType switch
         {
-            DO.ShipmentType.Walk or DO.ShipmentType.Bicycle => $"https://routing.openstreetmap.de/routed-foot/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
-            DO.ShipmentType.Car or DO.ShipmentType.Motorcycle => $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
+            DO.ShipmentType.Walk or DO.ShipmentType.Bicycle =>
+                $"https://routing.openstreetmap.de/routed-foot/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
+            DO.ShipmentType.Car or DO.ShipmentType.Motorcycle =>
+                $"https://routing.openstreetmap.de/routed-car/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
             _ => throw new BlInvalidOperationException("Invalid DistanceType provided.")
         };
 
@@ -104,9 +109,9 @@ internal static class Tools
         // Parse the JSON response
         var data = JsonDocument.Parse(json);
         double distance = data.RootElement
-                             .GetProperty("routes")[0]
-                             .GetProperty("distance")
-                             .GetDouble() / 1000.0; // Convert meters to kilometers
+            .GetProperty("routes")[0]
+            .GetProperty("distance")
+            .GetDouble() / 1000.0; // Convert meters to kilometers
 
         return distance;
     }
@@ -132,6 +137,7 @@ internal static class Tools
         double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
         return R * c;
     }
+
     /// <summary>
     /// Converts degrees to radians.
     /// </summary>

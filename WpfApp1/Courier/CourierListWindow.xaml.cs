@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BO;
+
 namespace PL.Courier;
 
 /// <summary>
@@ -43,7 +44,8 @@ public partial class CourierListWindow : Window
     /// Identifies the <see cref="Couriers"/> dependency property.
     /// </summary>
     public static readonly DependencyProperty CouriersProperty =
-        DependencyProperty.Register(nameof(Couriers), typeof(IEnumerable<BO.CourierInList>), typeof(CourierListWindow), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(Couriers), typeof(IEnumerable<BO.CourierInList>), typeof(CourierListWindow),
+            new PropertyMetadata(null));
 
     /// <summary>
     /// Initializes a new instance of <see cref="CourierListWindow"/>.
@@ -53,7 +55,7 @@ public partial class CourierListWindow : Window
         InitializeComponent();
         DataContext = this;
     }
-    
+
 
     /// <summary>
     /// Refresh couriers from BL (single BL call), cache them and apply current shipment-type filter.
@@ -73,7 +75,8 @@ public partial class CourierListWindow : Window
         }
         catch (Exception)
         {
-            MessageBox.Show("An unexpected error occurred while loading couriers. Please try again or contact support.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("An unexpected error occurred while loading couriers. Please try again or contact support.",
+                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -84,8 +87,8 @@ public partial class CourierListWindow : Window
     private void ApplyShipmentFilter()
     {
         Couriers = SelectedShipment == null
-         ? s_bl?.Courier.GetAllCouriersInList()!
-         : s_bl?.Courier.GetAllCouriersInList(null, SelectedShipment.Value)!;
+            ? s_bl?.Courier.GetAllCouriersInList()!
+            : s_bl?.Courier.GetAllCouriersInList(null, SelectedShipment.Value)!;
     }
 
     /// <summary>
@@ -108,7 +111,8 @@ public partial class CourierListWindow : Window
         }
         catch (Exception)
         {
-            MessageBox.Show("Failed to initialize courier list view. Please try again.", "Initialization Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Failed to initialize courier list view. Please try again.", "Initialization Error",
+                MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -146,7 +150,7 @@ public partial class CourierListWindow : Window
                 wnd.Show();
             }
         }
-        catch (Exception )
+        catch (Exception)
         {
             MessageBox.Show($"Cannot open courier details", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -179,7 +183,8 @@ public partial class CourierListWindow : Window
             if (sender is not Button btn || btn.CommandParameter is not int courierId)
                 return;
 
-            var confirm = MessageBox.Show("Are you sure you want to delete the selected courier?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var confirm = MessageBox.Show("Are you sure you want to delete the selected courier?", "Confirm Delete",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (confirm != MessageBoxResult.Yes) return;
 
             var managerId = s_bl.Admin.GetConfig().ManagerId;
@@ -196,7 +201,8 @@ public partial class CourierListWindow : Window
         }
         catch (Exception)
         {
-            MessageBox.Show("Unexpected error while deleting courier. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Unexpected error while deleting courier. Please try again.", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
     }
 }

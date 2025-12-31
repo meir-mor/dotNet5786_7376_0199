@@ -17,6 +17,7 @@ class ObserverManager //stage 5
     /// of the list of entities
     /// </summary>
     private event Action? _listObservers;
+
     /// <summary>
     /// Hash table (Dictionary) of individual entity delegates.<br/>
     /// The index (key) is the ID of an entity.<br/>
@@ -30,6 +31,7 @@ class ObserverManager //stage 5
     /// </summary>
     /// <param name="observer">Observer method (usually from Presentation Layer) to be added</param>
     internal void AddListObserver(Action observer) => _listObservers += observer;
+
     /// <summary>
     /// Remove an observer on change in list of entities that may effect the list presentation
     /// </summary>
@@ -81,5 +83,4 @@ class ObserverManager //stage 5
         if (_specificObservers.ContainsKey(id))
             _specificObservers[id]?.Invoke();
     }
-
 }

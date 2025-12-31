@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Windows;
-using BO; // הנחה שה-BL משתמש ב-namespace הזה
+using BO; // Assuming the BL uses this namespace
 
 namespace PL.Courier
 {
     public partial class CourierMainWindow : Window
     {
-        // גישה לשכבת ה-BL
+        // Access to the BL layer
         private static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
         private readonly int _courierId;
         private readonly UserRole _userRole;
-        
-        // משתנה לשמירת ה-Observer לעדכון אוטומטי
+
+        // Variable to save the Observer for automatic update
         private Action? _observer;
-        
-        // משתנה עזר למעקב אחר סוג המשלוח המקורי (למניעת שינוי באמצע הזמנה)
+
+        // Auxiliary variable to track the original shipment type (to prevent change during an order)
         private BO.ShipmentType? _originalType;
 
-        // Dependency Property לקישור הנתונים (Data Binding) ב-XAML
+        // Dependency Property for Data Binding in XAML
         public BO.Courier? CurrentCourier
         {
             get => (BO.Courier?)GetValue(CurrentCourierProperty);
@@ -39,8 +39,8 @@ namespace PL.Courier
             try
             {
                 LoadCourier();
-                
-                // הגדרת Observer לרענון המסך כשמתבצע שינוי בנתונים
+
+                // Setting Observer to refresh the screen when data changes
                 _observer = () => Dispatcher.Invoke(LoadCourier);
                 s_bl.Courier.AddObserver(_courierId, _observer);
             }
@@ -53,16 +53,16 @@ namespace PL.Courier
 
         public void LoadCourier()
         {
-            // טעינת פרטי השליח העדכניים מה-BL
+            // Loading current courier details from BL
             CurrentCourier = s_bl.Courier.GetCourierDetails(_courierId);
-            // שמירת סוג המשלוח הנוכחי לבדיקות אימות בעדכון
+            // Saving current shipment type for validation checks during update
             _originalType = CurrentCourier?.ShipmentType;
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            // הסרת ה-Observer ביציאה למניעת שגיאות וזליגת זיכרון
-            if (_observer != null) 
+            // Removing the Observer on exit to prevent errors and memory leaks
+            if (_observer != null)
                 s_bl.Courier.RemoveObserver(_courierId, _observer);
         }
 
@@ -72,20 +72,22 @@ namespace PL.Courier
             {
                 if (CurrentCourier == null) return;
 
-                // 2. בדיקת שינוי סוג משלוח בזמן הזמנה פעילה
+                // 2. Checking for shipment type change during an active order
                 if (CurrentCourier.OrderInProgress != null && CurrentCourier.ShipmentType != _originalType)
                 {
-                    MessageBox.Show("Cannot change shipment type while an order is in progress.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    // שחזור הערך המקורי בתצוגה
-                    CurrentCourier.ShipmentType = _originalType ?? ShipmentType.Bicycle; 
+                    MessageBox.Show("Cannot change shipment type while an order is in progress.", "Validation Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    // Restoring original value in display
+                    CurrentCourier.ShipmentType = _originalType ?? ShipmentType.Bicycle;
                     return;
                 }
 
-                // ביצוע העדכון
+                // Performing the update
                 s_bl.Courier.UpdateCourier(_courierId, CurrentCourier);
-                MessageBox.Show("Courier details updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                
-                // רענון הנתונים
+                MessageBox.Show("Courier details updated successfully.", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                // Refreshing data
                 LoadCourier();
             }
             catch (Exception ex)
@@ -96,7 +98,7 @@ namespace PL.Courier
 
         private void BtnPickOrder_Click(object sender, RoutedEventArgs e)
         {
-            // פתיחת מסך בחירת הזמנה (הכפתור יהיה פעיל רק אם התנאים ב-XAML מתקיימים)
+            // Opening order selection screen (the button will be active only if XAML conditions are met)
             new OpenOrdersWindow(_courierId) { Owner = this }.Show();
         }
 
@@ -104,17 +106,18 @@ namespace PL.Courier
         {
             if (CurrentCourier?.OrderInProgress == null) return;
 
-            // דיווח על סיום (סימולציה של בחירת סוג סיום)
-            var res = MessageBox.Show("Has the delivery been completed successfully?", "Finish Delivery", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-            
+            // Reporting completion (simulation of selecting completion type)
+            var res = MessageBox.Show("Has the delivery been completed successfully?", "Finish Delivery",
+                MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+
             if (res == MessageBoxResult.Cancel) return;
 
             try
             {
-                // כאן תתבצע הקריאה ל-BL לסיום הטיפול
-                // נניח ש-Yes מסמן הצלחה. (יש להתאים למתודת ה-BL שלך אם היא מקבלת סטטוס)
+                // Here the BL call to finish handling will be performed
+                // Assume Yes indicates success. (Must match your BL method if it receives status)
                 s_bl.Order.CompleteDelivery(_courierId, _courierId, CurrentCourier.OrderInProgress.DeliveryId);
-                
+
                 MessageBox.Show("Delivery completed.", "Success");
                 LoadCourier();
             }
@@ -134,7 +137,8 @@ namespace PL.Courier
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to delete this courier?", "Delete Courier", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Are you sure you want to delete this courier?", "Delete Courier",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 try
                 {
@@ -144,7 +148,8 @@ namespace PL.Courier
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error deleting courier: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Error deleting courier: {ex.Message}", "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
         }

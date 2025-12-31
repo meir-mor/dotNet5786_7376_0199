@@ -17,7 +17,7 @@ public partial class OpenOrdersWindow : Window
 {
     private static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
     private readonly int _courierId;
-    
+
     // Observers
     private Action _listObserver;
 
@@ -26,18 +26,20 @@ public partial class OpenOrdersWindow : Window
         get => (IEnumerable<BO.OpenOrderInList>?)GetValue(OpenOrdersProperty);
         set => SetValue(OpenOrdersProperty, value);
     }
+
     public static readonly DependencyProperty OpenOrdersProperty =
-        DependencyProperty.Register(nameof(OpenOrders), typeof(IEnumerable<BO.OpenOrderInList>), typeof(OpenOrdersWindow), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(OpenOrders), typeof(IEnumerable<BO.OpenOrderInList>),
+            typeof(OpenOrdersWindow), new PropertyMetadata(null));
 
     public OpenOrdersWindow(int courierId)
     {
         SetBrowserFeatureControl();
         _courierId = courierId;
         InitializeComponent();
-        
+
         // Define observer action (thread-safe dispatch)
         _listObserver = () => Dispatcher.Invoke(LoadOpenOrders);
-        
+
         // Handle closing to unsubscribe
         Closing += Window_Closing;
     }
@@ -47,7 +49,8 @@ public partial class OpenOrdersWindow : Window
         try
         {
             var fileName = System.IO.Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName);
-            var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION", true);
+            var key = Registry.CurrentUser.OpenSubKey(
+                @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION", true);
             if (key != null)
             {
                 // 11001 (0x2AF9) = Internet Explorer 11. Webpages are displayed in IE11 Standards mode, regardingles of !DOCTYPE directive.
@@ -55,7 +58,9 @@ public partial class OpenOrdersWindow : Window
                 key.Close();
             }
         }
-        catch { }
+        catch
+        {
+        }
     }
 
     private BO.ShipmentType _courierShipmentType;
@@ -63,12 +68,15 @@ public partial class OpenOrdersWindow : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        try 
+        try
         {
             var courier = s_bl.Courier.GetCourierDetails(_courierId);
             _courierShipmentType = courier.ShipmentType;
         }
-        catch { _courierShipmentType = BO.ShipmentType.Motorcycle; } 
+        catch
+        {
+            _courierShipmentType = BO.ShipmentType.Motorcycle;
+        }
 
         var types = Enum.GetValues(typeof(BO.OrderType)).Cast<BO.OrderType>().ToList();
         CbFilterType.ItemsSource = new List<object> { "All" }.Concat(types.Cast<object>());
@@ -85,8 +93,8 @@ public partial class OpenOrdersWindow : Window
         {
             s_bl.Order.AddObserver(_listObserver);
         }
-        catch (Exception ex) 
-        { 
+        catch (Exception ex)
+        {
             // Logging or silent fail if observer not supported yet 
         }
     }
@@ -97,7 +105,9 @@ public partial class OpenOrdersWindow : Window
         {
             s_bl.Order.RemoveObserver(_listObserver);
         }
-        catch { }
+        catch
+        {
+        }
     }
 
     private void LoadOpenOrders()
@@ -168,10 +178,10 @@ public partial class OpenOrdersWindow : Window
         var cLon = s_bl.Admin.GetConfig().Longitude ?? 0;
         var oLat = order.Latitude ?? 0;
         var oLon = order.Longitude ?? 0;
-        
-        const double minLat = 29.3; 
+
+        const double minLat = 29.3;
         const double maxLat = 33.5;
-        const double minLon = 34.0; 
+        const double minLon = 34.0;
         const double maxLon = 35.9;
 
         const double latSpan = maxLat - minLat;
@@ -191,13 +201,21 @@ public partial class OpenOrdersWindow : Window
         CnvMap.Children.Add(line);
 
         // Draw Company (Blue square)
-        var companyShape = new Rectangle { Width = 12, Height = 12, Fill = Brushes.Blue, Stroke=Brushes.White, StrokeThickness=1, ToolTip = "Company" };
+        var companyShape = new Rectangle
+        {
+            Width = 12, Height = 12, Fill = Brushes.Blue, Stroke = Brushes.White, StrokeThickness = 1,
+            ToolTip = "Company"
+        };
         Canvas.SetLeft(companyShape, GetX(cLon) - 6);
         Canvas.SetTop(companyShape, GetY(cLat) - 6);
         CnvMap.Children.Add(companyShape);
 
         // Draw Order (Red circle)
-        var orderShape = new Ellipse { Width = 12, Height = 12, Fill = Brushes.Red, Stroke = Brushes.White, StrokeThickness = 1, ToolTip = order.FullAddress };
+        var orderShape = new Ellipse
+        {
+            Width = 12, Height = 12, Fill = Brushes.Red, Stroke = Brushes.White, StrokeThickness = 1,
+            ToolTip = order.FullAddress
+        };
         Canvas.SetLeft(orderShape, GetX(oLon) - 6);
         Canvas.SetTop(orderShape, GetY(oLat) - 6);
         CnvMap.Children.Add(orderShape);
@@ -213,7 +231,8 @@ public partial class OpenOrdersWindow : Window
         {
             if (sender is not Button btn || btn.CommandParameter is not int orderId) return;
 
-            var confirm = MessageBox.Show("Pick this order for delivery?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var confirm = MessageBox.Show("Pick this order for delivery?", "Confirm", MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
             if (confirm != MessageBoxResult.Yes) return;
 
             var order = OpenOrders?.FirstOrDefault(o => o.OrderId == orderId);
@@ -222,14 +241,14 @@ public partial class OpenOrdersWindow : Window
             MessageBox.Show("Order assigned to you.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
             // Send Email
-            if (order != null) 
+            if (order != null)
             {
                 SendEmail(order);
             }
 
             // refresh lists (observer will likely also trigger, but explicit refresh ensures immediate feedback)
             LoadOpenOrders();
-            
+
             // notify owner to refresh (courier main window)
             if (Owner is CourierMainWindow c) c.LoadCourier();
         }
@@ -242,12 +261,12 @@ public partial class OpenOrdersWindow : Window
             MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
-    
+
     private void SendEmail(BO.OpenOrderInList order)
     {
         try
         {
-            string toEmail = "arioren100@gmail.com";   // אליך
+            string toEmail = "arioren100@gmail.com"; // אליך
 
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress("arioren100@gmail.com");
@@ -274,7 +293,7 @@ Safe Travels!
                 "xxxxxxxxx"
             );
 
-            smtp.Send(mail);  
+            smtp.Send(mail);
 
             MessageBox.Show("Email sent successfully!", "Email", MessageBoxButton.OK, MessageBoxImage.Information);
         }

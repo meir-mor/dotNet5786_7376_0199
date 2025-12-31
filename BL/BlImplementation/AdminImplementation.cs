@@ -8,14 +8,17 @@ using Helpers;
 internal class AdminImplementation : IAdmin
 {
     public void AddClockObserver(Action clockObserver) =>
-    AdminManager.ClockUpdatedObservers += clockObserver;
+        AdminManager.ClockUpdatedObservers += clockObserver;
+
     public void RemoveClockObserver(Action clockObserver) =>
-    AdminManager.ClockUpdatedObservers -= clockObserver;
+        AdminManager.ClockUpdatedObservers -= clockObserver;
+
     public void AddConfigObserver(Action configObserver) =>
-   AdminManager.ConfigUpdatedObservers += configObserver;
+        AdminManager.ConfigUpdatedObservers += configObserver;
+
     public void RemoveConfigObserver(Action configObserver) =>
-    AdminManager.ConfigUpdatedObservers -= configObserver;
- 
+        AdminManager.ConfigUpdatedObservers -= configObserver;
+
     public void ResetDB()
     {
         AdminManager.ResetDB();

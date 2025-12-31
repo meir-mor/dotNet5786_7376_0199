@@ -52,5 +52,7 @@ public interface ICourier : IObservable //stage 5
     /// Add a new courier (BO.Courier). Caller must be authorized.
     /// </summary>
     void AddCourier(BO.Courier courier);
-    IEnumerable<BO.CourierInList> GetAllCouriersInList(Func<BO.CourierInList, bool>? customFilter = null, BO.ShipmentType? filter = null);
+
+    IEnumerable<BO.CourierInList> GetAllCouriersInList(Func<BO.CourierInList, bool>? customFilter = null,
+        BO.ShipmentType? filter = null);
 }
