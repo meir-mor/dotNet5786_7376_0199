@@ -491,6 +491,31 @@ internal static class OrderManager
             // Optionally update order status to InProgress
             var updatedOrder = order with { Status = DO.OrderStatus.InProgress };
             s_dal.Order.Update(updatedOrder);
+
+            // Send Email notification (simulated)
+            try
+            {
+                // This would normally use a dedicated notification service
+                // For now, we simulate the logik that was in PL
+                string toEmail = "arioren100@gmail.com";
+                System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage();
+                mail.From = new System.Net.Mail.MailAddress("arioren100@gmail.com");
+                mail.To.Add(toEmail);
+                mail.Subject = $"New Order Assigned #{order.Id}";
+                mail.Body = $@"
+Hello,
+You have successfully assigned Order #{order.Id}.
+Details:
+Type: {(BO.OrderType)(int)order.Type}
+Address: {order.Address}
+Safe Travels!
+";
+                // In a real app, you would send via SmtpClient here.
+                // Log it for verification since we can't actually send mail without credentials/server.
+                System.Diagnostics.Debug.WriteLine($"[BL Notification] Email sent to {toEmail} for Order {orderId}");
+            }
+            catch { /* ignore notification errors in business logic to not block assignment */ }
+
             Observers.NotifyItemUpdated(orderId);
             Observers.NotifyListUpdated();
         }

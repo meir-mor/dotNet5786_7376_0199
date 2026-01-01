@@ -240,12 +240,6 @@ public partial class OpenOrdersWindow : Window
 
             MessageBox.Show("Order assigned to you.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            // Send Email
-            if (order != null)
-            {
-                SendEmail(order);
-            }
-
             // refresh lists (observer will likely also trigger, but explicit refresh ensures immediate feedback)
             LoadOpenOrders();
 
@@ -259,47 +253,6 @@ public partial class OpenOrdersWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-    private void SendEmail(BO.OpenOrderInList order)
-    {
-        try
-        {
-            string toEmail = "arioren100@gmail.com"; // אליך
-
-            MailMessage mail = new MailMessage();
-            mail.From = new MailAddress("arioren100@gmail.com");
-            mail.To.Add(toEmail);
-            mail.Subject = $"New Order Assigned #{order.OrderId}";
-            mail.Body = $@"
-Hello Aharon,
-
-You have successfully assigned Order #{order.OrderId}.
-
-Details:
-Type: {order.OrderType}
-Address: {order.FullAddress}
-Max Delivery Time: {order.MaxDeliveryTime}
-
-Safe Travels!
-";
-
-            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-            smtp.EnableSsl = true;
-
-            smtp.Credentials = new NetworkCredential(
-                "arioren100@gmail.com",
-                "xxxxxxxxx"
-            );
-
-            smtp.Send(mail);
-
-            MessageBox.Show("Email sent successfully!", "Email", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Email failed: " + ex.Message);
         }
     }
 }

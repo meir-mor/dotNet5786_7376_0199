@@ -88,6 +88,10 @@ internal class CourierImplementation : ICourier
 
     public void UpdateCourier(int requesterId, BO.Courier courier)
     {
+        var existing = GetCourierDetails(courier.Id);
+        if (existing.OrderInProgress != null && existing.ShipmentType != courier.ShipmentType)
+            throw new BO.BlException("Cannot change shipment type while an order is in progress.");
+
         if (AdminManager.GetConfig().ManagerId == requesterId)
             CourierManager.UpdateCourier(courier, UserRole.Manager);
         else if (courier.Id == requesterId)
@@ -98,11 +102,28 @@ internal class CourierImplementation : ICourier
 
     public void DeleteCourier(int requesterId, int courierId)
     {
+        if (AdminManager.GetConfig().ManagerId != requesterId)
+            throw new BO.BlInvalidRequestException("Only managers can delete couriers.");
+
         CourierManager.DeleteCourier(courierId);
     }
 
     public void AddCourier(BO.Courier courier)
     {
+        if (courier.Id <= 0)
+            throw new BO.BlException("Invalid courier ID. ID must be greater than 0.");
+
+        try
+        {
+            var existing = GetCourierDetails(courier.Id);
+            if (existing != null)
+                throw new BO.BlAlreadyExistsException($"A courier with ID {courier.Id} already exists.");
+        }
+        catch (BO.BlDoesNotExistException)
+        {
+            // This is expected if ID is unique
+        }
+
         CourierManager.CreateCourier(courier);
     }
 

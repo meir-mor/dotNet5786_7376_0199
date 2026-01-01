@@ -34,22 +34,26 @@ public interface ICourier : IObservable //stage 5
 
     /// <summary>
     /// Request detailed courier data (BO.Courier), includes current order-in-progress if exists.
+    /// Throws BO.BlDoesNotExistException if courier not found.
     /// </summary>
     BO.Courier GetCourierDetails(int courierId);
 
     /// <summary>
     /// Update courier data. The BO.Courier parameter is full and replaces existing values.
+    /// Validates that shipment type is not changed while an order is in progress.
     /// </summary>
     void UpdateCourier(int requesterId, BO.Courier courier);
 
     /// <summary>
     /// Delete courier by id. Allowed only if courier has no active delivery and never completed deliveries.
-    /// Throws BO.InvalidOperationOnEntityException when deletion is not permitted.
+    /// Allowed only for Manager role.
+    /// Throws BO.BlInvalidRequestException if requester is not authorized.
     /// </summary>
     void DeleteCourier(int requesterId, int courierId);
 
     /// <summary>
     /// Add a new courier (BO.Courier). Caller must be authorized.
+    /// Validates that ID is greater than 0 and unique.
     /// </summary>
     void AddCourier(BO.Courier courier);
 
