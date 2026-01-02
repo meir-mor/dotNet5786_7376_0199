@@ -106,28 +106,30 @@ internal static class CourierManager
     {
         try
         {
-            var deliveries = s_dal.Delivery.ReadAll();
+            var deliveries = s_dal.Delivery.ReadAll().ToList();
             var config = s_dal.Config;
 
             var result = s_dal.Courier.ReadAll()
-                .Where(c => c != null)
-                .Select(c => new BO.CourierInList
+                .Select(c =>
                 {
-                    Id = c.Id,
-                    FullName = c.Name,
-                    IsActive = c.IsActive,
-                    ShipmentType = (BO.ShipmentType)(int)c.ShipmentType,
-                    StartWorkTime = c.StartingWork,
-                    TotalDeliveredOnTime = deliveries.Count(d =>
-                        d.CourierId == c.Id &&
-                        d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
-                        d.EndTime - d.StartTime <= config.MaxDeliveryTime),
-                    TotalDeliveredLate = deliveries.Count(d =>
-                        d.CourierId == c.Id &&
-                        d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
-                        d.EndTime - d.StartTime > config.MaxDeliveryTime),
-                    CurrentDeliveryId = deliveries.Count(d =>
-                        d.CourierId == c.Id && d.EndTime == null)
+                    var couriersDeliveries = deliveries.Where(d => d.CourierId == c.Id).ToList();
+                    var couriersDeliveriesIds = couriersDeliveries.Select(d => d.OrderId).ToList();
+                    var currentOrder = s_dal.Order.Read(o => couriersDeliveriesIds.Contains(o.Id) && o.Status == OrderStatus.InProgress);
+                    return new BO.CourierInList
+                    {
+                        Id = c.Id,
+                        FullName = c.Name,
+                        IsActive = c.IsActive,
+                        ShipmentType = (BO.ShipmentType)(int)c.ShipmentType,
+                        StartWorkTime = c.StartingWork,
+                        TotalDeliveredOnTime = couriersDeliveries.Count(d =>
+                            d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
+                            d.EndTime - d.StartTime <= config.MaxDeliveryTime),
+                        TotalDeliveredLate = couriersDeliveries.Count(d =>
+                            d.DeliveryEndType == DO.DeliveryEndType.Supplied &&
+                            d.EndTime - d.StartTime > config.MaxDeliveryTime),
+                        CurrentDeliveryId = currentOrder?.Id
+                    };
                 })
                 .ToList();
 
@@ -238,7 +240,8 @@ internal static class CourierManager
             var exists = s_dal.Courier.ReadAll().Any(c => c.Id == id);
             if (!exists)
                 throw new BO.BlDoesNotExistException($"DAL: courier with id {id} not found");
-            var canDelete = s_dal.Delivery.Read(c => c.CourierId == id) is null;
+            var deliveries = s_dal.Delivery.ReadAll(c => c.CourierId == id).Select(d => d.OrderId).ToList();
+            var canDelete = s_dal.Order.Read(o => deliveries.Contains(o.Id) && o.Status == OrderStatus.InProgress) is null;
             if (!canDelete)
                 throw new BO.BlInvalidOperationException($"DAL: courier with id {id} cannot be deleted");
 
