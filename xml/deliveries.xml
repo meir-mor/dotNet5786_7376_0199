@@ -310,4 +310,14 @@
     <DeliveryEndType>Cancelled</DeliveryEndType>
     <EndTime>2026-01-03T20:16:56</EndTime>
   </Delivery>
+  <Delivery>
+    <Id>31</Id>
+    <OrderId>12</OrderId>
+    <CourierId>0</CourierId>
+    <ShipmentType>Motorcycle</ShipmentType>
+    <StartTime>2030-01-03T20:16:56</StartTime>
+    <ActualDistance xsi:nil="true" />
+    <DeliveryEndType>Cancelled</DeliveryEndType>
+    <EndTime>2030-01-03T20:16:56</EndTime>
+  </Delivery>
 </ArrayOfDelivery>

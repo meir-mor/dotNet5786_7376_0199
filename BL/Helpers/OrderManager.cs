@@ -1,6 +1,7 @@
 ﻿using BO;
 using DalApi;
 using Factory = DalApi.Factory;
+using OrderStatus = DO.OrderStatus;
 
 namespace Helpers;
 
@@ -18,25 +19,21 @@ internal static class OrderManager
         try
         {
             var orders = s_dal.Order.ReadAll()
-                .Where(o => o != null) // extension 1
                 .Select(o =>
                 {
-                    var bo = MapDoToBo(o); // extension 2 usage in chain
-                    // populate deliveries for each order (extension 3 + 4 below)
+                    var bo = MapDoToBo(o);
                     bo.Deliveries = s_dal.Delivery.ReadAll(d => d.OrderId == o.Id)
                         .Select(d => new BO.DeliveryPerOrderInList
                         {
                             DeliveryId = d.Id,
-                            CourierId = d.CourierId == 0 ? null : (int?)d.CourierId,
-                            CourierName = s_dal.Courier.Read(d.CourierId) is DO.Courier c ? c.Name : string.Empty,
+                            CourierId = d.CourierId,
+                            CourierName = s_dal.Courier.Read(d.CourierId)?.Name ?? string.Empty,
                             ShipmentType = (BO.ShipmentType)(int)d.ShipmentType,
                             DeliveryStartTime = d.StartTime,
-                            DeliveryEndType = d.DeliveryEndType is null
-                                ? null
-                                : (BO.DeliveryEndType?)(int)d.DeliveryEndType,
-                            DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
+                            DeliveryEndType = (BO.DeliveryEndType?)(int?)d.DeliveryEndType,
+                            DeliveryEndTime = d.EndTime
                         })
-                        .ToList(); // extension ToList
+                        .ToList();
                     return bo;
                 })
                 .OrderByDescending(o => o.OrderOpenTime)
@@ -77,13 +74,11 @@ internal static class OrderManager
                     {
                         DeliveryId = x.Id,
                         CourierId = x.CourierId,
-                        CourierName = s_dal.Courier.Read(x.CourierId)?.Name,
+                        CourierName = s_dal.Courier.Read(x.CourierId)?.Name ?? string.Empty,
                         ShipmentType = (BO.ShipmentType)(int)x.ShipmentType,
                         DeliveryStartTime = x.StartTime,
-                        DeliveryEndType = x.DeliveryEndType is null
-                            ? null
-                            : (BO.DeliveryEndType?)(int)x.DeliveryEndType,
-                        DeliveryEndTime = x.EndTime is DateTime time && time != DateTime.MinValue ? x.EndTime : null
+                        DeliveryEndType = (BO.DeliveryEndType?)(int?)x.DeliveryEndType,
+                        DeliveryEndTime = x.EndTime
                     }).ToList()
                 };
 
@@ -117,6 +112,7 @@ internal static class OrderManager
             {
                 throw new BO.BlUnexpectedException("DAL: invalid coordinates");
             }
+
             DO.OrderStatus initialStatus = DO.OrderStatus.Open;
 
             var doOrder = new DO.Order(
@@ -178,9 +174,9 @@ internal static class OrderManager
                 bo.FullAddress,
                 bo.CustomerFullName,
                 bo.CustomerPhone,
-                false,                
+                false,
                 existing.CreatedAt,
-                newStatus,             
+                newStatus,
                 bo.Latitude,
                 bo.Longitude,
                 bo.Volume
@@ -196,73 +192,6 @@ internal static class OrderManager
             throw new BO.BlDoesNotExistException($"DAL: order {bo.Id} not found", ex);
         }
     }
-
-    /* internal static void UpdateOrder(BO.Order bo)
-     {
-         try
-         {
-             var existing = s_dal.Order.Read(bo.Id)
-                 ?? throw new BO.BlDoesNotExistException($"Order {bo.Id} not found");
-
-             if (existing.Status != DO.OrderStatus.Open)
-                 throw new BO.BlInvalidOperationException( "Only open orders can be updated");
-
-             var doOrder = new DO.Order(
-                 bo.Id,
-                 (DO.OrderType)(int)bo.OrderType,
-                 bo.Description,
-                 bo.FullAddress,
-                 bo.CustomerFullName,
-                 bo.CustomerPhone,
-                 false,
-                 existing.CreatedAt,   
-                 existing.Status,      
-                 bo.Latitude,
-                 bo.Longitude,
-                 bo.Volume
-             );
-
-             s_dal.Order.Update(doOrder);
-
-             Observers.NotifyItemUpdated(bo.Id);
-             Observers.NotifyListUpdated();
-         }
-         catch (DO.DalDoesNotExistException ex)
-         {
-             throw new BO.BlDoesNotExistException($"DAL: order {bo.Id} not found", ex);
-         }
-     }*/
-
-    /// <summary>
-    /// Update order (maps BO -> DO).
-    /// </summary>
-    /*internal static void UpdateOrder(BO.Order bo)
-    {
-        try
-        {
-            var doOrder = new DO.Order(
-                bo.Id,
-                (DO.OrderType)(int)bo.OrderType,
-                bo.Description,
-                bo.FullAddress,
-                bo.CustomerFullName,
-                bo.CustomerPhone,
-                false,
-                bo.OrderOpenTime,
-                bo.OrderStatus,
-                bo.Latitude,
-                bo.Longitude
-            );
-
-            s_dal.Order.Update(doOrder);
-            Observers.NotifyItemUpdated(bo.Id);
-            Observers.NotifyListUpdated();
-        }
-        catch (DO.DalDoesNotExistException ex)
-        {
-            throw new BO.BlDoesNotExistException($"DAL: order {bo.Id} not found", ex);
-        }
-    }*/
 
     /// <summary>
     /// Delete order by id.
@@ -303,6 +232,8 @@ internal static class OrderManager
 
     private static BO.Order MapDoToBo(DO.Order o)
     {
+        var delivery = s_dal.Delivery.Read(d => d.OrderId == o.Id);
+        var timeRemaining = o.CreatedAt + s_dal.Config.MaxDeliveryTime - s_dal.Config.Clock;
         return new BO.Order
         {
             Id = o.Id,
@@ -312,17 +243,21 @@ internal static class OrderManager
             Latitude = o.Latitude,
             Longitude = o.Longitude,
             AerialDistance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
-                o.Latitude, o.Longitude, DO.ShipmentType.Aerial), // computed elsewhere if needed
+                o.Latitude, o.Longitude, DO.ShipmentType.Aerial),
             CustomerFullName = o.CustomerName,
             CustomerPhone = o.CustomerPhone,
             Volume = o.Volume,
             OrderOpenTime = o.CreatedAt,
-            ExpectedDeliveryTime = DateTime.MinValue,
-            MaxDeliveryTime = TimeSpan.Zero,
             OrderStatus = (BO.OrderStatus)(int)o.Status,
-            ScheduleStatus = ScheduleStatus.OnTime,
-            TimeRemaining = TimeSpan.Zero,
-            Deliveries = new List<BO.DeliveryPerOrderInList>()
+            ScheduleStatus = timeRemaining <= TimeSpan.Zero ? ScheduleStatus.Late :
+                timeRemaining >= s_dal.Config.RiskRange ? ScheduleStatus.AtRisk : ScheduleStatus.OnTime,
+            TimeRemaining = o.Status == OrderStatus.Closed ? TimeSpan.Zero : timeRemaining,
+            MaxDeliveryTime = o.CreatedAt + s_dal.Config.MaxDeliveryTime,
+            ExpectedDeliveryTime = delivery != null
+                ? delivery.StartTime + TimeSpan.FromHours(
+                    delivery.ActualDistance ?? 0 / s_dal.Config.GetAverageSpeed(delivery.ShipmentType))
+                : o.CreatedAt + s_dal.Config.MaxDeliveryTime,
+            Deliveries = []
         };
     }
 
@@ -510,7 +445,10 @@ Safe Travels!
                 // Log it for verification since we can't actually send mail without credentials/server.
                 System.Diagnostics.Debug.WriteLine($"[BL Notification] Email sent to {toEmail} for Order {orderId}");
             }
-            catch { /* ignore notification errors in business logic to not block assignment */ }
+            catch
+            {
+                /* ignore notification errors in business logic to not block assignment */
+            }
 
             Observers.NotifyItemUpdated(orderId);
             Observers.NotifyListUpdated();
@@ -719,7 +657,7 @@ Safe Travels!
     /// <summary>
     /// Compute schedule status from remaining time and risk range.
     /// </summary>
-    internal static ScheduleStatus ComputeScheduleStatus(TimeSpan timeRemaining, TimeSpan riskRange)
+    private static ScheduleStatus ComputeScheduleStatus(TimeSpan timeRemaining, TimeSpan riskRange)
     {
         if (timeRemaining <= TimeSpan.Zero) return ScheduleStatus.Late;
         if (timeRemaining <= riskRange) return ScheduleStatus.AtRisk;
