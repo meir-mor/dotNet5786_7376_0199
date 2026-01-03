@@ -66,10 +66,3 @@ public enum OrderStatus
     InProgress,
     Closed
 }
-
-public enum ScheduleStatus
-{
-    OnTime,
-    AtRisk,
-    Late
-}

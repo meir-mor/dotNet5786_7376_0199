@@ -1,6 +1,5 @@
-﻿using DalApi;
-using DalTest.Helpers;
-using DO;
+﻿using BO;
+using DalApi;
 using Factory = DalApi.Factory;
 
 namespace Helpers;
@@ -321,7 +320,7 @@ internal static class OrderManager
             ExpectedDeliveryTime = DateTime.MinValue,
             MaxDeliveryTime = TimeSpan.Zero,
             OrderStatus = (BO.OrderStatus)(int)o.Status,
-            ScheduleStatus = DO.ScheduleStatus.OnTime,
+            ScheduleStatus = ScheduleStatus.OnTime,
             TimeRemaining = TimeSpan.Zero,
             Deliveries = new List<BO.DeliveryPerOrderInList>()
         };
@@ -355,7 +354,7 @@ internal static class OrderManager
                 .ToList();
 
             var orderStatusCount = Enum.GetValues(typeof(DO.OrderStatus)).Length;
-            var scheduleCount = Enum.GetValues(typeof(DO.ScheduleStatus)).Length;
+            var scheduleCount = Enum.GetValues(typeof(ScheduleStatus)).Length;
 
             var result = new int[orderStatusCount, scheduleCount];
 
@@ -562,7 +561,7 @@ Safe Travels!
                         },
                         // compute schedule status for sorting if needed
                         Schedule = order is null
-                            ? DO.ScheduleStatus.OnTime
+                            ? ScheduleStatus.OnTime
                             : ComputeScheduleStatus(order.CreatedAt + cfg.MaxDeliveryTime - (d.EndTime ?? now),
                                 riskRange),
                         EndTime = d.EndTime ?? DateTime.MinValue,
@@ -720,10 +719,10 @@ Safe Travels!
     /// <summary>
     /// Compute schedule status from remaining time and risk range.
     /// </summary>
-    internal static DO.ScheduleStatus ComputeScheduleStatus(TimeSpan timeRemaining, TimeSpan riskRange)
+    internal static ScheduleStatus ComputeScheduleStatus(TimeSpan timeRemaining, TimeSpan riskRange)
     {
-        if (timeRemaining <= TimeSpan.Zero) return DO.ScheduleStatus.Late;
-        if (timeRemaining <= riskRange) return DO.ScheduleStatus.AtRisk;
-        return DO.ScheduleStatus.OnTime;
+        if (timeRemaining <= TimeSpan.Zero) return ScheduleStatus.Late;
+        if (timeRemaining <= riskRange) return ScheduleStatus.AtRisk;
+        return ScheduleStatus.OnTime;
     }
 }

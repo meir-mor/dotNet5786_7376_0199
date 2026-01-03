@@ -69,9 +69,10 @@ internal static class CourierManager
         }
     }
 
-    public static OrderInProgress? CreateOrderInProgress(DO.Order? order, DO.Delivery? delivery)
+    private static OrderInProgress? CreateOrderInProgress(DO.Order? order, DO.Delivery? delivery)
     {
         if (order == null || delivery == null) return null;
+        var timeRemaining = delivery.StartTime + s_dal.Config.MaxDeliveryTime - s_dal.Config.Clock;
         return new BO.OrderInProgress
         {
             OrderId = order.Id,
@@ -86,12 +87,13 @@ internal static class CourierManager
             AerialDistance = Tools.CalculateHaversineDistance(s_dal.Config.Latitude ?? 0, s_dal.Config.Longitude ?? 0,
                 order.Latitude, order.Longitude),
             OrderOpenTime = order.CreatedAt,
-            ExpectedDeliveryTime = order.CreatedAt + TimeSpan.FromHours(
+            ExpectedDeliveryTime = delivery.StartTime + TimeSpan.FromHours(
                 delivery.ActualDistance ?? 0 / s_dal.Config.GetAverageSpeed(delivery.ShipmentType)
             ),
-            MaxDeliveryTime = order.CreatedAt + s_dal.Config.MaxDeliveryTime,
-            ScheduleStatus = DO.ScheduleStatus.OnTime,
-            TimeRemaining = order.CreatedAt + s_dal.Config.MaxDeliveryTime - s_dal.Config.Clock,
+            MaxDeliveryTime = delivery.StartTime + s_dal.Config.MaxDeliveryTime,
+            ScheduleStatus = timeRemaining <= TimeSpan.Zero ? ScheduleStatus.Late :
+                timeRemaining <= s_dal.Config.RiskRange ? ScheduleStatus.AtRisk : ScheduleStatus.OnTime,
+            TimeRemaining = timeRemaining <= TimeSpan.Zero ? TimeSpan.Zero : timeRemaining,
             FullAddress = order.Address,
         };
     }
@@ -114,7 +116,8 @@ internal static class CourierManager
                 {
                     var couriersDeliveries = deliveries.Where(d => d.CourierId == c.Id).ToList();
                     var couriersDeliveriesIds = couriersDeliveries.Select(d => d.OrderId).ToList();
-                    var currentOrder = s_dal.Order.Read(o => couriersDeliveriesIds.Contains(o.Id) && o.Status == OrderStatus.InProgress);
+                    var currentOrder = s_dal.Order.Read(o =>
+                        couriersDeliveriesIds.Contains(o.Id) && o.Status == OrderStatus.InProgress);
                     return new BO.CourierInList
                     {
                         Id = c.Id,
@@ -241,7 +244,8 @@ internal static class CourierManager
             if (!exists)
                 throw new BO.BlDoesNotExistException($"DAL: courier with id {id} not found");
             var deliveries = s_dal.Delivery.ReadAll(c => c.CourierId == id).Select(d => d.OrderId).ToList();
-            var canDelete = s_dal.Order.Read(o => deliveries.Contains(o.Id) && o.Status == OrderStatus.InProgress) is null;
+            var canDelete =
+                s_dal.Order.Read(o => deliveries.Contains(o.Id) && o.Status == OrderStatus.InProgress) is null;
             if (!canDelete)
                 throw new BO.BlInvalidOperationException($"DAL: courier with id {id} cannot be deleted");
 
@@ -352,21 +356,23 @@ internal static class CourierManager
             var delivery = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.Id).OrderByDescending(d => d.EndTime)
                 .ToList();
             bool courierDispose;
-            if(delivery.Count == 0 && AdminManager.Now - doCourier.StartingWork >= s_dal.Config.TimeToBeDispose) courierDispose = true;
+            if (delivery.Count == 0 && AdminManager.Now - doCourier.StartingWork >= s_dal.Config.TimeToBeDispose)
+                courierDispose = true;
             else
             {
-                if(delivery.Count == 0) courierDispose = false;
+                if (delivery.Count == 0) courierDispose = false;
                 else
                 {
-                    if(delivery[^1].EndTime == null) courierDispose = false;
+                    if (delivery[^1].EndTime == null) courierDispose = false;
                     else
                     {
-                        if (AdminManager.Now - delivery[0].EndTime >= s_dal.Config.TimeToBeDispose) courierDispose = true;
+                        if (AdminManager.Now - delivery[0].EndTime >= s_dal.Config.TimeToBeDispose)
+                            courierDispose = true;
                         else courierDispose = false;
-                    }   
+                    }
                 }
-               
             }
+
             if (courierDispose)
             {
                 s_dal.Courier.Update(doCourier with { IsActive = false });

@@ -100,3 +100,10 @@ public enum DeliveryEndType
     CustomerNotFound,
     Failed
 }
+
+public enum ScheduleStatus
+{
+    OnTime,
+    AtRisk,
+    Late
+}
