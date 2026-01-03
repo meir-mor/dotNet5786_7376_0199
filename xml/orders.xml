@@ -9,7 +9,7 @@
     <CustomerPhone>054-9216586</CustomerPhone>
     <IsFragile>false</IsFragile>
     <CreatedAt>2025-12-30T13:51:56</CreatedAt>
-    <Status>Open</Status>
+    <Status>Closed</Status>
     <Latitude>32.1832113</Latitude>
     <Longitude>34.8078524</Longitude>
   </Order>
@@ -295,7 +295,7 @@
     <CustomerPhone>054-6393552</CustomerPhone>
     <IsFragile>false</IsFragile>
     <CreatedAt>2026-01-01T11:42:56</CreatedAt>
-    <Status>InProgress</Status>
+    <Status>Closed</Status>
     <Latitude>32.1755487</Latitude>
     <Longitude>34.9071512</Longitude>
   </Order>

@@ -234,6 +234,10 @@ internal static class OrderManager
     {
         var delivery = s_dal.Delivery.Read(d => d.OrderId == o.Id);
         var timeRemaining = o.CreatedAt + s_dal.Config.MaxDeliveryTime - s_dal.Config.Clock;
+        var timeItsTook = delivery?.EndTime - o.CreatedAt;
+        var scheduleStatus = timeItsTook >= s_dal.Config.MaxDeliveryTime ? ScheduleStatus.Late
+            : timeItsTook >= s_dal.Config.RiskRange ? ScheduleStatus.AtRisk
+            : ScheduleStatus.OnTime;
         return new BO.Order
         {
             Id = o.Id,
@@ -249,7 +253,7 @@ internal static class OrderManager
             Volume = o.Volume,
             OrderOpenTime = o.CreatedAt,
             OrderStatus = (BO.OrderStatus)(int)o.Status,
-            ScheduleStatus = timeRemaining <= TimeSpan.Zero ? ScheduleStatus.Late :
+            ScheduleStatus = o.Status == OrderStatus.Closed ? scheduleStatus : timeRemaining <= TimeSpan.Zero ? ScheduleStatus.Late :
                 timeRemaining >= s_dal.Config.RiskRange ? ScheduleStatus.AtRisk : ScheduleStatus.OnTime,
             TimeRemaining = o.Status == OrderStatus.Closed ? TimeSpan.Zero : timeRemaining < TimeSpan.Zero ? TimeSpan.Zero : timeRemaining,
             MaxDeliveryTime = o.CreatedAt + s_dal.Config.MaxDeliveryTime,

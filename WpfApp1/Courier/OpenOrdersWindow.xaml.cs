@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Reflection;
 using Microsoft.Win32;
 using System.Diagnostics;
-using System.Net;
-using System.Net.Mail;
 using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Input;
 
 namespace PL.Courier;
 
@@ -123,7 +118,9 @@ public partial class OpenOrdersWindow : Window
             if (CbSortBy.SelectedItem is BO.OpenOrderSortBy s) sortBy = s;
 
             // Fetch
+            Mouse.OverrideCursor = Cursors.Wait;
             OpenOrders = s_bl.Order.GetOpenOrdersForCourier(_courierId, _courierId, typeFilter, sortBy);
+            Mouse.OverrideCursor = null;
         }
         catch (Exception ex)
         {

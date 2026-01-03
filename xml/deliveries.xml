@@ -221,16 +221,6 @@
     <EndTime xsi:nil="true" />
   </Delivery>
   <Delivery>
-    <Id>22</Id>
-    <OrderId>22</OrderId>
-    <CourierId>366380562</CourierId>
-    <ShipmentType>Motorcycle</ShipmentType>
-    <StartTime>2026-01-01T12:04:56</StartTime>
-    <ActualDistance>16.0012</ActualDistance>
-    <DeliveryEndType xsi:nil="true" />
-    <EndTime xsi:nil="true" />
-  </Delivery>
-  <Delivery>
     <Id>23</Id>
     <OrderId>23</OrderId>
     <CourierId>358002421</CourierId>
@@ -318,6 +308,26 @@
     <StartTime>2030-01-03T20:16:56</StartTime>
     <ActualDistance xsi:nil="true" />
     <DeliveryEndType>Cancelled</DeliveryEndType>
+    <EndTime>2030-01-03T20:16:56</EndTime>
+  </Delivery>
+  <Delivery>
+    <Id>22</Id>
+    <OrderId>22</OrderId>
+    <CourierId>366380562</CourierId>
+    <ShipmentType>Motorcycle</ShipmentType>
+    <StartTime>2026-01-01T12:04:56</StartTime>
+    <ActualDistance>16.0012</ActualDistance>
+    <DeliveryEndType>Supplied</DeliveryEndType>
+    <EndTime>2030-01-03T20:16:56</EndTime>
+  </Delivery>
+  <Delivery>
+    <Id>32</Id>
+    <OrderId>0</OrderId>
+    <CourierId>366380562</CourierId>
+    <ShipmentType>Motorcycle</ShipmentType>
+    <StartTime>2030-01-03T20:16:56</StartTime>
+    <ActualDistance>14.569600000000001</ActualDistance>
+    <DeliveryEndType>Supplied</DeliveryEndType>
     <EndTime>2030-01-03T20:16:56</EndTime>
   </Delivery>
 </ArrayOfDelivery>
