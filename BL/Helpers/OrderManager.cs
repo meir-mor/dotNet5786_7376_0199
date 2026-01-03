@@ -285,22 +285,19 @@ internal static class OrderManager
         }
     }
 
-    internal static void PeriodicOrdersUpdates()
+    internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
-        var list = s_dal.Order.ReadAll().ToList();
-        bool updated = false;
-        foreach (var doOrder in list)
+        var orders = s_dal.Order.ReadAll(o => o.Status != DO.OrderStatus.Closed).ToList();
+        var updated = false;
+        foreach (var doOrder in orders)
         {
-            //if student study for more than MaxRange years
-            //then student should be automatically updated to 'not active'
             if (AdminManager.Now - doOrder.CreatedAt >= s_dal.Config.MaxDeliveryTime)
             {
-                s_dal.Order.Update(doOrder with { Status = OrderStatus.Closed });
                 updated = true;
                 Observers.NotifyItemUpdated(doOrder.Id);
             }
 
-            if (updated)
+            if (updated || oldClock != newClock)
                 Observers.NotifyListUpdated();
         }
     }

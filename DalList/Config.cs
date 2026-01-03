@@ -52,8 +52,8 @@ internal static class Config
         AverageBikeSpeedBike = 20;
         AverageBicycleSpeed = 15;
         AverageWalkSpeed = 5;
-        MaxDeliveryTime = TimeSpan.FromHours(1);
-        TimeToBeDispose = TimeSpan.FromHours(1);
+        MaxDeliveryTime = TimeSpan.FromHours(10);
+        TimeToBeDispose = TimeSpan.FromDays(365);
         RiskRange = TimeSpan.FromMinutes(30);
     }
 }

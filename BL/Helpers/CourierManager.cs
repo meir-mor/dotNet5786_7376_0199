@@ -343,15 +343,31 @@ internal static class CourierManager
         }
     }
 
-    internal static void PeriodicCouriersUpdates()
+    internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
     {
         var list = s_dal.Courier.ReadAll().ToList();
-        bool courierUpdated = false; // stage 5
+        var courierUpdated = false; // stage 5
         foreach (var doCourier in list)
         {
-            //if student study for more than MaxRange years
-            //then student should be automatically updated to 'not active'
-            if (AdminManager.Now - doCourier.StartingWork >= s_dal.Config.TimeToBeDispose)
+            var delivery = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.Id).OrderByDescending(d => d.EndTime)
+                .ToList();
+            bool courierDispose;
+            if(delivery.Count == 0 && AdminManager.Now - doCourier.StartingWork >= s_dal.Config.TimeToBeDispose) courierDispose = true;
+            else
+            {
+                if(delivery.Count == 0) courierDispose = false;
+                else
+                {
+                    if(delivery[^1].EndTime == null) courierDispose = false;
+                    else
+                    {
+                        if (AdminManager.Now - delivery[0].EndTime >= s_dal.Config.TimeToBeDispose) courierDispose = true;
+                        else courierDispose = false;
+                    }   
+                }
+               
+            }
+            if (courierDispose)
             {
                 s_dal.Courier.Update(doCourier with { IsActive = false });
                 courierUpdated = true; // stage 5
@@ -359,7 +375,7 @@ internal static class CourierManager
             }
         }
 
-        if (courierUpdated)
+        if (courierUpdated || oldClock != newClock)
             Observers.NotifyListUpdated(); // stage 5
     }
 }
