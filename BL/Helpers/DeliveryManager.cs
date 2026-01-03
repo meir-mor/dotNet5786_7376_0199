@@ -195,23 +195,20 @@ internal static class DeliveryManager
         }
     }
 
-    internal static void PeriodicDeliveriesUpdates()
+    internal static void PeriodicDeliveriesUpdates(DateTime oldClock, DateTime newClock)
     {
-        var list = s_dal.Delivery.ReadAll().ToList();
-        bool updated = false; // stage 5
-        foreach (var doDelivery in list)
+        var deliveries = s_dal.Delivery.ReadAll(d => d.DeliveryEndType == null && d.EndTime == null).ToList();
+        var updated = false; // stage 5
+        foreach (var doDelivery in deliveries)
         {
-            //if student study for more than MaxRange years
-            //then student should be automatically updated to 'not active'
             if (AdminManager.Now - doDelivery.StartTime >= s_dal.Config.MaxDeliveryTime)
             {
-                s_dal.Delivery.Update(doDelivery with { DeliveryEndType = DO.DeliveryEndType.Failed });
                 updated = true;
                 Observers.NotifyItemUpdated(doDelivery.Id);
             }
         }
 
-        if (updated)
+        if (updated || oldClock != newClock)
             Observers.NotifyListUpdated();
     }
 

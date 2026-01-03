@@ -72,16 +72,6 @@ namespace PL.Courier
             {
                 if (CurrentCourier == null) return;
 
-                // 2. Checking for shipment type change during an active order
-                if (CurrentCourier.OrderInProgress != null && CurrentCourier.ShipmentType != _originalType)
-                {
-                    MessageBox.Show("Cannot change shipment type while an order is in progress.", "Validation Error",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                    // Restoring original value in display
-                    CurrentCourier.ShipmentType = _originalType ?? ShipmentType.Bicycle;
-                    return;
-                }
-
                 // Performing the update
                 s_bl.Courier.UpdateCourier(_courierId, CurrentCourier);
                 MessageBox.Show("Courier details updated successfully.", "Success", MessageBoxButton.OK,

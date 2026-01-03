@@ -38,7 +38,7 @@ public class Order
     public double Volume { get; set; }
     public DateTime OrderOpenTime { get; set; }
     public DateTime ExpectedDeliveryTime { get; set; }
-    public TimeSpan MaxDeliveryTime { get; set; }
+    public DateTime MaxDeliveryTime { get; set; }
     public OrderStatus OrderStatus { get; set; }
     public ScheduleStatus ScheduleStatus { get; set; }
     public TimeSpan TimeRemaining { get; set; }

@@ -168,28 +168,15 @@ namespace PL.Courier
             {
                 if (ButtonText == "Add")
                 {
-                    if (CurrentCourier.Id == 0)
-                    {
-                        MessageBox.Show("Please enter a valid ID for the new courier.", "Validation",
-                            MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    // check uniqueness using manager id
                     try
                     {
-                        var managerId = s_bl.Admin.GetConfig().ManagerId;
-                        var exists = s_bl.Courier.GetCouriersList(managerId).Any(c => c.Id == CurrentCourier.Id);
-                        if (exists)
-                        {
-                            MessageBox.Show("A courier with this ID already exists. Choose a different ID.",
-                                "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
-                            return;
-                        }
-
                         s_bl.Courier.AddCourier(CurrentCourier);
                         MessageBox.Show("Courier added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         Close();
+                    }
+                    catch (BO.BlAlreadyExistsException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                     catch (BO.BlException ex)
                     {

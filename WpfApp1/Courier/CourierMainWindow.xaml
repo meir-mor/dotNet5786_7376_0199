@@ -109,8 +109,7 @@
                         FontSize="14" FontWeight="Bold" />
                 </StackPanel>
 
-                <TextBlock Text="No current order in progress."
-                           Visibility="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToHiddenConverter}}"
+                <TextBlock Visibility="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToHiddenConverter}}"
                            Foreground="Gray" FontStyle="Italic" HorizontalAlignment="Center" Margin="10" />
             </StackPanel>
         </GroupBox>

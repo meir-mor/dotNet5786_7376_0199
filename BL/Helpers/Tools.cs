@@ -57,8 +57,8 @@ internal static class Tools
 
         var firstResult = data.RootElement[0];
 
-        double latitude = double.Parse(firstResult.GetProperty("lat").GetString());
-        double longitude = double.Parse(firstResult.GetProperty("lon").GetString());
+        var latitude = double.Parse(firstResult.GetProperty("lat").GetString() ?? string.Empty);
+        var longitude = double.Parse(firstResult.GetProperty("lon").GetString() ?? string.Empty);
 
         if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180)
             throw new BlInvalidLatitudeLongitudeException("Latitude or Longitude values are out of range.");
@@ -69,11 +69,12 @@ internal static class Tools
     /// <summary>
     /// Calculates the distance between two addresses based on the specified distance type.
     /// </summary>
-    /// <param name="address1">The first address.</param>
-    /// <param name="address2">The second address.</param>
     /// <param name="distanceType">The type of distance to calculate (Aerial, Walking, or Driving).</param>
+    /// <param name="lat1">The latitude of the first address.</param>
+    /// <param name="lon1">The longitude of the first address.</param>
+    /// <param name="lat2">The latitude of the second address.</param>
+    /// <param name="lon2">The longitude of the second address.</param>
     /// <returns>The distance in kilometers between the two addresses.</returns>
-    /// <exception cref="BlInvalidAddressException">Thrown if one or both addresses are invalid or if the distance type is invalid.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the API request for walking or driving distance fails.</exception>
     internal static double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2,
         DO.ShipmentType distanceType)
@@ -89,7 +90,7 @@ internal static class Tools
         }
 
         // Handle walking/driving distance using an external API
-        string url = distanceType switch
+        var url = distanceType switch
         {
             DO.ShipmentType.Walk or DO.ShipmentType.Bicycle =>
                 $"https://routing.openstreetmap.de/routed-foot/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false",
@@ -108,7 +109,7 @@ internal static class Tools
 
         // Parse the JSON response
         var data = JsonDocument.Parse(json);
-        double distance = data.RootElement
+        var distance = data.RootElement
             .GetProperty("routes")[0]
             .GetProperty("distance")
             .GetDouble() / 1000.0; // Convert meters to kilometers
@@ -124,17 +125,20 @@ internal static class Tools
     /// <param name="lat2">The latitude of the second coordinate.</param>
     /// <param name="lon2">The longitude of the second coordinate.</param>
     /// <returns>The distance in kilometers between the two coordinates.</returns>
-    public static double CalculateHaversineDistance(double lat1, double lon1, double lat2, double lon2)
+    public static double CalculateHaversineDistance(double? lat1, double? lon1, double? lat2, double? lon2)
     {
+        if (lat1 == null || lon1 == null || lat2 == null || lon2 == null)
+            return 0;
+        
         const double R = 6371; // Earth's radius in kilometers
-        double dLat = DegreesToRadians(lat2 - lat1);
-        double dLon = DegreesToRadians(lon2 - lon1);
+        var dLat = DegreesToRadians((double)(lat2 - lat1));
+        var dLon = DegreesToRadians((double)(lon2 - lon1));
 
-        double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                   Math.Cos(DegreesToRadians(lat1)) * Math.Cos(DegreesToRadians(lat2)) *
+        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                   Math.Cos(DegreesToRadians((double)lat1)) * Math.Cos(DegreesToRadians((double)lat2)) *
                    Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
 
-        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
         return R * c;
     }
 

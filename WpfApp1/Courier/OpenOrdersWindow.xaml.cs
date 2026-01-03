@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Reflection;
 using Microsoft.Win32;
 using System.Diagnostics;
-using System.Net;
-using System.Net.Mail;
 using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Input;
 
 namespace PL.Courier;
 
@@ -148,7 +143,9 @@ public partial class OpenOrdersWindow : Window
             if (CbSortBy.SelectedItem is BO.OpenOrderSortBy s) sortBy = s;
 
             // Fetch
+            Mouse.OverrideCursor = Cursors.Wait;
             OpenOrders = s_bl.Order.GetOpenOrdersForCourier(_courierId, _courierId, typeFilter, sortBy);
+            Mouse.OverrideCursor = null;
         }
         catch (Exception ex)
         {
@@ -283,12 +280,6 @@ public partial class OpenOrdersWindow : Window
 
             MessageBox.Show("Order assigned to you.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            // Send Email
-            if (order != null)
-            {
-                SendEmail(order);
-            }
-
             // refresh lists (observer will likely also trigger, but explicit refresh ensures immediate feedback)
             LoadOpenOrders();
 
@@ -302,54 +293,6 @@ public partial class OpenOrdersWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-    /// <summary>
-    /// Sends an email notification regarding the assignment of a new order.
-    /// </summary>
-    /// <remarks>This method constructs and sends an email to a predefined recipient, notifying them of the
-    /// successful assignment of an order. The email includes details such as the order ID, type, address, and maximum
-    /// delivery time. If the email fails to send, an error message is displayed to the user.</remarks>
-    /// <param name="order">The order details used to populate the email, including the order ID, type, address, and maximum delivery time.</param>
-    private void SendEmail(BO.OpenOrderInList order)
-    {
-        try
-        {
-            string toEmail = "arioren100@gmail.com"; // אליך
-
-            MailMessage mail = new MailMessage();
-            mail.From = new MailAddress("arioren100@gmail.com");
-            mail.To.Add(toEmail);
-            mail.Subject = $"New Order Assigned #{order.OrderId}";
-            mail.Body = $@"
-Hello Aharon,
-
-You have successfully assigned Order #{order.OrderId}.
-
-Details:
-Type: {order.OrderType}
-Address: {order.FullAddress}
-Max Delivery Time: {order.MaxDeliveryTime}
-
-Safe Travels!
-";
-
-            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-            smtp.EnableSsl = true;
-
-            smtp.Credentials = new NetworkCredential(
-                "arioren100@gmail.com",
-                "xxxxxxxxx"
-            );
-
-            smtp.Send(mail);
-
-            MessageBox.Show("Email sent successfully!", "Email", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Email failed: " + ex.Message);
         }
     }
 }
