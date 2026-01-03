@@ -107,7 +107,7 @@ internal static class OrderManager
     {
         try
         {
-            var (lat, lon) = DistanceCalculator.GetCoordinates(order.FullAddress);
+            var (lat, lon) = Tools.GetCoordinates(order.FullAddress);
             if (lat is null || lon is null)
             {
                 throw new BO.BlUnexpectedException("DAL: invalid coordinates");
@@ -242,8 +242,8 @@ internal static class OrderManager
             FullAddress = o.Address,
             Latitude = o.Latitude,
             Longitude = o.Longitude,
-            AerialDistance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
-                o.Latitude, o.Longitude, DO.ShipmentType.Aerial),
+            AerialDistance = Tools.CalculateHaversineDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
+                o.Latitude, o.Longitude),
             CustomerFullName = o.CustomerName,
             CustomerPhone = o.CustomerPhone,
             Volume = o.Volume,
@@ -251,7 +251,7 @@ internal static class OrderManager
             OrderStatus = (BO.OrderStatus)(int)o.Status,
             ScheduleStatus = timeRemaining <= TimeSpan.Zero ? ScheduleStatus.Late :
                 timeRemaining >= s_dal.Config.RiskRange ? ScheduleStatus.AtRisk : ScheduleStatus.OnTime,
-            TimeRemaining = o.Status == OrderStatus.Closed ? TimeSpan.Zero : timeRemaining,
+            TimeRemaining = o.Status == OrderStatus.Closed ? TimeSpan.Zero : timeRemaining < TimeSpan.Zero ? TimeSpan.Zero : timeRemaining,
             MaxDeliveryTime = o.CreatedAt + s_dal.Config.MaxDeliveryTime,
             ExpectedDeliveryTime = delivery != null
                 ? delivery.StartTime + TimeSpan.FromHours(
@@ -402,7 +402,7 @@ internal static class OrderManager
             if (active != null)
                 throw new BO.BlException("Order already has an active delivery");
 
-            var distance = DistanceCalculator.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
+            var distance = Tools.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
                 order.Latitude, order.Longitude, DO.ShipmentType.Motorcycle);
 
             // create delivery (use default ShipmentType - can be improved)

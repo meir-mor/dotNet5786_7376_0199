@@ -643,13 +643,6 @@ internal class Program
                         var newCfg = new BO.Config();
 
                         if (hasRiskRange) newCfg.RiskRange = TimeSpan.FromMinutes(riskRange);
-                        if (hasCompAddr)
-                        {
-                            newCfg.ComponyAddress = compAddr;
-                            var (lat, lon) = Helpers.DistanceCalculator.GetCoordinates(compAddr);
-                            newCfg.Latitude = lat;
-                            newCfg.Longitude = lon;
-                        }
 
                         if (hasManagerPwd) newCfg.ManagerPassword = managerPwd;
                         if (hasMaxDist) newCfg.MaxDistance = maxDist;

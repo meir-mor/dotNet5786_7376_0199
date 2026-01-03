@@ -120,15 +120,15 @@ internal static class AdminManager //stage 4
         {
             s_dal.Config.ComponyAddress = configuration.ComponyAddress;
             configChanged = true;
+            var (latitude, longitude) = Tools.GetCoordinates(configuration.ComponyAddress);
+            s_dal.Config.Latitude = latitude;
+            s_dal.Config.Longitude = longitude;
         }
 
         if (s_dal.Config.ManagerPassword != configuration.ManagerPassword)
         {
             s_dal.Config.ManagerPassword = configuration.ManagerPassword;
             configChanged = true;
-            var (latitude, longitude) = DistanceCalculator.GetCoordinates(configuration.ComponyAddress);
-            s_dal.Config.Latitude = latitude;
-            s_dal.Config.Longitude = longitude;
         }
 
         if (!Equals(s_dal.Config.MaxDistance, configuration.MaxDistance))
