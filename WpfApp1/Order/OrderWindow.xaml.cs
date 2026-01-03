@@ -25,6 +25,13 @@ namespace PL.Order
 
         public IEnumerable<BO.OrderType> OrderTypes => Enum.GetValues(typeof(BO.OrderType)).Cast<BO.OrderType>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderWindow"/> class with the specified order ID.
+        /// </summary>
+        /// <remarks>This constructor retrieves the manager ID from the application configuration and uses
+        /// it to fetch the details of the specified order. The order details are then set as the data context for the
+        /// window.</remarks>
+        /// <param name="orderId">The unique identifier of the order to be displayed in the window.</param>
         public OrderWindow(int orderId)
         {
             InitializeComponent();

@@ -9,20 +9,24 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
-        <RootNamespace/>
+        <RootNamespace />
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="BO \**"/>
-        <EmbeddedResource Remove="BO \**"/>
-        <None Remove="BO \**"/>
+        <Compile Remove="BO \**" />
+        <EmbeddedResource Remove="BO \**" />
+        <None Remove="BO \**" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DalFacade\DalFacade.csproj"/>
-        <ProjectReference Include="..\DalList\DalList.csproj"/>
-        <ProjectReference Include="..\DalTest\DalTest.csproj"/>
-        <ProjectReference Include="..\DalXml\DalXml.csproj"/>
+      <PackageReference Include="SendGrid" Version="9.29.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DalFacade\DalFacade.csproj" />
+        <ProjectReference Include="..\DalList\DalList.csproj" />
+        <ProjectReference Include="..\DalTest\DalTest.csproj" />
+        <ProjectReference Include="..\DalXml\DalXml.csproj" />
     </ItemGroup>
 
 </Project>

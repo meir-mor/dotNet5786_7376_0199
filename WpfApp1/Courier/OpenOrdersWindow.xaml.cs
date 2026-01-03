@@ -44,6 +44,13 @@ public partial class OpenOrdersWindow : Window
         Closing += Window_Closing;
     }
 
+    /// <summary>
+    /// Configures the browser feature control settings for the current application to use Internet Explorer 11
+    /// standards mode.
+    /// </summary>
+    /// <remarks>This method modifies the Windows registry to set the browser emulation mode for the current
+    /// application. It ensures that webpages are displayed in Internet Explorer 11 standards mode, regardless of the
+    /// presence of a DOCTYPE directive. The method targets the registry key: 
     private void SetBrowserFeatureControl()
     {
         try
@@ -66,6 +73,17 @@ public partial class OpenOrdersWindow : Window
     private BO.ShipmentType _courierShipmentType;
     private double _companyLat, _companyLon;
 
+    /// <summary>
+    /// Handles the <see cref="Window.Loaded"/> event, initializing the UI components and loading data required for the
+    /// window.
+    /// </summary>
+    /// <remarks>This method performs the following actions: <list type="bullet"> <item>Retrieves and sets the
+    /// shipment type for the current courier.</item> <item>Populates the filter and sort combo boxes with available
+    /// options.</item> <item>Loads the initial list of open orders.</item> <item>Registers an observer for order
+    /// updates, if supported.</item> </list> If an error occurs while retrieving the courier details, a default
+    /// shipment type is used.</remarks>
+    /// <param name="sender">The source of the event, typically the window being loaded.</param>
+    /// <param name="e">The event data associated with the <see cref="Window.Loaded"/> event.</param>
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         try
@@ -110,6 +128,13 @@ public partial class OpenOrdersWindow : Window
         }
     }
 
+    /// <summary>
+    /// Loads and updates the list of open orders for the current courier based on the selected filters and sorting
+    /// options.
+    /// </summary>
+    /// <remarks>This method retrieves open orders for the courier identified by the current context.  The
+    /// results are filtered by the selected order type and sorted according to the selected criteria, if
+    /// specified.</remarks>
     private void LoadOpenOrders()
     {
         try
@@ -161,6 +186,14 @@ public partial class OpenOrdersWindow : Window
 
     private BO.OpenOrderInList? _selectedForMap;
 
+    /// <summary>
+    /// Updates the map display to visually represent the specified order and its relation to the company location.
+    /// </summary>
+    /// <remarks>This method clears the current map display, hides the placeholder text, and draws a visual
+    /// representation  of the company location and the specified order on the map. A connector line is drawn between
+    /// the two points  to indicate their relationship. The company is represented as a blue square, and the order is
+    /// represented  as a red circle. The map is only updated if the canvas dimensions are valid.</remarks>
+    /// <param name="order">The order to be displayed on the map, including its geographic coordinates and address.</param>
     private void UpdateMap(BO.OpenOrderInList order)
     {
         _selectedForMap = order;
@@ -225,6 +258,16 @@ public partial class OpenOrdersWindow : Window
         double GetX(double lon) => (lon - minLon) / lonSpan * w;
     }
 
+    /// <summary>
+    /// Handles the click event for the "Pick" button, allowing the user to assign an order to the current courier.
+    /// </summary>
+    /// <remarks>This method prompts the user for confirmation before assigning the selected order to the
+    /// current courier. If the assignment is successful, the method displays a confirmation message, sends an email
+    /// notification, and refreshes the order lists to reflect the updated state. In case of an error, an appropriate
+    /// message is displayed.</remarks>
+    /// <param name="sender">The source of the event, expected to be a <see cref="Button"/> with a valid <see
+    /// cref="Button.CommandParameter"/> representing the order ID.</param>
+    /// <param name="e">The event data associated with the click event.</param>
     private void BtnPick_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -262,6 +305,13 @@ public partial class OpenOrdersWindow : Window
         }
     }
 
+    /// <summary>
+    /// Sends an email notification regarding the assignment of a new order.
+    /// </summary>
+    /// <remarks>This method constructs and sends an email to a predefined recipient, notifying them of the
+    /// successful assignment of an order. The email includes details such as the order ID, type, address, and maximum
+    /// delivery time. If the email fails to send, an error message is displayed to the user.</remarks>
+    /// <param name="order">The order details used to populate the email, including the order ID, type, address, and maximum delivery time.</param>
     private void SendEmail(BO.OpenOrderInList order)
     {
         try

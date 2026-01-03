@@ -6,7 +6,7 @@
         xmlns:pl="clr-namespace:PL"
         xmlns:local="clr-namespace:PL.Courier"
         mc:Ignorable="d"
-        Title="Courier" Height="480" Width="520"
+        Title="Courier" Height="450" Width="520"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
         Loaded="Window_Loaded"
         Closed="Window_Closed">
@@ -23,8 +23,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Id (editable in Add mode, read-only in Update mode) -->
@@ -85,6 +85,7 @@
                 Content="Save"
                 Height="36" Width="120" Margin="10"
                 HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
                 Click="BtnAddUpdate_Click" />
     </Grid>
 </Window>

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Add New Order" Height="450" Width="800"
+        Title="Add New Order" Height="450" Width="920"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -33,78 +33,128 @@
                    Margin="0,0,0,15" />
 
         <!-- Order Info -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="160" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+       <Grid Grid.Row="1">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="160" />
+        <ColumnDefinition Width="260" />
+        <ColumnDefinition Width="160" />
+        <ColumnDefinition Width="260" />
+    </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <!-- Order Type -->
-                <RowDefinition Height="Auto"/>
-                <!-- Description -->
-                <RowDefinition Height="Auto"/>
-                <!-- Full Address -->
-                <RowDefinition Height="Auto"/>
-                <!-- Customer Name -->
-                <RowDefinition Height="Auto"/>
-                <!-- Customer Phone -->
-                <RowDefinition Height="Auto"/>
-                <!-- Volume / Notes -->
-                <RowDefinition Height="Auto"/>
-                <!-- Order ID -->
-                <RowDefinition Height="Auto"/>
-                <!-- Order Open Time -->
-                <RowDefinition Height="Auto"/>
-                <!-- Expected Delivery Time -->
-                <RowDefinition Height="Auto"/>
-                <!-- Max Delivery Time -->
-                <RowDefinition Height="Auto"/>
-                <!-- Order Status -->
-                <RowDefinition Height="Auto"/>
-                <!-- Schedule Status -->
-            </Grid.RowDefinitions>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
 
-            <TextBlock Text="Order Type:" Grid.Row="0" Style="{StaticResource LabelStyle}"/>
+    <!-- LEFT COLUMN -->
+
+    <TextBlock Text="Order Type:" Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelStyle}" />
             <ComboBox Grid.Row="0" Grid.Column="1"
-                        ItemsSource="{Binding OrderTypes}"
-                        SelectedItem="{Binding CurrentOrder.OrderType, Mode=TwoWay}" Margin="5"/>
+                      ItemsSource="{Binding OrderTypes}"
+                      SelectedItem="{Binding CurrentOrder.OrderType, Mode=TwoWay}"
+                      Width="240"
+                      Margin="5"/>
 
-            <TextBlock Text="Description:" Grid.Row="1" Style="{StaticResource LabelStyle}" />
-            <TextBox Text="{Binding CurrentOrder.Description, Mode=TwoWay}" Grid.Row="1" Grid.Column="1"
+            <TextBlock Text="Description:" Grid.Row="1" Grid.Column="0" Style="{StaticResource LabelStyle}" />
+            <TextBox Grid.Row="1" Grid.Column="1"
+                     Text="{Binding CurrentOrder.Description, Mode=TwoWay}"
+                     Width="240"
                      Style="{StaticResource EditStyle}" />
 
-            <TextBlock Text="Full Address:" Grid.Row="2" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.FullAddress, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Style="{StaticResource EditStyle}"/>
+            <TextBlock Text="Full Address:" Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" />
+            <TextBox Grid.Row="2" Grid.Column="1"
+                     Text="{Binding CurrentOrder.FullAddress, Mode=TwoWay}"
+                     Width="240"
+                     Style="{StaticResource EditStyle}" />
 
-            <TextBlock Text="Customer Name:" Grid.Row="3" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.CustomerFullName, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Style="{StaticResource EditStyle}"/>
+            <TextBlock Text="Customer Name:" Grid.Row="3" Grid.Column="0" Style="{StaticResource LabelStyle}" />
+            <TextBox Grid.Row="3" Grid.Column="1"
+                     Text="{Binding CurrentOrder.CustomerFullName, Mode=TwoWay}"
+                     Width="240"
+                     Style="{StaticResource EditStyle}" />
 
-            <TextBlock Text="Customer Phone:" Grid.Row="4" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.CustomerPhone, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Style="{StaticResource EditStyle}"/>
+            <TextBlock Text="Order Open Time:" Grid.Row="4" Grid.Column="0" Style="{StaticResource LabelStyle}" />
+            <Grid Grid.Row="4" Grid.Column="1" Width="240">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Volume / Notes:" Grid.Row="5" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.Volume, Mode=TwoWay}" Grid.Row="5" Grid.Column="1" Style="{StaticResource EditStyle}"/>
+                <DatePicker Grid.Column="0"
+                            SelectedDate="{Binding CurrentOrder.OrderOpenTime, Mode=TwoWay}" />
 
-            <TextBlock Text="Order ID:" Grid.Row="6" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.Id}" Grid.Row="6" Grid.Column="1" Style="{StaticResource EditStyle}" IsReadOnly="True"/>
+                <TextBox Grid.Column="1"
+                         Text="{Binding CurrentOrder.OrderOpenTime, Mode=TwoWay, StringFormat={}{0:HH:mm}}"
+                         Margin="5,0,0,0"/>
+            </Grid>
 
-            <TextBlock Text="Order Open Time:" Grid.Row="7" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.OrderOpenTime}" Grid.Row="7" Grid.Column="1" Style="{StaticResource EditStyle}" />
+            <TextBlock Text="Expected Delivery Time:" Grid.Row="5" Grid.Column="0" Style="{StaticResource LabelStyle}" />
+            <Grid Grid.Row="5" Grid.Column="1" Width="240">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Expected Delivery Time:" Grid.Row="8" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.ExpectedDeliveryTime}" Grid.Row="8" Grid.Column="1" Style="{StaticResource EditStyle}" />
+                <DatePicker Grid.Column="0"
+                            SelectedDate="{Binding CurrentOrder.ExpectedDeliveryTime, Mode=TwoWay}" />
 
-            <TextBlock Text="Max Delivery Time:" Grid.Row="9" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.MaxDeliveryTime}" Grid.Row="9" Grid.Column="1" Style="{StaticResource EditStyle}" />
+                <TextBox Grid.Column="1"
+                         Text="{Binding CurrentOrder.ExpectedDeliveryTimeFormatted, Mode=TwoWay, StringFormat={}{0:HH:mm}}"
+                         Margin="5,0,0,0"/>
+            </Grid>
 
-            <TextBlock Text="Order Status:" Grid.Row="10" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.OrderStatus}" Grid.Row="10" Grid.Column="1" Style="{StaticResource EditStyle}" IsReadOnly="True"/>
+            <!-- RIGHT COLUMN -->
+            <TextBlock Text="Customer Phone:" Grid.Row="0" Grid.Column="2" Style="{StaticResource LabelStyle}" />
+            <TextBox Grid.Row="0" Grid.Column="3"
+                     Text="{Binding CurrentOrder.CustomerPhone, Mode=TwoWay}"
+                     Width="240"
+                     Style="{StaticResource EditStyle}" />
 
-            <TextBlock Text="Schedule Status:" Grid.Row="11" Style="{StaticResource LabelStyle}"/>
-            <TextBox Text="{Binding CurrentOrder.ScheduleStatus}" Grid.Row="11" Grid.Column="1" Style="{StaticResource EditStyle}" IsReadOnly="True"/>
+            <TextBlock Text="Volume / Notes:" Grid.Row="1" Grid.Column="2" Style="{StaticResource LabelStyle}" />
+            <TextBox Grid.Row="1" Grid.Column="3"
+                     Text="{Binding CurrentOrder.Volume, Mode=TwoWay}"
+                     Width="240"
+                     Style="{StaticResource EditStyle}" />
 
+            <TextBlock Text="Order ID:" Grid.Row="2" Grid.Column="2" Style="{StaticResource LabelStyle}" />
+            <TextBox Grid.Row="2" Grid.Column="3"
+                     Text="{Binding CurrentOrder.Id}"
+                     Width="240"
+                     Style="{StaticResource EditStyle}"
+                     IsReadOnly="True" />
+
+            <TextBlock Text="Max Delivery Time:" Grid.Row="3" Grid.Column="2" Style="{StaticResource LabelStyle}" />
+            <Grid Grid.Row="3" Grid.Column="3" Width="240">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
+
+                <DatePicker Grid.Column="0"
+                            SelectedDate="{Binding CurrentOrder.MaxDeliveryTime, Mode=TwoWay}" />
+
+                <TextBox Grid.Column="1"
+                         Text="{Binding CurrentOrder.MaxDeliveryTimeFormatted, Mode=TwoWay, StringFormat={}{0:HH:mm}}"
+                         Margin="5,0,0,0"/>
+            </Grid>
+
+            <TextBlock Text="Order Status:" Grid.Row="4" Grid.Column="2" Style="{StaticResource LabelStyle}" />
+            <TextBox Grid.Row="4" Grid.Column="3"
+                     Text="{Binding CurrentOrder.OrderStatus}"
+                     Width="240"
+                     Style="{StaticResource EditStyle}"
+                     IsReadOnly="True" />
+
+            <TextBlock Text="Schedule Status:" Grid.Row="5" Grid.Column="2" Style="{StaticResource LabelStyle}" />
+            <TextBox Grid.Row="5" Grid.Column="3"
+                     Text="{Binding CurrentOrder.ScheduleStatus}"
+                     Width="240"
+                     Style="{StaticResource EditStyle}"
+                     IsReadOnly="True" />
         </Grid>
 
 

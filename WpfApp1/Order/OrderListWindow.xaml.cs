@@ -34,6 +34,14 @@ public partial class OrderListWindow : Window
         _managerId = s_bl.Admin.GetConfig().ManagerId;
     }
 
+    /// <summary>
+    /// Handles the <see cref="Window.Loaded"/> event for the window. Subscribes to order updates and refreshes the
+    /// displayed orders.
+    /// </summary>
+    /// <remarks>This method adds an observer to monitor order updates and immediately refreshes the order
+    /// display. If an error occurs during the process, an error message is displayed to the user.</remarks>
+    /// <param name="sender">The source of the event, typically the window being loaded.</param>
+    /// <param name="e">The event data associated with the <see cref="Window.Loaded"/> event.</param>
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         try
@@ -49,14 +57,8 @@ public partial class OrderListWindow : Window
     }
 
     private void Window_Closed(object sender, EventArgs e)
-    {
-        try
-        {
+    {     
             s_bl.Order.RemoveObserver(RefreshOrders);
-        }
-        catch
-        {
-        }
     }
 
     private void ShipmentFilter_SelectionChanged(object? sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -67,6 +69,12 @@ public partial class OrderListWindow : Window
         RefreshOrders();
     }
 
+    /// <summary>
+    /// Refreshes the list of orders based on the currently selected shipment type.
+    /// </summary>
+    /// <remarks>If no shipment type is selected, the method retrieves all orders associated with the current
+    /// manager. Otherwise, it filters the orders by the selected shipment type. In case of an error, a message box is
+    /// displayed to inform the user about the issue.</remarks>
     private void RefreshOrders()
     {
         try
@@ -93,7 +101,14 @@ public partial class OrderListWindow : Window
         }
     }
 
-
+    /// <summary>
+    /// Handles the double-click event on a DataGrid row to open the details of the selected order.
+    /// </summary>
+    /// <remarks>This method checks if an order is selected in the DataGrid. If a valid order is selected, it
+    /// opens a new window displaying the details of the selected order. If an error occurs while attempting to open the
+    /// details, an error message is displayed to the user.</remarks>
+    /// <param name="sender">The source of the event, typically the DataGrid.</param>
+    /// <param name="e">The event data associated with the mouse button event.</param>
     private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         try
@@ -117,6 +132,15 @@ public partial class OrderListWindow : Window
        //RefreshOrders();
     }
 
+    /// <summary>
+    /// Handles the click event for the "Cancel Order" button, allowing the user to cancel a selected order.
+    /// </summary>
+    /// <remarks>This method prompts the user for confirmation before canceling the order. If the order is in
+    /// progress,  additional notifications may be triggered. The method ensures that only valid orders are processed 
+    /// and handles any exceptions that occur during the operation by displaying an error message.</remarks>
+    /// <param name="sender">The source of the event, expected to be a <see cref="Button"/> with a valid <see
+    /// cref="Button.CommandParameter"/> representing the order ID.</param>
+    /// <param name="e">The event data associated with the click event.</param>
     private void CancelOrder_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -145,6 +169,14 @@ public partial class OrderListWindow : Window
         }
     }
 
+   /// <summary>
+   /// Notifies the system of a courier order cancellation by identifying the active delivery associated with the
+   /// specified order and retrieving the courier details.
+   /// </summary>
+   /// <remarks>This method identifies the active delivery for the given order, if any, and retrieves the
+   /// associated courier details. If no active delivery is found or the courier details cannot be retrieved, the method
+   /// exits without further action.</remarks>
+   /// <param name="order">The order containing delivery details to evaluate for cancellation notification.</param>
     private void NotifyCourierOrderCancelled(BO.Order order)
     {
         var activeDelivery = order.Deliveries?.FirstOrDefault(d => d.DeliveryEndType == null);
@@ -154,7 +186,5 @@ public partial class OrderListWindow : Window
         var courier = s_bl.Courier.GetCourierDetails(courierId);
         if (courier == null)
             return;
-
-        // מייל:
     }
 }
