@@ -330,4 +330,14 @@
     <DeliveryEndType>Supplied</DeliveryEndType>
     <EndTime>2030-01-03T20:16:56</EndTime>
   </Delivery>
+  <Delivery>
+    <Id>33</Id>
+    <OrderId>1</OrderId>
+    <CourierId>212</CourierId>
+    <ShipmentType>Motorcycle</ShipmentType>
+    <StartTime>2030-01-03T20:16:56</StartTime>
+    <ActualDistance>10.7726</ActualDistance>
+    <DeliveryEndType xsi:nil="true" />
+    <EndTime xsi:nil="true" />
+  </Delivery>
 </ArrayOfDelivery>
