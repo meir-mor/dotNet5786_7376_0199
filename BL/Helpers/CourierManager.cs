@@ -217,7 +217,7 @@ internal static class CourierManager
                 courier.Email,
                 courier.Password ?? string.Empty,
                 userRole == BO.UserRole.Manager ? courier.IsActive : oldCourier.IsActive,
-                courier.MaxDistance <= s_dal.Config.MaxDistance ? courier.MaxDistance : oldCourier.MaximumDistance,
+                courier.MaxDistance <= s_dal.Config.MaxDistance ? courier.MaxDistance : s_dal.Config.MaxDistance,
                 (DO.ShipmentType)(int)courier.ShipmentType,
                 oldCourier.StartingWork
             );
