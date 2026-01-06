@@ -115,7 +115,7 @@ internal class CourierImplementation : ICourier
 
         try
         {
-            var existing = GetCourierDetails(courier.Id);
+            var existing = CourierManager.GetCourierById(courier.Id);
             if (existing != null)
                 throw new BO.BlAlreadyExistsException($"A courier with ID {courier.Id} already exists.");
         }

@@ -198,4 +198,15 @@
     <ShipmentType>Bicycle</ShipmentType>
     <StartingWork>2024-11-05T19:16:56</StartingWork>
   </Courier>
+  <Courier>
+    <Id>212</Id>
+    <Name>ari oren</Name>
+    <Phone>0543295355</Phone>
+    <Email>arioren100@gmail.com</Email>
+    <Password>1234</Password>
+    <IsActive>true</IsActive>
+    <MaximumDistance>50</MaximumDistance>
+    <ShipmentType>Walk</ShipmentType>
+    <StartingWork>2030-01-03T20:16:56</StartingWork>
+  </Courier>
 </ArrayOfCourier>
