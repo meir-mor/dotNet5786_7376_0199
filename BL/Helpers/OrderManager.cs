@@ -255,23 +255,48 @@ internal static class OrderManager
         }
     }
 
+    private static readonly AsyncMutex s_periodicMutex = new(); //stage 7
+
     internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
-        List<DO.Order> orders;
-        lock (AdminManager.BlMutex)
-             orders = s_dal.Order.ReadAll(o => o.Status != DO.OrderStatus.Closed).ToList();
-        var updated = false;
-        foreach (var doOrder in orders)
+        if (s_periodicMutex.CheckAndSetInProgress())
+            return;
+
+        List<int> updatedOrders = new();
+        bool updated = false;
+
+        try
         {
-            if (AdminManager.Now - doOrder.CreatedAt >= s_dal.Config.MaxDeliveryTime)
+            List<DO.Order> orders;
+            Config config;
+
+            lock (AdminManager.BlMutex) // stage 7
             {
-                updated = true;
-                Observers.NotifyItemUpdated(doOrder.Id);
+                orders = s_dal.Order
+                    .ReadAll(o => o.Status != DO.OrderStatus.Closed)
+                    .ToList(); 
+
+                config = (Config)s_dal.Config;
             }
 
-            if (updated || oldClock != newClock)
-                Observers.NotifyListUpdated();
+            foreach (var doOrder in orders)
+            {
+                if (AdminManager.Now - doOrder.CreatedAt >= config.MaxDeliveryTime)
+                {
+                    updated = true;
+                    updatedOrders.Add(doOrder.Id);
+                }
+            }
         }
+        finally
+        {
+            s_periodicMutex.UnsetInProgress();
+        }
+
+        foreach (var id in updatedOrders)
+            Observers.NotifyItemUpdated(id);
+        if (updated || oldClock != newClock)
+            Observers.NotifyListUpdated();
     }
 
     private static BO.Order MapDoToBo(DO.Order o)

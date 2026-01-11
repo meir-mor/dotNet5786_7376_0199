@@ -398,60 +398,74 @@ internal static class CourierManager
         }
     }
 
+    private static readonly AsyncMutex s_periodicMutex = new(); //stage 7
+
     internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
     {
+        if (s_periodicMutex.CheckAndSetInProgress())
+            return;
+
         List<int> updatedCouriers = new(); 
+        var courierUpdated = false; // stage 5
 
-        lock (AdminManager.BlMutex) // stage 7
+        try
         {
-            var courierUpdated = false; // stage 5
             List<DO.Courier> list;
-
             lock (AdminManager.BlMutex) // stage 7
-            {
-                list = s_dal.Courier.ReadAll().ToList();
-                foreach (var doCourier in list)
-                {
-                    var delivery = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.Id)
-                                         .OrderByDescending(d => d.EndTime)
-                                         .ToList();
-
-                    bool courierDispose;
-                    if (delivery.Count == 0 && AdminManager.Now - doCourier.StartingWork >= s_dal.Config.TimeToBeDispose)
-                        courierDispose = true;
-                    else
-                    {
-                        if (delivery.Count == 0) courierDispose = false;
-                        else
-                        {
-                            if (delivery[^1].EndTime == null) courierDispose = false;
-                            else
-                            {
-                                if (AdminManager.Now - delivery[0].EndTime >= s_dal.Config.TimeToBeDispose)
-                                    courierDispose = true;
-                                else courierDispose = false;
-                            }
-                        }
-                    }
-
-                    if (courierDispose)
-                    {
-                        s_dal.Courier.Update(doCourier with { IsActive = false });
-                        courierUpdated = true; // stage 5
-                    }
-                }
-            }
+                list = s_dal.Courier.ReadAll().ToList(); 
 
             foreach (var doCourier in list)
-                Observers.NotifyItemUpdated(doCourier.Id); // stage 5
+            {
+                List<DO.Delivery> delivery;
+                Config config;
 
-            if (courierUpdated || oldClock != newClock)
-                Observers.NotifyListUpdated(); // stage 5
+                lock (AdminManager.BlMutex) // stage 7
+                {
+                    delivery = s_dal.Delivery
+                        .ReadAll(d => d.CourierId == doCourier.Id)
+                        .OrderByDescending(d => d.EndTime)
+                        .ToList();
+
+                    config = (Config)s_dal.Config;
+                }
+
+                bool courierDispose;
+                if (delivery.Count == 0 && AdminManager.Now - doCourier.StartingWork >= config.TimeToBeDispose)
+                    courierDispose = true;
+                else if (delivery.Count == 0)
+                    courierDispose = false;
+                else if (delivery[^1].EndTime == null)
+                    courierDispose = false;
+                else if (AdminManager.Now - delivery[0].EndTime >= config.TimeToBeDispose)
+                    courierDispose = true;
+                else
+                    courierDispose = false;
+
+
+                if (courierDispose)
+                {
+                    lock (AdminManager.BlMutex) // stage 7
+                        s_dal.Courier.Update(doCourier with { IsActive = false });
+
+                    updatedCouriers.Add(doCourier.Id);
+                    courierUpdated = true; // stage 5
+                }
+            }
         }
+        finally
+        {
+            s_periodicMutex.UnsetInProgress(); 
+        }
+
+        foreach (var id in updatedCouriers)
+            Observers.NotifyItemUpdated(id); // stage 5
+
+        if (courierUpdated || oldClock != newClock)
+            Observers.NotifyListUpdated(); // stage 5
     }
 
-    internal static void SimulateCourierRegistrationAndGrade()
+    internal static async Task SimulateCourierRegistrationAndGrade()
     {
-        throw new NotImplementedException();
+
     }
 }

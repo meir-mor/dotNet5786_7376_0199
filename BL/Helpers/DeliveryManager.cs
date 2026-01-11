@@ -215,25 +215,50 @@ internal static class DeliveryManager
         }
     }
 
+    private static readonly AsyncMutex s_periodicMutex = new(); //stage 7
+
     internal static void PeriodicDeliveriesUpdates(DateTime oldClock, DateTime newClock)
     {
-        List<DO.Delivery> deliveries;
-        lock (AdminManager.BlMutex) // stage 7
-             deliveries = s_dal.Delivery.ReadAll(d => d.DeliveryEndType == null && d.EndTime == null).ToList();
-        var updated = false; // stage 5
-        foreach (var doDelivery in deliveries)
+        if (s_periodicMutex.CheckAndSetInProgress())
+            return;
+
+        List<int> updatedDeliveries = new();
+        bool updated = false; // stage 5
+
+        try
         {
-            if (AdminManager.Now - doDelivery.StartTime >= s_dal.Config.MaxDeliveryTime)
+            List<DO.Delivery> deliveries;
+           Config config;
+
+            lock (AdminManager.BlMutex) // stage 7
             {
-                updated = true;
-                Observers.NotifyItemUpdated(doDelivery.Id);
+                deliveries = s_dal.Delivery
+                    .ReadAll(d => d.DeliveryEndType == null && d.EndTime == null)
+                    .ToList(); 
+
+                config = (Config)s_dal.Config;
+            }
+
+            foreach (var doDelivery in deliveries)
+            {
+                if (AdminManager.Now - doDelivery.StartTime >= config.MaxDeliveryTime)
+                {
+                    updated = true;
+                    updatedDeliveries.Add(doDelivery.Id);
+                }
             }
         }
+        finally
+        {
+            s_periodicMutex.UnsetInProgress(); 
+        }
+
+        foreach (var id in updatedDeliveries)
+            Observers.NotifyItemUpdated(id);
 
         if (updated || oldClock != newClock)
             Observers.NotifyListUpdated();
     }
-
     private static BO.DeliveryPerOrderInList MapDoToBo(DO.Delivery d)
     {
 
