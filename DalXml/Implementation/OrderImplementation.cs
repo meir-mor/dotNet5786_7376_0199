@@ -1,5 +1,6 @@
-﻿using DO;
-using DalApi;
+﻿using DalApi;
+using DO;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using static System.Enum;
 
@@ -9,6 +10,7 @@ internal class OrderImplementation : IOrder
 {
     private const string XMLFileName = Config.s_orders_xml;
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Order item)
     {
         var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
@@ -19,6 +21,7 @@ internal class OrderImplementation : IOrder
         XMLTools.SaveListToXMLElement(ordersRoot, XMLFileName);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
@@ -33,17 +36,20 @@ internal class OrderImplementation : IOrder
         XMLTools.SaveListToXMLElement(ordersRoot, XMLFileName);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         XMLTools.SaveListToXMLElement(new XElement("Orders"), XMLFileName);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Order? Read(Func<Order, bool> filter)
     {
         var orders = ReadAll();
         return orders.FirstOrDefault(filter);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Order? Read(int id)
     {
         var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
@@ -54,6 +60,7 @@ internal class OrderImplementation : IOrder
         return orderElement == null ? null : ConvertXElementToOrder(orderElement);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
     {
         var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
@@ -64,6 +71,7 @@ internal class OrderImplementation : IOrder
         return filter == null ? orders : orders.Where(filter);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Order item)
     {
         var ordersRoot = XMLTools.LoadListFromXMLElement(XMLFileName);
@@ -79,6 +87,7 @@ internal class OrderImplementation : IOrder
         XMLTools.SaveListToXMLElement(ordersRoot, Config.s_orders_xml);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     private static XElement CreateOrderElement(Order o)
     {
         return new XElement("Order",
@@ -96,6 +105,7 @@ internal class OrderImplementation : IOrder
         );
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     private static Order ConvertXElementToOrder(XElement o)
     {
         TryParse((string?)o.Element("Type"), out OrderType type);

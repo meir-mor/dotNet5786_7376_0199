@@ -1,5 +1,6 @@
-﻿using DO;
-using DalApi;
+﻿using DalApi;
+using DO;
+using System.Runtime.CompilerServices;
 
 namespace Dal;
 
@@ -7,6 +8,7 @@ internal class DeliveryImplementation : IDelivery
 {
     private readonly string xmlFileName = Config.s_deliveries_xml;
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Create(Delivery item)
     {
         var deliveries = XMLTools.LoadListFromXMLSerializer<Delivery>(xmlFileName);
@@ -17,6 +19,7 @@ internal class DeliveryImplementation : IDelivery
         XMLTools.SaveListToXMLSerializer(deliveries, xmlFileName);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Delete(int id)
     {
         var deliveries = XMLTools.LoadListFromXMLSerializer<Delivery>(xmlFileName);
@@ -28,29 +31,34 @@ internal class DeliveryImplementation : IDelivery
         XMLTools.SaveListToXMLSerializer(deliveries, xmlFileName);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void DeleteAll()
     {
         XMLTools.SaveListToXMLSerializer(new List<Delivery>(), xmlFileName);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Delivery? Read(Func<Delivery, bool> filter)
     {
         var deliveries = XMLTools.LoadListFromXMLSerializer<Delivery>(xmlFileName);
         return deliveries.FirstOrDefault(filter);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Delivery? Read(int id)
     {
         var deliveries = XMLTools.LoadListFromXMLSerializer<Delivery>(xmlFileName);
         return deliveries.FirstOrDefault(d => d.Id == id);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public IEnumerable<Delivery> ReadAll(Func<Delivery, bool>? filter = null)
     {
         var deliveries = XMLTools.LoadListFromXMLSerializer<Delivery>(xmlFileName);
         return filter == null ? deliveries : deliveries.Where(filter);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Update(Delivery item)
     {
         var deliveries = XMLTools.LoadListFromXMLSerializer<Delivery>(xmlFileName);

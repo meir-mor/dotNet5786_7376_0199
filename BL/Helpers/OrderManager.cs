@@ -1,5 +1,6 @@
 ﻿using BO;
 using DalApi;
+using System.Threading.Tasks;
 using Factory = DalApi.Factory;
 using OrderStatus = DO.OrderStatus;
 
@@ -18,22 +19,38 @@ internal static class OrderManager
     {
         try
         {
-            var orders = s_dal.Order.ReadAll()
+            List<DO.Order> allOrders;
+            lock (AdminManager.BlMutex)
+                allOrders = s_dal.Order.ReadAll().ToList();
+
+            var orders = allOrders
                 .Select(o =>
                 {
                     var bo = MapDoToBo(o);
-                    bo.Deliveries = s_dal.Delivery.ReadAll(d => d.OrderId == o.Id)
-                        .Select(d => new BO.DeliveryPerOrderInList
+
+                    List<DO.Delivery> deliveries;
+                    lock (AdminManager.BlMutex)
+                        deliveries = s_dal.Delivery.ReadAll(d => d.OrderId == o.Id).ToList();
+
+                    bo.Deliveries = deliveries
+                        .Select(d =>
                         {
-                            DeliveryId = d.Id,
-                            CourierId = d.CourierId,
-                            CourierName = s_dal.Courier.Read(d.CourierId)?.Name ?? string.Empty,
-                            ShipmentType = (BO.ShipmentType)(int)d.ShipmentType,
-                            DeliveryStartTime = d.StartTime,
-                            DeliveryEndType = (BO.DeliveryEndType?)(int?)d.DeliveryEndType,
-                            DeliveryEndTime = d.EndTime
-                        })
-                        .ToList();
+                            string courierName;
+                            lock (AdminManager.BlMutex)
+                                courierName = s_dal.Courier.Read(d.CourierId)?.Name ?? string.Empty;
+
+                            return new BO.DeliveryPerOrderInList
+                            {
+                                DeliveryId = d.Id,
+                                CourierId = d.CourierId,
+                                CourierName = courierName,
+                                ShipmentType = (BO.ShipmentType)(int)d.ShipmentType,
+                                DeliveryStartTime = d.StartTime,
+                                DeliveryEndType = (BO.DeliveryEndType?)(int?)d.DeliveryEndType,
+                                DeliveryEndTime = d.EndTime
+                            };
+                        }).ToList();
+
                     return bo;
                 })
                 .OrderByDescending(o => o.OrderOpenTime)
@@ -55,14 +72,20 @@ internal static class OrderManager
     {
         try
         {
-            var doOrder = s_dal.Order.Read(id);
+            DO.Order doOrder;
+            lock (AdminManager.BlMutex)
+                doOrder = s_dal.Order.Read(id);
             if (doOrder == null) return null;
 
             var bo = MapDoToBo(doOrder);
 
             // query-syntax: group deliveries by courier for this order (demonstrates grouping + select new)
+            List<DO.Delivery> allDeliveries;
+            lock (AdminManager.BlMutex)
+                allDeliveries = s_dal.Delivery.ReadAll().ToList();
+
             var deliveries =
-                from d in s_dal.Delivery.ReadAll()
+                from d in allDeliveries
                 where d.OrderId == id
                 group d by d.CourierId
                 into g // grouping
@@ -70,17 +93,25 @@ internal static class OrderManager
                 select new
                 {
                     CourierId = g.Key,
-                    Items = g.Select(x => new BO.DeliveryPerOrderInList
+                    Items = g.Select(x =>
                     {
-                        DeliveryId = x.Id,
-                        CourierId = x.CourierId,
-                        CourierName = s_dal.Courier.Read(x.CourierId)?.Name ?? string.Empty,
-                        ShipmentType = (BO.ShipmentType)(int)x.ShipmentType,
-                        DeliveryStartTime = x.StartTime,
-                        DeliveryEndType = (BO.DeliveryEndType?)(int?)x.DeliveryEndType,
-                        DeliveryEndTime = x.EndTime
+                        string courierName;
+                        lock (AdminManager.BlMutex)
+                            courierName = s_dal.Courier.Read(x.CourierId)?.Name ?? string.Empty; // עטוף קריאה ל-DAL
+
+                        return new BO.DeliveryPerOrderInList
+                        {
+                            DeliveryId = x.Id,
+                            CourierId = x.CourierId,
+                            CourierName = courierName,
+                            ShipmentType = (BO.ShipmentType)(int)x.ShipmentType,
+                            DeliveryStartTime = x.StartTime,
+                            DeliveryEndType = (BO.DeliveryEndType?)(int?)x.DeliveryEndType,
+                            DeliveryEndTime = x.EndTime
+                        };
                     }).ToList()
                 };
+
 
             // flatten grouped results to a single list of deliveries
             bo.Deliveries = deliveries.SelectMany(g => g.Items).ToList();
@@ -103,11 +134,11 @@ internal static class OrderManager
     /// <summary>
     /// Create order (maps BO -> DO).
     /// </summary>
-    internal static void CreateOrder(BO.Order order)
+    internal static async Task CreateOrder(BO.Order order)
     {
         try
         {
-            var (lat, lon) = Tools.GetCoordinates(order.FullAddress);
+            var (lat, lon) =await Tools.GetCoordinates(order.FullAddress);
             if (lat is null || lon is null)
             {
                 throw new BO.BlUnexpectedException("DAL: invalid coordinates");
@@ -130,7 +161,8 @@ internal static class OrderManager
                 order.Volume
             );
 
-            s_dal.Order.Create(doOrder);
+            lock (AdminManager.BlMutex)
+                s_dal.Order.Create(doOrder);
             Observers.NotifyItemUpdated(doOrder.Id);
             Observers.NotifyListUpdated();
         }
@@ -151,13 +183,18 @@ internal static class OrderManager
     {
         try
         {
-            var existing = s_dal.Order.Read(bo.Id)
+
+            DO.Order existing;
+            lock (AdminManager.BlMutex)
+                 existing = s_dal.Order.Read(bo.Id)
                            ?? throw new BO.BlDoesNotExistException($"Order {bo.Id} not found");
 
             if (existing.Status == DO.OrderStatus.Closed)
                 throw new BO.BlInvalidOperationException("Cannot update a closed order");
 
-            var deliveries = s_dal.Delivery.ReadAll().Where(d => d.OrderId == bo.Id).ToList();
+            List<DO.Delivery> deliveries;
+            lock (AdminManager.BlMutex)
+                 deliveries = s_dal.Delivery.ReadAll().Where(d => d.OrderId == bo.Id).ToList();
 
             DO.OrderStatus newStatus;
             if (deliveries.Count == 0)
@@ -182,7 +219,8 @@ internal static class OrderManager
                 bo.Volume
             );
 
-            s_dal.Order.Update(doOrder);
+            lock (AdminManager.BlMutex)
+                s_dal.Order.Update(doOrder);
 
             Observers.NotifyItemUpdated(bo.Id);
             Observers.NotifyListUpdated();
@@ -200,10 +238,14 @@ internal static class OrderManager
     {
         try
         {
-            var exists = s_dal.Order.ReadAll().Any(o => o.Id == id);
+            bool exists;
+            lock (AdminManager.BlMutex)
+            { 
+                 exists = s_dal.Order.ReadAll().Any(o => o.Id == id);
             if (!exists) throw new BO.BlException($"DAL: order {id} not found");
 
             s_dal.Order.Delete(id);
+            }
             Observers.NotifyItemUpdated(id);
             Observers.NotifyListUpdated();
         }
@@ -215,7 +257,9 @@ internal static class OrderManager
 
     internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
-        var orders = s_dal.Order.ReadAll(o => o.Status != DO.OrderStatus.Closed).ToList();
+        List<DO.Order> orders;
+        lock (AdminManager.BlMutex)
+             orders = s_dal.Order.ReadAll(o => o.Status != DO.OrderStatus.Closed).ToList();
         var updated = false;
         foreach (var doOrder in orders)
         {
@@ -232,7 +276,9 @@ internal static class OrderManager
 
     private static BO.Order MapDoToBo(DO.Order o)
     {
-        var delivery = s_dal.Delivery.Read(d => d.OrderId == o.Id);
+        DO.Delivery? delivery;
+        lock (AdminManager.BlMutex)
+             delivery = s_dal.Delivery.Read(d => d.OrderId == o.Id);
         var timeRemaining = o.CreatedAt + s_dal.Config.MaxDeliveryTime - s_dal.Config.Clock;
         var timeItsTook = delivery?.EndTime - o.CreatedAt;
         var scheduleStatus = timeItsTook >= s_dal.Config.MaxDeliveryTime ? ScheduleStatus.Late
@@ -312,7 +358,10 @@ internal static class OrderManager
         try
         {
             var now = AdminManager.Now;
-            var order = s_dal.Order.Read(orderId) ?? throw new BO.BlException($"Order {orderId} not found");
+
+            DO.Order order;
+            lock (AdminManager.BlMutex)       
+                 order = s_dal.Order.Read(orderId) ?? throw new BO.BlException($"Order {orderId} not found");
 
             var status = order.Status;
             if (status == DO.OrderStatus.Open)
@@ -328,18 +377,24 @@ internal static class OrderManager
                     DO.DeliveryEndType.Cancelled,
                     now
                 );
-                s_dal.Delivery.Create(dummy);
+                lock (AdminManager.BlMutex)
+                    s_dal.Delivery.Create(dummy);
             }
             else if (status == DO.OrderStatus.InProgress)
             {
                 // find active delivery for this order (EndTime null)
-                var delivery = s_dal.Delivery
-                                   .ReadAll(d =>
-                                       d.OrderId == orderId && (d.EndTime == null || d.DeliveryEndType == null))
-                                   .FirstOrDefault()
+                List<DO.Delivery> deliveries;
+                lock (AdminManager.BlMutex)
+                    deliveries = s_dal.Delivery.ReadAll(d =>
+                        d.OrderId == orderId && (d.EndTime == null || d.DeliveryEndType == null)).ToList();
+
+                var delivery = deliveries.FirstOrDefault()
                                ?? throw new BO.BlException($"No active delivery found for order {orderId}");
+
                 var updated = delivery with { EndTime = now, DeliveryEndType = DO.DeliveryEndType.Cancelled };
-                s_dal.Delivery.Update(updated);
+
+                lock (AdminManager.BlMutex)
+                    s_dal.Delivery.Update(updated);
             }
             else
             {
@@ -368,20 +423,28 @@ internal static class OrderManager
         try
         {
             var now = AdminManager.Now;
-            var delivery = s_dal.Delivery.Read(deliveryId) ??
+            DO.Delivery delivery;
+            lock (AdminManager.BlMutex)
+                 delivery = s_dal.Delivery.Read(deliveryId) ??
                            throw new BO.BlDoesNotExistException($"Delivery {deliveryId} not found");
 
             if (delivery.CourierId != courierId)
                 throw new BO.BlInvalidOperationException("Requester is not the courier of this delivery");
 
-            var order = s_dal.Order.Read(delivery.OrderId);
+            DO.Order? order;
+            lock (AdminManager.BlMutex)
+                 order = s_dal.Order.Read(delivery.OrderId);
+
             if (order is null || order.Status != DO.OrderStatus.InProgress)
                 throw new BO.BlException("Order is not in progress");
 
             // update delivery end and type
             var updated = delivery with { EndTime = now, DeliveryEndType = DO.DeliveryEndType.Supplied };
-            s_dal.Delivery.Update(updated);
-            s_dal.Order.Update(order with { Status = DO.OrderStatus.Closed, });
+            lock (AdminManager.BlMutex)
+            {
+                s_dal.Delivery.Update(updated);
+                s_dal.Order.Update(order with { Status = DO.OrderStatus.Closed, });
+            }
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -389,24 +452,29 @@ internal static class OrderManager
         }
     }
 
-    public static void AssignOrderToCourier(int requesterId, int courierId, int orderId)
+    public static async Task AssignOrderToCourier(int requesterId, int courierId, int orderId)
     {
         try
         {
             var now = AdminManager.Now;
-            var order = s_dal.Order.Read(orderId) ?? throw new BO.BlException($"Order {orderId} not found");
+
+            DO.Order order;
+            lock (AdminManager.BlMutex)
+                 order = s_dal.Order.Read(orderId) ?? throw new BO.BlException($"Order {orderId} not found");
 
             if (order.Status != DO.OrderStatus.Open)
                 throw new BO.BlException("Order is not open for assignment");
 
             // ensure no active delivery exists for this order
-            var active = s_dal.Delivery
+            DO.Delivery? active;
+            lock (AdminManager.BlMutex)
+                 active = s_dal.Delivery
                 .ReadAll(d => d.OrderId == orderId && (d.EndTime == null || d.DeliveryEndType == null))
                 .FirstOrDefault();
             if (active != null)
                 throw new BO.BlException("Order already has an active delivery");
 
-            var distance = Tools.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
+            var distance = await Tools.CalculateDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
                 order.Latitude, order.Longitude, DO.ShipmentType.Motorcycle);
 
             // create delivery (use default ShipmentType - can be improved)
@@ -421,11 +489,13 @@ internal static class OrderManager
                 null
             );
 
-            s_dal.Delivery.Create(delivery);
+            lock (AdminManager.BlMutex)
+                s_dal.Delivery.Create(delivery);
 
             // Optionally update order status to InProgress
             var updatedOrder = order with { Status = DO.OrderStatus.InProgress };
-            s_dal.Order.Update(updatedOrder);
+            lock (AdminManager.BlMutex)
+                s_dal.Order.Update(updatedOrder);
 
             // Send Email notification (simulated)
             try
@@ -476,18 +546,25 @@ Safe Travels!
             var now = AdminManager.Now;
             var riskRange = cfg.RiskRange;
 
-            var query = s_dal.Delivery.ReadAll(d => d.CourierId == courierId && d.DeliveryEndType != null);
+            List<DO.Delivery> query;
+            lock (AdminManager.BlMutex)
+                 query = s_dal.Delivery.ReadAll(d => d.CourierId == courierId && d.DeliveryEndType != null).ToList();
 
             var list = query
                 .Where(d => typeFilter == null || d.ShipmentType == (DO.ShipmentType)(int)typeFilter.Value)
                 .Select(d =>
                 {
-                    var order = s_dal.Order.Read(d.OrderId);
+
+                    DO.Order? order;
+                    lock (AdminManager.BlMutex)
+                        order = s_dal.Order.Read(d.OrderId);
+
                     var orderType = order is null
                         ? DO.OrderType.General
                         : (DO.OrderType)(int)order.Type;
                     var fullAddress = order is null ? string.Empty : order.Address;
                     var handling = d.EndTime is { } end && end != DateTime.MinValue ? end - d.StartTime : TimeSpan.Zero;
+                    
                     return new
                     {
                         Item = new BO.ClosedDeliveryInList
@@ -522,7 +599,7 @@ Safe Travels!
                 _ => list.OrderBy(x => x.Schedule)
             };
 
-            return sorted.Select(x => x.Item as BO.ClosedDeliveryInList);
+            return sorted.Select(x => x.Item as ClosedDeliveryInList);
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -551,7 +628,7 @@ Safe Travels!
     /// - If typeFilter provided filter by order type.
     /// - Default sort (when sortBy == null) is by ScheduleStatus.
     /// </summary>
-    public static IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId,
+    public static async Task<IEnumerable<BO.OpenOrderInList>> GetOpenOrdersForCourier(int requesterId, int courierId,
         BO.OrderType? typeFilter, BO.OpenOrderSortBy? sortBy)
     {
         try
@@ -563,23 +640,26 @@ Safe Travels!
             var riskRange = cfg.RiskRange;
 
             // get courier DO to read maximum distance
-            var courierDo = s_dal.Courier.Read(courierId);
+            DO.Courier courierDo;
+            lock (AdminManager.BlMutex)
+                 courierDo = s_dal.Courier.Read(courierId);
             if (courierDo == null)
                 throw new BO.BlDoesNotExistException($"Courier with id {courierId} not found");
 
             var courierMaxDistance = courierDo.MaximumDistance; // km, nullable
 
             // read open orders (DO.Order) and project to (OpenOrderInList + createdAt) for sorting
-            var candidates =
-                s_dal.Order.ReadAll(o => o.Status == DO.OrderStatus.Open)
-                    .Where(o => o != null)
-                    .Select(o =>
-                    {
+            List<DO.Order> openOrders;
+            lock (AdminManager.BlMutex)
+                openOrders = s_dal.Order.ReadAll(o => o.Status == DO.OrderStatus.Open).ToList();
+
+            var tasks =openOrders.Select(async o =>
+                       {
                         var aerialKm = ComputeAerialDistance(companyLat, companyLon, o.Latitude, o.Longitude);
                         var maxDeliveryDate = o.CreatedAt + cfg.MaxDeliveryTime;
                         var timeRemaining = maxDeliveryDate - now;
                         var scheduleStatus = ComputeScheduleStatus(timeRemaining, riskRange);
-                        var actualDistance = Tools.CalculateDistance(companyLat, companyLon, o.Latitude, o.Longitude,
+                        var actualDistance =await Tools.CalculateDistance(companyLat, companyLon, o.Latitude, o.Longitude,
                             courierDo.ShipmentType);
 
                         var open = new BO.OpenOrderInList
@@ -603,19 +683,22 @@ Safe Travels!
 
                         return (Open: open, CreatedAt: o.CreatedAt);
                     })
-                    // filter by courier max distance
-                    .Where(t => courierMaxDistance == null || t.Open.ActualDistance <= courierMaxDistance.Value)
+                       .ToList();
+            var candidates = await Task.WhenAll(tasks);
+
+            var filtered = candidates
+           // filter by courier max distance
+           .Where(t => courierMaxDistance == null || t.Open.ActualDistance <= courierMaxDistance.Value)
                     // filter by type if requested
                     .Where(t => typeFilter == null || t.Open.OrderType == typeFilter.Value);
 
-            // sorting
             IEnumerable<(BO.OpenOrderInList Open, DateTime CreatedAt)> sorted = sortBy switch
             {
-                BO.OpenOrderSortBy.AerialDistance => candidates.OrderBy(t => t.Open.AerialDistance),
-                BO.OpenOrderSortBy.OrderOpenTime => candidates.OrderByDescending(t => t.CreatedAt),
-                BO.OpenOrderSortBy.ScheduleStatus => candidates.OrderBy(t => t.Open.ScheduleStatus),
-                null => candidates.OrderBy(t => t.Open.ScheduleStatus), // default
-                _ => candidates.OrderBy(t => t.Open.ScheduleStatus)
+                BO.OpenOrderSortBy.AerialDistance => filtered.OrderBy(t => t.Open.AerialDistance),
+                BO.OpenOrderSortBy.OrderOpenTime => filtered.OrderByDescending(t => t.CreatedAt),
+                BO.OpenOrderSortBy.ScheduleStatus => filtered.OrderBy(t => t.Open.ScheduleStatus),
+                null => filtered.OrderBy(t => t.Open.ScheduleStatus), // default
+                _ => filtered.OrderBy(t => t.Open.ScheduleStatus)
             };
 
             return sorted.Select(t => t.Open).ToList();

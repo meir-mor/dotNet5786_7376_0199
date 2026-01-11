@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace PL.Courier;
 
@@ -130,7 +131,7 @@ public partial class OpenOrdersWindow : Window
     /// <remarks>This method retrieves open orders for the courier identified by the current context.  The
     /// results are filtered by the selected order type and sorted according to the selected criteria, if
     /// specified.</remarks>
-    private void LoadOpenOrders()
+    private async Task LoadOpenOrders()
     {
         try
         {
@@ -144,7 +145,7 @@ public partial class OpenOrdersWindow : Window
 
             // Fetch
             Mouse.OverrideCursor = Cursors.Wait;
-            OpenOrders = s_bl.Order.GetOpenOrdersForCourier(_courierId, _courierId, typeFilter, sortBy);
+            OpenOrders = await s_bl.Order.GetOpenOrdersForCourier(_courierId, _courierId, typeFilter, sortBy);
             Mouse.OverrideCursor = null;
         }
         catch (Exception ex)

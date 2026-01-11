@@ -34,7 +34,7 @@ internal static class Tools
     /// <param name="address">The address for which to retrieve the coordinates.</param>
     /// <returns>A tuple containing the latitude and longitude of the address. Returns null values if the address is not found.</returns>
     /// <exception cref="BlInvalidAddressCoordinatesException">Thrown if the address is null or invalid.</exception>
-    internal static (double? Latitude, double? Longitude) GetCoordinates(string? address)
+    internal static async Task<(double? Latitude, double? Longitude)> GetCoordinates(string? address)
     {
         if (string.IsNullOrWhiteSpace(address))
             return (null, null);
@@ -43,12 +43,12 @@ internal static class Tools
 
         using HttpClient client = new HttpClient();
 
-        var response = client.GetAsync(url).Result;
+        var response = await client.GetAsync(url);
 
         if (!response.IsSuccessStatusCode)
             throw new BlJsonException("Failed to retrieve coordinates for the given address.");
 
-        var json = response.Content.ReadAsStringAsync().Result;
+        var json = await response.Content.ReadAsStringAsync();
 
         var data = JsonDocument.Parse(json);
 
@@ -76,7 +76,7 @@ internal static class Tools
     /// <param name="lon2">The longitude of the second address.</param>
     /// <returns>The distance in kilometers between the two addresses.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the API request for walking or driving distance fails.</exception>
-    internal static double CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2,
+    internal static async Task<double> CalculateDistance(double? lat1, double? lon1, double? lat2, double? lon2,
         DO.ShipmentType distanceType)
     {
         // Check if the addresses are valid.
@@ -100,12 +100,12 @@ internal static class Tools
         };
 
         using var client = new HttpClient();
-        var response = client.GetAsync(url).Result;
+        var response = await client.GetAsync(url);
 
         if (!response.IsSuccessStatusCode)
             throw new BlJsonException("Failed to retrieve distance from API.");
 
-        var json = response.Content.ReadAsStringAsync().Result;
+        var json = await response.Content.ReadAsStringAsync();
 
         // Parse the JSON response
         var data = JsonDocument.Parse(json);

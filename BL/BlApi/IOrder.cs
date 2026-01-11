@@ -79,6 +79,6 @@ public interface IOrder : IObservable //stage 5
     /// - typeFilter: nullable BO.OrderType
     /// - sortBy: nullable; if null sort by timeliness (ScheduleStatus)
     /// </summary>
-    IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId,
-        BO.OrderType? typeFilter = null, BO.OpenOrderSortBy? sortBy = null);
+    Task<IEnumerable<BO.OpenOrderInList>> GetOpenOrdersForCourier( int requesterId, int courierId,
+     BO.OrderType? typeFilter = null, BO.OpenOrderSortBy? sortBy = null);
 }

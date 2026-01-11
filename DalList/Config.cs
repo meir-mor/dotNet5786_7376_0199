@@ -1,4 +1,5 @@
 ﻿using DO;
+using System.Runtime.CompilerServices;
 
 namespace Dal;
 
@@ -36,6 +37,7 @@ internal static class Config
     /// <summary>
     /// Resets all IDs and configuration values to initial defaults.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     internal static void Reset()
     {
         // איפוס מזהים

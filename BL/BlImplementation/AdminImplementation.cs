@@ -21,11 +21,15 @@ internal class AdminImplementation : IAdmin
 
     public void ResetDB()
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+
         AdminManager.ResetDB();
     }
 
     public void InitializeDB()
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+
         AdminManager.InitializeDB();
     }
 
@@ -36,6 +40,8 @@ internal class AdminImplementation : IAdmin
 
     public void ForwardClock(TimeUnit unit)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+
         var now = AdminManager.Now;
         var newTime = unit switch
         {
@@ -57,6 +63,17 @@ internal class AdminImplementation : IAdmin
 
     public void SetConfig(BO.Config config)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+
         AdminManager.SetConfig(config);
     }
+
+    public void StartSimulator(int interval)  //stage 7
+    {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        AdminManager.Start(interval); //stage 7
+    }
+public void StopSimulator()
+    => AdminManager.Stop(); //stage 7
+
 }

@@ -19,12 +19,15 @@ internal static class DeliveryManager
     {
         try
         {
-            var list = s_dal.Delivery.ReadAll()
+            List<BO.DeliveryPerOrderInList> list;
+            lock (AdminManager.BlMutex) // stage 7
+            {
+                 list = s_dal.Delivery.ReadAll()
                 .Where(d => d != null) // extension method 1
                 .Select(d => MapDoToBo(d)) // extension method 2
                 .OrderBy(x => x.DeliveryStartTime) // extension method 3
                 .ToList(); // extension method 4
-
+                }
             return filter == null ? list : list.Where(filter);
         }
         catch (DO.DalDoesNotExistException ex)
@@ -56,25 +59,34 @@ internal static class DeliveryManager
     {
         try
         {
-            var q =
-                from d in s_dal.Delivery.ReadAll()
-                where d.OrderId == orderId
-                let courier = s_dal.Courier.Read(d.CourierId) // let usage
-                orderby d.StartTime
-                select new BO.DeliveryPerOrderInList // select new usage
-                {
-                    DeliveryId = d.Id,
-                    CourierId = d.CourierId == 0 ? null : (int?)d.CourierId,
-                    CourierName = courier is null ? string.Empty : courier.Name,
-                    ShipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentType.ToString()),
-                    DeliveryStartTime = d.StartTime,
-                    DeliveryEndType = d.DeliveryEndType is null
-                        ? null
-                        : (BO.DeliveryEndType?)(int)d.DeliveryEndType,
-                    DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
-                };
+            List<BO.DeliveryPerOrderInList> list;
+            lock (AdminManager.BlMutex) // stage 7
+            {
+                var allDeliveries = s_dal.Delivery.ReadAll().ToList();
+                var allCouriers = s_dal.Courier.ReadAll().ToList(); // לקריאה של courier לפני הלולאה
 
-            return q.ToList();
+                var q =
+                    from d in allDeliveries
+                    where d.OrderId == orderId
+                    let courier = allCouriers.FirstOrDefault(c => c.Id == d.CourierId)
+                    orderby d.StartTime
+                    select new BO.DeliveryPerOrderInList
+                    {
+                        DeliveryId = d.Id,
+                        CourierId = d.CourierId == 0 ? null : (int?)d.CourierId,
+                        CourierName = courier is null ? string.Empty : courier.Name,
+                        ShipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentType.ToString()),
+                        DeliveryStartTime = d.StartTime,
+                        DeliveryEndType = d.DeliveryEndType is null
+                            ? null
+                            : (BO.DeliveryEndType?)(int)d.DeliveryEndType,
+                        DeliveryEndTime = d.EndTime is DateTime time && time != DateTime.MinValue ? d.EndTime : null
+                    };
+
+                list = q.ToList();
+            }
+
+            return list;
         }
         catch (Exception ex)
         {
@@ -89,7 +101,9 @@ internal static class DeliveryManager
     {
         try
         {
-            var d = s_dal.Delivery.Read(id);
+            DO.Delivery? d;
+            lock (AdminManager.BlMutex) // stage 7
+                 d = s_dal.Delivery.Read(id);
             return d is null ? null : MapDoToBo(d);
         }
         catch (DO.DalDoesNotExistException ex)
@@ -122,7 +136,8 @@ internal static class DeliveryManager
                 bo.DeliveryEndTime
             );
 
-            s_dal.Delivery.Create(doDelivery);
+            lock (AdminManager.BlMutex) // stage 7
+                s_dal.Delivery.Create(doDelivery);
             Observers.NotifyItemUpdated(doDelivery.Id);
             Observers.NotifyListUpdated();
         }
@@ -156,7 +171,8 @@ internal static class DeliveryManager
                 bo.DeliveryEndTime
             );
 
-            s_dal.Delivery.Update(doDelivery);
+            lock (AdminManager.BlMutex) // stage 7
+                s_dal.Delivery.Update(doDelivery);
             Observers.NotifyItemUpdated(doDelivery.Id);
             Observers.NotifyListUpdated();
         }
@@ -178,10 +194,14 @@ internal static class DeliveryManager
     {
         try
         {
-            var exists = s_dal.Delivery.ReadAll().Any(d => d.Id == id);
+            bool exists;
+            lock (AdminManager.BlMutex) // stage 7
+            {
+                 exists = s_dal.Delivery.ReadAll().Any(d => d.Id == id);
             if (!exists) throw new BO.BlException($"DAL: delivery {id} not found");
 
             s_dal.Delivery.Delete(id);
+            }
             Observers.NotifyItemUpdated(id);
             Observers.NotifyListUpdated();
         }
@@ -197,7 +217,9 @@ internal static class DeliveryManager
 
     internal static void PeriodicDeliveriesUpdates(DateTime oldClock, DateTime newClock)
     {
-        var deliveries = s_dal.Delivery.ReadAll(d => d.DeliveryEndType == null && d.EndTime == null).ToList();
+        List<DO.Delivery> deliveries;
+        lock (AdminManager.BlMutex) // stage 7
+             deliveries = s_dal.Delivery.ReadAll(d => d.DeliveryEndType == null && d.EndTime == null).ToList();
         var updated = false; // stage 5
         foreach (var doDelivery in deliveries)
         {
@@ -214,11 +236,17 @@ internal static class DeliveryManager
 
     private static BO.DeliveryPerOrderInList MapDoToBo(DO.Delivery d)
     {
+
+        string courierName;
+
+        lock (AdminManager.BlMutex)
+            courierName = s_dal.Courier.Read(d.CourierId)?.Name;
+
         return new BO.DeliveryPerOrderInList
         {
             DeliveryId = d.Id,
             CourierId = d.CourierId == 0 ? null : d.CourierId,
-            CourierName = s_dal.Courier.Read(d.CourierId)?.Name,
+            CourierName = courierName,
             ShipmentType = (BO.ShipmentType)Enum.Parse(typeof(BO.ShipmentType), d.ShipmentType.ToString()),
             DeliveryStartTime = d.StartTime,
             DeliveryEndType = d.DeliveryEndType is null

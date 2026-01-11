@@ -88,6 +88,7 @@ internal class CourierImplementation : ICourier
 
     public void UpdateCourier(int requesterId, BO.Courier courier)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         var existing = GetCourierDetails(courier.Id);
         if (existing.OrderInProgress != null && existing.ShipmentType != courier.ShipmentType)
             throw new BO.BlException("Cannot change shipment type while an order is in progress.");
@@ -102,6 +103,7 @@ internal class CourierImplementation : ICourier
 
     public void DeleteCourier(int requesterId, int courierId)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         if (AdminManager.GetConfig().ManagerId != requesterId)
             throw new BO.BlInvalidRequestException("Only managers can delete couriers.");
 
@@ -110,6 +112,7 @@ internal class CourierImplementation : ICourier
 
     public void AddCourier(BO.Courier courier)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         if (courier.Id <= 0)
             throw new BO.BlException("Invalid courier ID. ID must be greater than 0.");
 

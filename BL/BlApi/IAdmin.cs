@@ -68,4 +68,8 @@ public interface IAdmin
     /// </summary>
     /// <param name="config">BO.Config containing new configuration values from UI.</param>
     void SetConfig(BO.Config config);
+
+    void StartSimulator(int interval); //stage 7
+    void StopSimulator(); //stage 7
+
 }

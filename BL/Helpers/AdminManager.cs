@@ -39,9 +39,9 @@ internal static class AdminManager //stage 4
         // - (students become not active after 5 years etc.)
 
         //TO_DO: //stage 4
-        CourierManager.PeriodicCouriersUpdates(oldClock, newClock); //stage 4. to be removed in stage 7 and replaced as below
-        DeliveryManager.PeriodicDeliveriesUpdates(oldClock, newClock); //stage 4. to be removed in stage 7 and replaced as below
-        OrderManager.PeriodicOrdersUpdates(oldClock, newClock); //stage 4. to be removed in stage 7 and replaced as below
+        _ = Task.Run(() => CourierManager.PeriodicCouriersUpdates(oldClock, newClock)); //stage 4. to be removed in stage 7 and replaced as below
+        _ = Task.Run(() => DeliveryManager.PeriodicDeliveriesUpdates(oldClock, newClock)); //stage 4. to be removed in stage 7 and replaced as below
+        _ = Task.Run(() => OrderManager.PeriodicOrdersUpdates(oldClock, newClock)); //stage 4. to be removed in stage 7 and replaced as below
         //...
 
         //TO_DO: //stage 7
@@ -81,8 +81,9 @@ internal static class AdminManager //stage 4
     /// <summary>
     /// Method for setting current configuration variables values for any BL class that may need it
     /// </summary>
-    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
-    internal static void SetConfig(BO.Config configuration) //stage 4
+    
+    //[MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+    internal static async Task SetConfig(BO.Config configuration) //stage 4
     {
         bool configChanged = false; // stage 5
 
@@ -120,7 +121,7 @@ internal static class AdminManager //stage 4
         {
             s_dal.Config.ComponyAddress = configuration.ComponyAddress;
             configChanged = true;
-            var (latitude, longitude) = Tools.GetCoordinates(configuration.ComponyAddress);
+            var (latitude, longitude) = await Tools.GetCoordinates(configuration.ComponyAddress);
             s_dal.Config.Latitude = latitude;
             s_dal.Config.Longitude = longitude;
         }
@@ -172,7 +173,7 @@ internal static class AdminManager //stage 4
         {
             s_dal.ResetDB(); //stage 4
             UpdateClock(Now); //stage 5 - needed since we want the label on Pl to be updated
-            SetConfig(GetConfig()); //stage 5 - needed to update PL 
+            ConfigUpdatedObservers?.Invoke(); //stage 5 - needed to update PL 
         }
     }
 
@@ -182,7 +183,9 @@ internal static class AdminManager //stage 4
         {
             DalTest.Initialization.Do(); //stage 4
             UpdateClock(Now); //stage 5 - needed since we want the label on Pl to be updated           
-            SetConfig(GetConfig()); //stage 5 - needed for update the PL
+            ConfigUpdatedObservers?.Invoke();//stage 5 - needed for update the PL
+
+            
         }
     }
 
@@ -254,8 +257,8 @@ internal static class AdminManager //stage 4
             //TO_DO: //stage 7
             //Add calls here to any logic simulation that was required in stage 7
             //for example: course registration simulation
-            // if (_simulateTask is null || _simulateTask.IsCompleted)//stage 7
-            //     _simulateTask = Task.Run(() => StudentManager.SimulateCourseRegistrationAndGrade());
+             if (_simulateTask is null || _simulateTask.IsCompleted)//stage 7
+                _simulateTask = Task.Run(() => CourierManager.SimulateCourierRegistrationAndGrade());
 
             //etc...
 

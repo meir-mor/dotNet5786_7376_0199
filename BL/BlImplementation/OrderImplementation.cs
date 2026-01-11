@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using BlApi;
 using Helpers;
+using BO;
 
 internal class OrderImplementation : IOrder
 {
@@ -95,31 +96,37 @@ internal class OrderImplementation : IOrder
 
     public void UpdateOrder(int requesterId, BO.Order order)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.UpdateOrder(order);
     }
 
     public void CancelOrder(int requesterId, int orderId)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.CancelOrder(orderId);
     }
 
     public void DeleteOrder(int requesterId, int orderId)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.DeleteOrder(orderId);
     }
 
     public void AddOrder(int requesterId, BO.Order order)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.CreateOrder(order);
     }
 
     public void CompleteDelivery(int requesterId, int courierId, int deliveryId)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.CompleteDelivery(requesterId, courierId, deliveryId);
     }
 
     public void AssignOrderToCourier(int requesterId, int courierId, int orderId)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.AssignOrderToCourier(requesterId, courierId, orderId);
     }
 
@@ -129,9 +136,10 @@ internal class OrderImplementation : IOrder
         return OrderManager.GetClosedDeliveriesForCourier(requesterId, courierId, typeFilter, sortBy);
     }
 
-    public IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId,
-        BO.OrderType? typeFilter = null, BO.OpenOrderSortBy? sortBy = null)
+    public async Task<IEnumerable<BO.OpenOrderInList>> GetOpenOrdersForCourier(  int requesterId, int courierId,
+       BO.OrderType? typeFilter = null, BO.OpenOrderSortBy? sortBy = null)
     {
-        return OrderManager.GetOpenOrdersForCourier(requesterId, courierId, typeFilter, sortBy);
+        return await OrderManager.GetOpenOrdersForCourier(requesterId, courierId, typeFilter, sortBy);
     }
+
 }

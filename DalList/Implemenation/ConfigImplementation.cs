@@ -3,6 +3,7 @@
 namespace Dal;
 
 using DalApi;
+using System.Runtime.CompilerServices;
 
 internal class ConfigImplementation : IConfig
 {
@@ -98,6 +99,7 @@ internal class ConfigImplementation : IConfig
     {
         Config.Reset();
     }
+
 
     public double GetAverageSpeed(ShipmentType type) =>
         type switch
