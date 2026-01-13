@@ -443,7 +443,8 @@ internal static class OrderManager
         }
     }
 
-    public static void CompleteDelivery(int requesterId, int courierId, int deliveryId)
+    public static void CompleteDelivery(int requesterId, int courierId, int deliveryId,
+    DO.DeliveryEndType endType = DO.DeliveryEndType.Supplied)
     {
         try
         {
@@ -464,7 +465,7 @@ internal static class OrderManager
                 throw new BO.BlException("Order is not in progress");
 
             // update delivery end and type
-            var updated = delivery with { EndTime = now, DeliveryEndType = DO.DeliveryEndType.Supplied };
+            var updated = delivery with { EndTime = now, DeliveryEndType = endType };
             lock (AdminManager.BlMutex)
             {
                 s_dal.Delivery.Update(updated);

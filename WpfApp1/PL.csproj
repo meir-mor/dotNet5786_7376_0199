@@ -20,11 +20,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BL\BL.csproj"/>
+        <ProjectReference Include="..\BL\BL.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CSharpMarkup.WinUI.LiveChartsCore.SkiaSharpView" Version="3.1.2"/>
+        <PackageReference Include="CSharpMarkup.WinUI.LiveChartsCore.SkiaSharpView" Version="3.1.2" />
     </ItemGroup>
 
 </Project>

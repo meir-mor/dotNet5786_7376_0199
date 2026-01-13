@@ -25,19 +25,19 @@ internal static class CourierManager
         {
             DO.Courier? courier;
             lock (AdminManager.BlMutex) // stage 7
-                 courier = s_dal.Courier.Read(id);
+                courier = s_dal.Courier.Read(id);
 
             DO.Order[] orders;
             lock (AdminManager.BlMutex) // stage 7
-                 orders = s_dal.Order.ReadAll(o =>
-                s_dal.Delivery.ReadAll(d =>
-                    d.CourierId == id).Select(d => d.OrderId).Contains(o.Id)).ToArray();
+                orders = s_dal.Order.ReadAll(o =>
+               s_dal.Delivery.ReadAll(d =>
+                   d.CourierId == id).Select(d => d.OrderId).Contains(o.Id)).ToArray();
 
             var ordersIds = orders.Select(o => o.Id).ToArray();
 
             DO.Delivery[] deliveries;
             lock (AdminManager.BlMutex) // stage 7
-                 deliveries = s_dal.Delivery.ReadAll(d => ordersIds.Contains(d.OrderId)).ToArray();
+                deliveries = s_dal.Delivery.ReadAll(d => ordersIds.Contains(d.OrderId)).ToArray();
 
             var totalDeliveredOnTime = deliveries.Where(d =>
                 d.DeliveryEndType == DeliveryEndType.Supplied &&
@@ -229,8 +229,8 @@ internal static class CourierManager
     {
         DO.Courier oldCourier;
         lock (AdminManager.BlMutex) // stage 7
-             oldCourier = s_dal.Courier.Read(c => c.Id == courier.Id)
-             ?? throw new BO.BlDoesNotExistException($"DAL: courier with id {courier.Id} not found for update");
+            oldCourier = s_dal.Courier.Read(c => c.Id == courier.Id)
+            ?? throw new BO.BlDoesNotExistException($"DAL: courier with id {courier.Id} not found for update");
 
         try
         {
@@ -272,8 +272,8 @@ internal static class CourierManager
             {
                 exists = s_dal.Courier.ReadAll().Any(c => c.Id == id);
 
-            if (!exists)
-                throw new BO.BlDoesNotExistException($"DAL: courier with id {id} not found");
+                if (!exists)
+                    throw new BO.BlDoesNotExistException($"DAL: courier with id {id} not found");
 
                 deliveries = s_dal.Delivery.ReadAll().Where(d => d.CourierId == id).ToList();
             }
@@ -284,10 +284,10 @@ internal static class CourierManager
             {
                 canDelete = s_dal.Order.Read(o => deliveriesIds.Contains(o.Id) && o.Status == OrderStatus.InProgress) is null;
 
-            if (!canDelete)
-                throw new BO.BlInvalidOperationException($"DAL: courier with id {id} cannot be deleted");
+                if (!canDelete)
+                    throw new BO.BlInvalidOperationException($"DAL: courier with id {id} cannot be deleted");
 
-            s_dal.Courier.Delete(id);
+                s_dal.Courier.Delete(id);
             }
             Observers.NotifyItemUpdated(id); // stage 5
             Observers.NotifyListUpdated(); // stage 5
@@ -372,7 +372,7 @@ internal static class CourierManager
 
             List<DO.Courier> allCouriers;
             lock (AdminManager.BlMutex)
-                allCouriers = s_dal.Courier.ReadAll().ToList(); 
+                allCouriers = s_dal.Courier.ReadAll().ToList();
 
             var q =
                 from c in allCouriers
@@ -405,14 +405,14 @@ internal static class CourierManager
         if (s_periodicMutex.CheckAndSetInProgress())
             return;
 
-        List<int> updatedCouriers = new(); 
+        List<int> updatedCouriers = new();
         var courierUpdated = false; // stage 5
 
         try
         {
             List<DO.Courier> list;
             lock (AdminManager.BlMutex) // stage 7
-                list = s_dal.Courier.ReadAll().ToList(); 
+                list = s_dal.Courier.ReadAll().ToList();
 
             foreach (var doCourier in list)
             {
@@ -454,7 +454,7 @@ internal static class CourierManager
         }
         finally
         {
-            s_periodicMutex.UnsetInProgress(); 
+            s_periodicMutex.UnsetInProgress();
         }
 
         foreach (var id in updatedCouriers)
@@ -464,8 +464,92 @@ internal static class CourierManager
             Observers.NotifyListUpdated(); // stage 5
     }
 
+    private static readonly AsyncMutex s_simulationMutex = new(); //stage 7
+    private static readonly Random s_rand = new(); // stage 7
+
     internal static async Task SimulateCourierRegistrationAndGrade()
     {
+        Thread.CurrentThread.Name = "CourierSimulator";
 
+        if (s_simulationMutex.CheckAndSetInProgress())
+            return;
+
+        List<int> updatedOrderIds = new();
+
+        try
+        {
+            List<BO.CourierInList> activeCouriers;
+
+            lock (AdminManager.BlMutex)
+                activeCouriers = CourierManager.GetAllCouriersInList().Where(c => c.IsActive).ToList();
+       
+
+            foreach (var courier in activeCouriers)
+            {
+
+                if (courier.CurrentDeliveryId == null)
+                {
+                    if (s_rand.Next(0, 100) > 40)
+                        continue;
+                    IEnumerable<BO.OpenOrderInList> openOrders =
+                        await OrderManager.GetOpenOrdersForCourier(courier.Id,courier.Id,null,null);
+
+                    var list = openOrders.ToList();
+                    if (list.Count == 0)
+                        continue;
+
+                    var selected = list[s_rand.Next(list.Count)];
+                    await OrderManager.AssignOrderToCourier(courier.Id, courier.Id,selected.OrderId);
+
+                    updatedOrderIds.Add(selected.OrderId);
+                }
+                else
+                {
+                    DO.Delivery delivery;
+                    DO.Order order;
+
+                    lock (AdminManager.BlMutex)
+                    {
+                        delivery = s_dal.Delivery.ReadAll(d => d.CourierId == courier.Id &&(d.EndTime == null || d.DeliveryEndType == null)) .FirstOrDefault();
+
+                        if (delivery == null)
+                            continue;
+
+                        order = s_dal.Order.Read(delivery.OrderId);
+                    }
+
+                    var timeElapsed = AdminManager.Now - delivery.StartTime;
+
+                    var distanceMinutes =
+                        (delivery.ActualDistance ?? 1) * 10; // 10 min per km
+
+                    var randomMinutes = s_rand.Next(15, 45);
+
+                    if (timeElapsed.TotalMinutes > distanceMinutes + randomMinutes)
+                    {
+                        var endType = (DO.DeliveryEndType)s_rand.Next(Enum.GetValues(typeof(DO.DeliveryEndType)).Length);
+
+                        OrderManager.CompleteDelivery(courier.Id,  courier.Id, delivery.Id,endType);
+    
+                        updatedOrderIds.Add(order.Id);
+                    }
+                    else if (s_rand.Next(0, 100) < 10)
+                    {
+                        OrderManager.CancelOrder(order.Id);
+                        updatedOrderIds.Add(order.Id);
+                    }
+                }
+            }
+        }
+        finally
+        {
+            s_simulationMutex.UnsetInProgress();
+        }
+
+        foreach (var id in updatedOrderIds.Distinct())
+            OrderManager.Observers.NotifyItemUpdated(id);
+
+        if (updatedOrderIds.Count > 0)
+            OrderManager.Observers.NotifyListUpdated();
     }
 }
