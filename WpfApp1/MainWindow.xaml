@@ -5,10 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
-        Title="Admin - Main" Height="630" Width="900"
+        Title="Admin - Main" Height="700" Width="900"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
         Loaded="Window_Loaded"
         Closed="Window_Closed">
+
+    <Window.Resources>
+        <!-- Converters for simulator UI -->
+        <local:InverseBoolConverter x:Key="InverseBoolConverter" />
+        <local:SimulatorButtonTextConverter x:Key="SimulatorButtonTextConverter" />
+    </Window.Resources>
 
     <Grid Margin="12">
         <Grid.ColumnDefinitions>
@@ -25,23 +31,40 @@
         <TextBlock Grid.ColumnSpan="3" Grid.Row="0" Text="Administration - Control Panel"
                    FontSize="18" FontWeight="Bold" Margin="6" />
 
-        <!-- Left: System clock and advance buttons -->
-        <!-- Clock display area -->
+        <!-- Left: System clock, advance buttons, and Simulator controls -->
         <StackPanel Grid.Column="0" Grid.Row="1" Margin="6" VerticalAlignment="Top">
             <!-- Current system clock (bound to CurrentTime DP) -->
             <Label Content="{Binding CurrentTime}" FontWeight="Bold" FontSize="18" HorizontalAlignment="Left" />
 
-            <!-- Buttons to advance the clock -->
-            <!-- Advance by one minute -->
-            <Button Content="Add One Minute" Click="BtnAdvanceMinute_Click" Margin="4" />
-            <!-- Advance by one hour -->
-            <Button Content="Add One Hour" Click="BtnAdvanceHour_Click" Margin="4" />
-            <!-- Advance by one day -->
-            <Button Content="Add One Day" Click="BtnAdvanceDay_Click" Margin="4" />
-            <!-- Advance by one month -->
-            <Button Content="Add One Month" Click="BtnAdvanceMonth_Click" Margin="4" />
-            <!-- Advance by one year -->
-            <Button Content="Add One Year" Click="BtnAdvanceYear_Click" Margin="4" />
+            <!-- Buttons to advance the clock (disabled when simulator is running) -->
+            <Button Content="Add One Minute" Click="BtnAdvanceMinute_Click" Margin="4"
+                    IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="Add One Hour" Click="BtnAdvanceHour_Click" Margin="4"
+                    IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="Add One Day" Click="BtnAdvanceDay_Click" Margin="4"
+                    IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="Add One Month" Click="BtnAdvanceMonth_Click" Margin="4"
+                    IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
+            <Button Content="Add One Year" Click="BtnAdvanceYear_Click" Margin="4"
+                    IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
+
+            <!-- Simulator Controls Section -->
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="0,15,0,0" Padding="8">
+                <StackPanel>
+                    <TextBlock Text="Simulator" FontWeight="Bold" Margin="0,0,0,8" />
+
+                    <!-- Interval input (minutes) - disabled when simulator running -->
+                    <StackPanel Orientation="Horizontal" Margin="0,4">
+                        <TextBlock Text="Interval (min):" Width="90" VerticalAlignment="Center" />
+                        <TextBox Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged}" Width="60"
+                                 IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
+                    </StackPanel>
+
+                    <!-- Start/Stop Simulator button -->
+                    <Button Content="{Binding IsSimulatorRunning, Converter={StaticResource SimulatorButtonTextConverter}}"
+                            Click="BtnToggleSimulator_Click" Margin="4" Padding="8,4" />
+                </StackPanel>
+            </Border>
         </StackPanel>
 
         <!-- Center: Configuration variables -->
@@ -120,20 +143,22 @@
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <!-- Updates configuration via BL -->
                     <Button Content="Update Configuration" Click="BtnUpdateConfig_Click" Margin="4" />
-                    <!-- Opens list view (example: courier / relevant list window) -->
+                    <!-- Opens list view (sub-screens - NOT disabled when simulator running) -->
                     <Button Content="Manage Courier" Click="BtnOpenListView_Click" Margin="4" />
                     <Button Content="Manage Order" Click="BtnOpenOrderInList_Click" Margin="4" />
                 </StackPanel>
             </StackPanel>
         </Border>
 
-        <!-- Right: DB operations -->
+        <!-- Right: DB operations (disabled when simulator is running) -->
         <StackPanel Grid.Column="2" Grid.Row="1" Margin="6" VerticalAlignment="Top">
             <TextBlock Text="Database" FontWeight="Bold" Margin="0,0,0,8" />
             <!-- Initialize DB -->
-            <Button Content="Initialize DB" Click="BtnInitializeDb_Click" Margin="4" />
+            <Button Content="Initialize DB" Click="BtnInitializeDb_Click" Margin="4"
+                    IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
             <!-- Reset DB -->
-            <Button Content="Reset DB" Click="BtnResetDb_Click" Margin="4" />
+            <Button Content="Reset DB" Click="BtnResetDb_Click" Margin="4"
+                    IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
         </StackPanel>
     </Grid>
 </Window>

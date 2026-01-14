@@ -63,6 +63,36 @@ public partial class MainWindow : Window
     public static readonly DependencyProperty ConfigurationProperty =
         DependencyProperty.Register(nameof(Configuration), typeof(BO.Config), typeof(MainWindow));
 
+    /// <summary>
+    /// Gets or sets the simulator interval in minutes.
+    /// </summary>
+    public int Interval
+    {
+        get => (int)GetValue(IntervalProperty);
+        set => SetValue(IntervalProperty, value);
+    }
+
+    /// <summary>
+    /// Identifies the <see cref="Interval"/> dependency property.
+    /// </summary>
+    public static readonly DependencyProperty IntervalProperty =
+        DependencyProperty.Register(nameof(Interval), typeof(int), typeof(MainWindow), new PropertyMetadata(1));
+
+    /// <summary>
+    /// Gets or sets whether the simulator is currently running.
+    /// </summary>
+    public bool IsSimulatorRunning
+    {
+        get => (bool)GetValue(IsSimulatorRunningProperty);
+        set => SetValue(IsSimulatorRunningProperty, value);
+    }
+
+    /// <summary>
+    /// Identifies the <see cref="IsSimulatorRunning"/> dependency property.
+    /// </summary>
+    public static readonly DependencyProperty IsSimulatorRunningProperty =
+        DependencyProperty.Register(nameof(IsSimulatorRunning), typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
+
     #endregion
 
     #region Observers
@@ -160,14 +190,19 @@ public partial class MainWindow : Window
 
     /// <summary>
     /// Handles the window Closed event.
-    /// Unregisters previously registered observers from BL to avoid further callbacks after window closes.
+    /// Stops the simulator if running and unregisters observers.
     /// </summary>
-    /// <param name="sender">Event source (Window).</param>
-    /// <param name="e">Event arguments.</param>
     private void Window_Closed(object? sender, EventArgs e)
     {
         try
         {
+            // Stop simulator if running before closing
+            if (IsSimulatorRunning)
+            {
+                s_bl.Admin.StopSimulator();
+                IsSimulatorRunning = false;
+            }
+
             // Unregister observers
             s_bl.Admin.RemoveClockObserver(ClockObserver);
             s_bl.Admin.RemoveConfigObserver(ConfigObserver);
@@ -467,4 +502,39 @@ public partial class MainWindow : Window
                 MessageBoxImage.Error);
         }
     }
+
+    #region Simulator
+
+    /// <summary>
+    /// Handles the Start/Stop Simulator button click.
+    /// Toggles the simulator state via BL API and updates <see cref="IsSimulatorRunning"/> flag.
+    /// </summary>
+    private void BtnToggleSimulator_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (IsSimulatorRunning)
+            {
+                // Stop the simulator
+                s_bl.Admin.StopSimulator();
+                IsSimulatorRunning = false;
+            }
+            else
+            {
+                // Start the simulator with the specified interval
+                s_bl.Admin.StartSimulator(Interval);
+                IsSimulatorRunning = true;
+            }
+        }
+        catch (BO.BlException ex)
+        {
+            MessageBox.Show($"Simulator error: {ex.Message}", "Simulator", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    #endregion
 }

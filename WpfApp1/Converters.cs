@@ -106,3 +106,27 @@ public class StatusToBrushConverter : IValueConverter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => throw new NotImplementedException();
 }
+
+/// <summary>
+/// Converts a boolean value to its inverse (for IsEnabled when simulator running means disabled).
+/// </summary>
+public class InverseBoolConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        => value is bool b ? !b : true;
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => value is bool b ? !b : true;
+}
+
+/// <summary>
+/// Converts IsSimulatorRunning boolean to button text: true -> "Stop Simulator", false -> "Start Simulator".
+/// </summary>
+public class SimulatorButtonTextConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        => value is bool running && running ? "Stop Simulator" : "Start Simulator";
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}
