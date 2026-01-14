@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using BO; // Assuming the BL uses this namespace
+using PL.Helpers;
 
 namespace PL.Courier
 {
@@ -13,6 +14,9 @@ namespace PL.Courier
 
         // Variable to save the Observer for automatic update
         private Action? _observer;
+
+        // Stage 7: Mutex for thread-safe observer updates
+        private readonly ObserverMutex _courierMutex = new();
 
         // Auxiliary variable to track the original shipment type (to prevent change during an order)
         private BO.ShipmentType? _originalType;
@@ -41,7 +45,7 @@ namespace PL.Courier
                 LoadCourier();
 
                 // Setting Observer to refresh the screen when data changes
-                _observer = () => Dispatcher.Invoke(LoadCourier);
+                _observer = CourierObserver;
                 s_bl.Courier.AddObserver(_courierId, _observer);
             }
             catch (Exception ex)
@@ -49,6 +53,28 @@ namespace PL.Courier
                 MessageBox.Show($"Error loading courier: {ex.Message}");
                 Close();
             }
+        }
+
+        /// <summary>
+        /// Stage 7: Observer method with mutex pattern for thread-safe UI updates
+        /// </summary>
+        private void CourierObserver()
+        {
+            #region Stage 7 (for multithreading)
+            if (_courierMutex.CheckAndSetLoadInProgressOrRestartRequired())
+                return;
+
+            _ = Dispatcher.BeginInvoke(async () =>
+            {
+                // Loading current courier details from BL
+                CurrentCourier = s_bl.Courier.GetCourierDetails(_courierId);
+                // Saving current shipment type for validation checks during update
+                _originalType = CurrentCourier?.ShipmentType;
+
+                if (await _courierMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                    CourierObserver();
+            });
+            #endregion Stage 7 (for multithreading)
         }
 
         public void LoadCourier()

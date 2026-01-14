@@ -6,6 +6,7 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Input;
 using System.Threading.Tasks;
+using PL.Helpers;
 
 namespace PL.Courier;
 
@@ -16,6 +17,9 @@ public partial class OpenOrdersWindow : Window
 
     // Observers
     private Action _listObserver;
+
+    // Stage 7: Mutex for thread-safe observer updates
+    private readonly ObserverMutex _openOrdersMutex = new();
 
     public IEnumerable<BO.OpenOrderInList>? OpenOrders
     {
@@ -34,10 +38,29 @@ public partial class OpenOrdersWindow : Window
         InitializeComponent();
 
         // Define observer action (thread-safe dispatch)
-        _listObserver = () => Dispatcher.Invoke(LoadOpenOrders);
+        _listObserver = OpenOrdersObserver;
 
         // Handle closing to unsubscribe
         Closing += Window_Closing;
+    }
+
+    /// <summary>
+    /// Stage 7: Observer method with mutex pattern for thread-safe UI updates
+    /// </summary>
+    private void OpenOrdersObserver()
+    {
+        #region Stage 7 (for multithreading)
+        if (_openOrdersMutex.CheckAndSetLoadInProgressOrRestartRequired())
+            return;
+
+        _ = Dispatcher.BeginInvoke(async () =>
+        {
+            await LoadOpenOrders();
+
+            if (await _openOrdersMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                OpenOrdersObserver();
+        });
+        #endregion Stage 7 (for multithreading)
     }
 
     /// <summary>

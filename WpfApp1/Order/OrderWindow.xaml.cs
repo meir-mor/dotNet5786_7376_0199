@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using PL.Helpers;
 
 namespace PL.Order
 {
@@ -24,6 +25,9 @@ namespace PL.Order
                 new PropertyMetadata(null));
 
         public IEnumerable<BO.OrderType> OrderTypes => Enum.GetValues(typeof(BO.OrderType)).Cast<BO.OrderType>();
+
+        // Stage 7: Mutex for thread-safe observer updates
+        private readonly ObserverMutex _orderMutex = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OrderWindow"/> class with the specified order ID.
@@ -53,25 +57,39 @@ namespace PL.Order
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            s_bl.Order.AddObserver(CurrentOrder.Id, RefreshOrder);
+            s_bl.Order.AddObserver(CurrentOrder.Id, RefreshOrderObserver);
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            s_bl.Order.RemoveObserver(CurrentOrder.Id, RefreshOrder);
+            s_bl.Order.RemoveObserver(CurrentOrder.Id, RefreshOrderObserver);
         }
 
-        private void RefreshOrder()
+        /// <summary>
+        /// Stage 7: Observer method with mutex pattern for thread-safe UI updates
+        /// </summary>
+        private void RefreshOrderObserver()
         {
-            try
+            #region Stage 7 (for multithreading)
+            if (_orderMutex.CheckAndSetLoadInProgressOrRestartRequired())
+                return;
+
+            _ = Dispatcher.BeginInvoke(async () =>
             {
-                CurrentOrder = s_bl.Order.GetOrderDetails(_managerId, CurrentOrder.Id);
-            }
-            catch
-            {
-                MessageBox.Show("Order was removed", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                Close();
-            }
+                try
+                {
+                    CurrentOrder = s_bl.Order.GetOrderDetails(_managerId, CurrentOrder.Id);
+                }
+                catch
+                {
+                    MessageBox.Show("Order was removed", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Close();
+                }
+
+                if (await _orderMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                    RefreshOrderObserver();
+            });
+            #endregion Stage 7 (for multithreading)
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)

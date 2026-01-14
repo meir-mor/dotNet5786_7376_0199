@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Windows;
 using BO;
+using PL.Helpers;
 
 namespace PL.Courier
 {
@@ -58,6 +59,9 @@ namespace PL.Courier
         // Observer callback for this courier id
         private Action? _courierObserver;
 
+        // Stage 7: Mutex for thread-safe observer updates
+        private readonly ObserverMutex _courierMutex = new();
+
         /// <summary>
         /// Ctor. If id == 0 -> Add mode; otherwise Update mode and load courier from BL.
         /// ButtonText is set according to mode before InitializeComponent to reflect in UI.
@@ -105,27 +109,7 @@ namespace PL.Courier
             // Register as observer for this courier if editing existing courier
             if (CurrentCourier?.Id != 0)
             {
-                _courierObserver = () =>
-                {
-                    try
-                    {
-                        Dispatcher.Invoke(() =>
-                        {
-                            try
-                            {
-                                var id = CurrentCourier!.Id;
-                                CurrentCourier = s_bl.Courier.GetCourierDetails(id);
-                            }
-                            catch
-                            {
-                                /* ignore reload errors */
-                            }
-                        });
-                    }
-                    catch
-                    {
-                    }
-                };
+                _courierObserver = CourierDataObserver;
 
                 try
                 {
@@ -135,6 +119,33 @@ namespace PL.Courier
                 {
                 }
             }
+        }
+
+        /// <summary>
+        /// Stage 7: Observer method with mutex pattern for thread-safe UI updates
+        /// </summary>
+        private void CourierDataObserver()
+        {
+            #region Stage 7 (for multithreading)
+            if (_courierMutex.CheckAndSetLoadInProgressOrRestartRequired())
+                return;
+
+            _ = Dispatcher.BeginInvoke(async () =>
+            {
+                try
+                {
+                    var id = CurrentCourier!.Id;
+                    CurrentCourier = s_bl.Courier.GetCourierDetails(id);
+                }
+                catch
+                {
+                    /* ignore reload errors */
+                }
+
+                if (await _courierMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                    CourierDataObserver();
+            });
+            #endregion Stage 7 (for multithreading)
         }
 
         private void Window_Closed(object? sender, EventArgs e)

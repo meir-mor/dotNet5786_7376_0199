@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BO;
+using PL.Helpers;
 
 namespace PL.Order;
 
@@ -27,6 +28,9 @@ public partial class OrderListWindow : Window
 
     private readonly int _managerId;
 
+    // Stage 7: Mutex for thread-safe observer updates
+    private readonly ObserverMutex _orderListMutex = new();
+
     public OrderListWindow()
     {
         InitializeComponent();
@@ -46,7 +50,7 @@ public partial class OrderListWindow : Window
     {
         try
         {
-            s_bl.Order.AddObserver(RefreshOrders);
+            s_bl.Order.AddObserver(RefreshOrdersObserver);
             RefreshOrders();
         }
         catch (Exception ex)
@@ -58,7 +62,7 @@ public partial class OrderListWindow : Window
 
     private void Window_Closed(object sender, EventArgs e)
     {     
-            s_bl.Order.RemoveObserver(RefreshOrders);
+            s_bl.Order.RemoveObserver(RefreshOrdersObserver);
     }
 
     private void ShipmentFilter_SelectionChanged(object? sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -67,6 +71,25 @@ public partial class OrderListWindow : Window
     private void ApplyShipmentFilter()
     {
         RefreshOrders();
+    }
+
+    /// <summary>
+    /// Stage 7: Observer method with mutex pattern for thread-safe UI updates
+    /// </summary>
+    private void RefreshOrdersObserver()
+    {
+        #region Stage 7 (for multithreading)
+        if (_orderListMutex.CheckAndSetLoadInProgressOrRestartRequired())
+            return;
+
+        _ = Dispatcher.BeginInvoke(async () =>
+        {
+            RefreshOrders();
+
+            if (await _orderListMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                RefreshOrdersObserver();
+        });
+        #endregion Stage 7 (for multithreading)
     }
 
     /// <summary>

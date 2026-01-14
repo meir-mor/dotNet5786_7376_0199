@@ -1,4 +1,5 @@
-﻿using PL.Order;
+﻿using PL.Helpers;
+using PL.Order;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -66,14 +67,21 @@ public partial class MainWindow : Window
 
     #region Observers
 
+    // Stage 7: Mutex objects for thread-safe observer updates
+    private readonly ObserverMutex _clockMutex = new();
+    private readonly ObserverMutex _configMutex = new();
+
     /// <summary>
     /// Observer method invoked by BL when the clock updates.
     /// This method marshals the update to the UI thread and assigns the new clock value to <see cref="CurrentTime"/>.
     /// </summary>
     private void ClockObserver()
     {
-        // BL might call observers on a background thread — marshal to UI thread.
-        Dispatcher.Invoke(() =>
+        #region Stage 7 (for multithreading)
+        if (_clockMutex.CheckAndSetLoadInProgressOrRestartRequired())
+            return;
+
+        _ = Dispatcher.BeginInvoke(async () =>
         {
             try
             {
@@ -83,7 +91,11 @@ public partial class MainWindow : Window
             {
                 // Swallow exceptions here; keep UI stable.
             }
+
+            if (await _clockMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                ClockObserver();
         });
+        #endregion Stage 7 (for multithreading)
     }
 
     /// <summary>
@@ -92,7 +104,11 @@ public partial class MainWindow : Window
     /// </summary>
     private void ConfigObserver()
     {
-        Dispatcher.Invoke(() =>
+        #region Stage 7 (for multithreading)
+        if (_configMutex.CheckAndSetLoadInProgressOrRestartRequired())
+            return;
+
+        _ = Dispatcher.BeginInvoke(async () =>
         {
             try
             {
@@ -102,7 +118,11 @@ public partial class MainWindow : Window
             {
                 // Ignore observer errors to avoid UI disruption.
             }
+
+            if (await _configMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                ConfigObserver();
         });
+        #endregion Stage 7 (for multithreading)
     }
 
     #endregion

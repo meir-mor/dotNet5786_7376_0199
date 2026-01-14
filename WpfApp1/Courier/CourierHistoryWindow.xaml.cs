@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using PL.Helpers;
 
 namespace PL.Courier;
 
@@ -20,6 +21,9 @@ public partial class CourierHistoryWindow : Window
         DependencyProperty.Register(nameof(Deliveries), typeof(IEnumerable<BO.ClosedDeliveryInList>),
             typeof(CourierHistoryWindow), new PropertyMetadata(null));
 
+    // Stage 7: Mutex for thread-safe observer updates
+    private readonly ObserverMutex _historyMutex = new();
+
     public CourierHistoryWindow(int courierId)
     {
         _courierId = courierId;
@@ -31,8 +35,18 @@ public partial class CourierHistoryWindow : Window
 
     private void NotificationCallback()
     {
-        // Dispatch to UI thread if needed
-        Dispatcher.Invoke(() => LoadHistory());
+        #region Stage 7 (for multithreading)
+        if (_historyMutex.CheckAndSetLoadInProgressOrRestartRequired())
+            return;
+
+        _ = Dispatcher.BeginInvoke(async () =>
+        {
+            LoadHistory();
+
+            if (await _historyMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                NotificationCallback();
+        });
+        #endregion Stage 7 (for multithreading)
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)

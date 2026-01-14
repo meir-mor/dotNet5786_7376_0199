@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BO;
+using PL.Helpers;
 
 namespace PL.Courier;
 
@@ -23,6 +24,9 @@ public partial class CourierListWindow : Window
     /// Backing storage of full courier list retrieved from BL (unfiltered).
     /// </summary>
     private List<BO.CourierInList> _allCouriers = new();
+
+    // Stage 7: Mutex for thread-safe observer updates
+    private readonly ObserverMutex _courierListMutex = new();
 
     /// <summary>
     /// Selected shipment-type filter (bound TwoWay from ComboBox SelectedValue).
@@ -62,22 +66,33 @@ public partial class CourierListWindow : Window
     /// </summary>
     private void RefreshCouriers()
     {
-        try
+        #region Stage 7 (for multithreading)
+        if (_courierListMutex.CheckAndSetLoadInProgressOrRestartRequired())
+            return;
+
+        _ = Dispatcher.BeginInvoke(async () =>
         {
-            var managerId = s_bl.Admin.GetConfig().ManagerId;
-            // single BL call to get couriers (BL does not support shipment-type filter currently)
-            _allCouriers = s_bl.Courier.GetCouriersList(managerId).ToList();
-            ApplyShipmentFilter();
-        }
-        catch (BO.BlException ex)
-        {
-            MessageBox.Show($"Unable to load couriers", "Load Couriers", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-        catch (Exception)
-        {
-            MessageBox.Show("An unexpected error occurred while loading couriers. Please try again or contact support.",
-                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+            try
+            {
+                var managerId = s_bl.Admin.GetConfig().ManagerId;
+                // single BL call to get couriers (BL does not support shipment-type filter currently)
+                _allCouriers = s_bl.Courier.GetCouriersList(managerId).ToList();
+                ApplyShipmentFilter();
+            }
+            catch (BO.BlException ex)
+            {
+                MessageBox.Show($"Unable to load couriers", "Load Couriers", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An unexpected error occurred while loading couriers. Please try again or contact support.",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            if (await _courierListMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                RefreshCouriers();
+        });
+        #endregion Stage 7 (for multithreading)
     }
 
     /// <summary>
