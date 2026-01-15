@@ -38,16 +38,19 @@ internal static class AdminManager //stage 4
         // - Go through all students to update properties that are affected by the clock update
         // - (students become not active after 5 years etc.)
 
-        //TO_DO: //stage 4
-        _ = Task.Run(() => CourierManager.PeriodicCouriersUpdates(oldClock, newClock)); //stage 4. to be removed in stage 7 and replaced as below
-        _ = Task.Run(() => DeliveryManager.PeriodicDeliveriesUpdates(oldClock, newClock)); //stage 4. to be removed in stage 7 and replaced as below
-        _ = Task.Run(() => OrderManager.PeriodicOrdersUpdates(oldClock, newClock)); //stage 4. to be removed in stage 7 and replaced as below
-        //...
+        //  //TO_DO: //stage 4
+        //  _ = Task.Run(() => CourierManager.PeriodicCouriersUpdates(oldClock, newClock)); //stage 4. to be removed in stage 7 and replaced as below
+        //  _ = Task.Run(() => DeliveryManager.PeriodicDeliveriesUpdates(oldClock, newClock)); //stage 4. to be removed in stage 7 and replaced as below
+        //  _ = Task.Run(() => OrderManager.PeriodicOrdersUpdates(oldClock, newClock)); //stage 4. to be removed in stage 7 and replaced as below
+        // ...
 
-        //TO_DO: //stage 7
-        //if (_periodicTask is null || _periodicTask.IsCompleted) //stage 7
-        //    _periodicTask = Task.Run(() => StudentManager.PeriodicStudentsUpdates(oldClock, newClock));
-        //...
+        TO_DO: //stage 7
+        if (_periodicTask is null || _periodicTask.IsCompleted) //stage 7
+            _periodicTask = Task.Run(() =>
+            {
+                CourierManager.PeriodicCouriersUpdates(oldClock, newClock);
+                OrderManager.PeriodicOrdersUpdates(oldClock, newClock);
+            });
 
         //Calling all the observers of clock update
         ClockUpdatedObservers?.Invoke(); //prepared for stage 5
@@ -229,7 +232,7 @@ internal static class AdminManager //stage 4
         {
             s_interval = interval;
             s_stop = false;
-            s_thread = new Thread(clockRunner) { Name = "ClockRunner" };
+            s_thread = new Thread(ClockRunner) { Name = "ClockRunner" };
             s_thread.Start();
         }
     }
@@ -248,7 +251,7 @@ internal static class AdminManager //stage 4
 
     private static Task? _simulateTask = null;
 
-    private static void clockRunner()
+    private static void ClockRunner()
     {
         while (!s_stop)
         {
@@ -258,7 +261,7 @@ internal static class AdminManager //stage 4
             //Add calls here to any logic simulation that was required in stage 7
             //for example: course registration simulation
              if (_simulateTask is null || _simulateTask.IsCompleted)//stage 7
-                _simulateTask = Task.Run(() => CourierManager.SimulateCourierRegistrationAndGrade());
+                _simulateTask = Task.Run(CourierManager.SimulateCourierRegistrationAndGrade);
 
             //etc...
 

@@ -268,7 +268,7 @@ internal static class OrderManager
         try
         {
             List<DO.Order> orders;
-            Config config;
+            IConfig config;
 
             lock (AdminManager.BlMutex) // stage 7
             {
@@ -276,7 +276,7 @@ internal static class OrderManager
                     .ReadAll(o => o.Status != DO.OrderStatus.Closed)
                     .ToList(); 
 
-                config = (Config)s_dal.Config;
+                config = s_dal.Config;
             }
 
             foreach (var doOrder in orders)
@@ -425,6 +425,8 @@ internal static class OrderManager
             {
                 throw new BO.BlInvalidOperationException($"Order {orderId} cannot be cancelled (status {status})");
             }
+            lock (AdminManager.BlMutex)
+                s_dal.Order.Update(order with { Status = DO.OrderStatus.Closed });
 
             Observers.NotifyItemUpdated(orderId);
             Observers.NotifyListUpdated();

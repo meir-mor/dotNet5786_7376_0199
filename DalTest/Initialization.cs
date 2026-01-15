@@ -47,7 +47,7 @@ public static class Initialization
                 _ => OrderStatus.Closed
             };
 
-            var createdAt = s_dal.Config.Clock.AddMinutes(-s_rand.Next(60, 10080));
+            var createdAt = s_dal.Config.Clock.AddMinutes(-s_rand.Next(60, 300));
 
             var volume = s_rand.Next(1, 100);
 

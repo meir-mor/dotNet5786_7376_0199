@@ -1,8 +1,10 @@
 ﻿using BO;
 using DalApi;
 using System;
+using DO;
 using DeliveryEndType = DO.DeliveryEndType;
 using Factory = DalApi.Factory;
+using Order = DO.Order;
 using OrderStatus = DO.OrderStatus;
 
 namespace Helpers;
@@ -117,13 +119,13 @@ internal static class CourierManager
         {
             List<DO.Delivery> deliveries;
             List<DO.Courier> couriers;
-            Config config;
+            IConfig config;
 
             lock (AdminManager.BlMutex) // stage 7
             {
                 deliveries = s_dal.Delivery.ReadAll().ToList();
                 couriers = s_dal.Courier.ReadAll().ToList();
-                config = (Config)s_dal.Config;//!!??
+                config = s_dal.Config;
             }
 
             var result = couriers.Select(c =>
@@ -417,7 +419,7 @@ internal static class CourierManager
             foreach (var doCourier in list)
             {
                 List<DO.Delivery> delivery;
-                Config config;
+                IConfig config;
 
                 lock (AdminManager.BlMutex) // stage 7
                 {
@@ -426,7 +428,7 @@ internal static class CourierManager
                         .OrderByDescending(d => d.EndTime)
                         .ToList();
 
-                    config = (Config)s_dal.Config;
+                    config = s_dal.Config;
                 }
 
                 bool courierDispose;
@@ -474,7 +476,7 @@ internal static class CourierManager
         if (s_simulationMutex.CheckAndSetInProgress())
             return;
 
-        List<int> updatedOrderIds = new();
+        List<int> updatedOrderIds = [];
 
         try
         {
@@ -491,7 +493,7 @@ internal static class CourierManager
                 {
                     if (s_rand.Next(0, 100) > 40)
                         continue;
-                    IEnumerable<BO.OpenOrderInList> openOrders =
+                    var openOrders =
                         await OrderManager.GetOpenOrdersForCourier(courier.Id,courier.Id,null,null);
 
                     var list = openOrders.ToList();
@@ -505,8 +507,8 @@ internal static class CourierManager
                 }
                 else
                 {
-                    DO.Delivery delivery;
-                    DO.Order order;
+                    Delivery? delivery;
+                    Order? order;
 
                     lock (AdminManager.BlMutex)
                     {

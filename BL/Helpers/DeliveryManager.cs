@@ -228,7 +228,7 @@ internal static class DeliveryManager
         try
         {
             List<DO.Delivery> deliveries;
-           Config config;
+           IConfig config;
 
             lock (AdminManager.BlMutex) // stage 7
             {
@@ -236,7 +236,7 @@ internal static class DeliveryManager
                     .ReadAll(d => d.DeliveryEndType == null && d.EndTime == null)
                     .ToList(); 
 
-                config = (Config)s_dal.Config;
+                config = s_dal.Config;
             }
 
             foreach (var doDelivery in deliveries)
