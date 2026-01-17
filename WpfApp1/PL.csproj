@@ -27,4 +27,15 @@
         <PackageReference Include="CSharpMarkup.WinUI.LiveChartsCore.SkiaSharpView" Version="3.1.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Converters.cs">
+        <DependentUpon>Enums.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Images\Background_delivery.jpeg" />
+      <Resource Include="Images\Background_delivery.jpeg" />
+    </ItemGroup>
+
 </Project>

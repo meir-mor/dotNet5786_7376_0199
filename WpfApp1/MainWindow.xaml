@@ -10,16 +10,28 @@
         Loaded="Window_Loaded"
         Closed="Window_Closed">
 
+
+   
+    
     <Window.Resources>
         <!-- Converters for simulator UI -->
         <local:InverseBoolConverter x:Key="InverseBoolConverter" />
         <local:SimulatorButtonTextConverter x:Key="SimulatorButtonTextConverter" />
     </Window.Resources>
 
+   
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Images/Background_delivery.jpeg"
+                        Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <Border Background="#33000000"/>
+
     <Grid Margin="12">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="3.5*" />
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -29,12 +41,12 @@
 
         <!-- Top header -->
         <TextBlock Grid.ColumnSpan="3" Grid.Row="0" Text="Administration - Control Panel"
-                   FontSize="18" FontWeight="Bold" Margin="6" />
+                   FontSize="18" FontWeight="Bold" Margin="6"   Foreground="#007AFF" />
 
         <!-- Left: System clock, advance buttons, and Simulator controls -->
         <StackPanel Grid.Column="0" Grid.Row="1" Margin="6" VerticalAlignment="Top">
             <!-- Current system clock (bound to CurrentTime DP) -->
-            <Label Content="{Binding CurrentTime}" FontWeight="Bold" FontSize="18" HorizontalAlignment="Left" />
+            <Label Content="{Binding CurrentTime}" FontWeight="Bold" FontSize="18" HorizontalAlignment="Left"   Foreground="#007AFF"/>
 
             <!-- Buttons to advance the clock (disabled when simulator is running) -->
             <Button Content="Add One Minute" Click="BtnAdvanceMinute_Click" Margin="4"
@@ -49,7 +61,7 @@
                     IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
 
             <!-- Simulator Controls Section -->
-            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="0,15,0,0" Padding="8">
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="0,15,0,0" Padding="8" Background="#FAE8FAFF">
                 <StackPanel>
                     <TextBlock Text="Simulator" FontWeight="Bold" Margin="0,0,0,8" />
 
@@ -68,8 +80,9 @@
         </StackPanel>
 
         <!-- Center: Configuration variables -->
-        <Border Grid.Column="1" Grid.Row="1" Margin="6" Padding="8" BorderBrush="LightGray" BorderThickness="1"
-                CornerRadius="4">
+        <Border Grid.Column="1" Grid.Row="1" Margin="6" Padding="8" Background="#FAE8FAFF"
+                BorderBrush="LightGray" BorderThickness="1"
+                CornerRadius="4" VerticalAlignment="Top">
             <StackPanel>
                 <TextBlock Text="Configuration (editable)" FontWeight="Bold" Margin="0,0,0,8" />
 
@@ -152,7 +165,7 @@
 
         <!-- Right: DB operations (disabled when simulator is running) -->
         <StackPanel Grid.Column="2" Grid.Row="1" Margin="6" VerticalAlignment="Top">
-            <TextBlock Text="Database" FontWeight="Bold" Margin="0,0,0,8" />
+            <TextBlock Text="Database" FontSize="18" FontWeight="Bold" Margin="0,0,0,8"   Foreground="#007AFF" />
             <!-- Initialize DB -->
             <Button Content="Initialize DB" Click="BtnInitializeDb_Click" Margin="4"
                     IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
@@ -160,5 +173,6 @@
             <Button Content="Reset DB" Click="BtnResetDb_Click" Margin="4"
                     IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}" />
         </StackPanel>
+    </Grid>
     </Grid>
 </Window>
