@@ -1,5 +1,8 @@
 ﻿using BO;
 using DalApi;
+using DO;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Factory = DalApi.Factory;
 using OrderStatus = DO.OrderStatus;
@@ -138,7 +141,7 @@ internal static class OrderManager
     {
         try
         {
-            var (lat, lon) =await Tools.GetCoordinates(order.FullAddress);
+            var (lat, lon) = await Tools.GetCoordinates(order.FullAddress);
             if (lat is null || lon is null)
             {
                 throw new BO.BlUnexpectedException("DAL: invalid coordinates");
@@ -163,7 +166,63 @@ internal static class OrderManager
 
             lock (AdminManager.BlMutex)
                 s_dal.Order.Create(doOrder);
-            Observers.NotifyItemUpdated(doOrder.Id);
+
+            var activeCouriers = s_dal.Courier.ReadAll()
+                .Where(c => c.IsActive)
+                .Select(c => new BO.Courier
+                {
+                    Id = c.Id,
+                    FullName = c.Name,
+                    PhoneNumber = c.Phone,
+                    Email = c.Email,
+                    Password = c.Password,
+                    IsActive = c.IsActive,
+                    MaxDistance = c.MaximumDistance,
+                    ShipmentType = (BO.ShipmentType)(int)c.ShipmentType,
+                    StartWorkTime = c.StartingWork
+                })
+                .ToList();
+
+            var Latitude_m = s_dal.Config.Latitude ?? 0;
+            var Longitude_m = s_dal.Config.Longitude ?? 0;
+
+            var eligibleCouriers = new List<BO.Courier>();
+
+            foreach (var c in activeCouriers)
+            {
+                var distanceType = (DO.ShipmentType)(int)c.ShipmentType;
+
+                var distance = await Tools.CalculateDistance(
+                    Latitude_m, Longitude_m,
+                    doOrder.Latitude, doOrder.Longitude,
+                    distanceType
+                );
+
+                if (distance <= (c.MaxDistance ?? double.MaxValue))
+                    eligibleCouriers.Add(c);
+            }
+            foreach (var courier in eligibleCouriers)
+            {
+                if (string.IsNullOrWhiteSpace(courier.Email)) continue;
+
+                var mail = new System.Net.Mail.MailMessage();
+                mail.From = new System.Net.Mail.MailAddress("myrm07996@gmail.com");
+                mail.To.Add(courier.Email);
+                mail.Subject = "New Delivery Order Available";
+                mail.Body = $"Hello {courier.FullName},\n\n" +
+                            $"A new delivery order is available for you.\n\n" +
+                            $"Order ID: {doOrder.Id}\n" +
+                            $"Address: {doOrder.Address}\n" +
+                            $"Customer: {doOrder.CustomerName}\n" +
+                            $"Phone: {doOrder.CustomerPhone}\n\n" +
+                            $"Please log in to the system if you wish to accept this order.\n\n" +
+                            $"Best regards,\nDelivery System";
+
+                _ = OrderManager.SendEmailAsync(mail);
+            }
+            
+
+                Observers.NotifyItemUpdated(doOrder.Id);
             Observers.NotifyListUpdated();
         }
         catch (DO.DalAlreadyExistsException ex)
@@ -420,6 +479,19 @@ internal static class OrderManager
 
                 lock (AdminManager.BlMutex)
                     s_dal.Delivery.Update(updated);
+
+                var courier = s_dal.Courier.Read(delivery.CourierId);
+                MailMessage mail = new MailMessage();
+
+                mail.From = new MailAddress("myrm07996@gmail.com");
+                mail.To.Add(courier!.Email);
+                mail.Subject = "Cancel Call Notification";
+                mail.Body = $"Hello {courier.Name},\n\n" +
+                    $"At " + AdminManager.Now + $", the manager has cancelled your assignment for delivery {delivery.Id}.\n" +
+                    "Please contact the manager for further details.\n\n" +
+                    "Best regards,\nYour Organization\n";
+
+                _ = OrderManager.SendEmailAsync(mail);
             }
             else
             {
@@ -430,6 +502,8 @@ internal static class OrderManager
 
             Observers.NotifyItemUpdated(orderId);
             Observers.NotifyListUpdated();
+
+            
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -445,6 +519,30 @@ internal static class OrderManager
         }
     }
 
+    /// <summary>
+    /// sending an email.
+    /// </summary>
+    /// <param name="email">the email to send</param>
+    public static async Task SendEmailAsync(MailMessage email)
+    {
+
+        try
+        {
+            SmtpClient smtpServer = new SmtpClient("smtp.gmail.com");
+
+            smtpServer.Port = 587;
+            smtpServer.Credentials = new NetworkCredential("myrm07996@gmail.com", "");
+            smtpServer.EnableSsl = true;
+
+            await smtpServer.SendMailAsync(email);
+        }
+        catch (Exception ex)
+        {
+            // Handle exception
+            throw new BlException($"Exception caught in SendEmail(): {ex.Message}");
+        }
+
+    }
     public static void CompleteDelivery(int requesterId, int courierId, int deliveryId,
     DO.DeliveryEndType endType = DO.DeliveryEndType.Supplied)
     {
@@ -778,4 +876,6 @@ Safe Travels!
         if (timeRemaining <= riskRange) return ScheduleStatus.AtRisk;
         return ScheduleStatus.OnTime;
     }
+
+
 }
