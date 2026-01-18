@@ -6,6 +6,13 @@
         Background="WhiteSmoke"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="pack://application:,,,/Images/im.jpg"
+                        Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <Border Background="#33000000"/>
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -31,5 +38,6 @@
             <Button Content="Login" Width="80" Height="30" Margin="5" Click="BtnLogin_Click" IsDefault="True" />
             <Button Content="Cancel" Width="80" Height="30" Margin="5" Click="BtnCancel_Click" IsCancel="True" />
         </StackPanel>
+    </Grid>
     </Grid>
 </Window>

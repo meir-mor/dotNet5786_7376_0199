@@ -36,6 +36,26 @@
     <ItemGroup>
       <None Remove="Images\Background_delivery.jpeg" />
       <Resource Include="Images\Background_delivery.jpeg" />
+      <None Remove="Images\order_m1.jpeg.png" />
+      <None Remove="Images\order_m1.png" />
+      <Resource Include="Images\order_m1.png" />
+      <None Remove="Images\images.jpg" />
+      <None Remove="Images\orders.jpg" />
+      <Resource Include="Images\orders.jpg" />
+      <None Remove="Images\order_m.jpg" />
+      <Resource Include="Images\order_m.jpg" />
+      <None Remove="Images\order.jpg" />
+      <Resource Include="Images\order.jpg" />
+      <None Remove="Images\new_order.webp" />
+      <Resource Include="Images\new_order.webp" />
+      <None Remove="Images\my_order.png" />
+      <Resource Include="Images\my_order.png" />
+      <None Remove="Images\m_courier.jpg" />
+      <Resource Include="Images\m_courier.jpg" />
+      <None Remove="Images\courier.jpg" />
+      <Resource Include="Images\courier.jpg" />
+      <None Remove="Images\im.jpg" />
+      <Resource Include="Images\im.jpg" />
     </ItemGroup>
 
 </Project>

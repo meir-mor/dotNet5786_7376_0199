@@ -8,7 +8,14 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
+    
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="pack://application:,,,/Images/m_courier.jpg"
+                        Stretch="UniformToFill"/>
+        </Grid.Background>
 
+        <Border Background="#33000000"/>
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" /> <RowDefinition Height="Auto" /> <RowDefinition Height="*" />
@@ -56,8 +63,13 @@
                         Margin="4" />
         </Grid>
 
-        <GroupBox Grid.Row="2" Header="Current Order Status" Margin="0,10,0,10">
-            <StackPanel Margin="10">
+        <GroupBox Grid.Row="2"
+                  Header="Current Order Status"
+                  Margin="0,10,0,10">
+
+            <Border Background="White"
+                    Padding="10"
+                    CornerRadius="4">            <StackPanel Margin="10">
                 <StackPanel
                     Visibility="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToVisibilityConverter}}">
                     <TextBlock Text="Order In Progress Details (View Only):" FontWeight="SemiBold"
@@ -112,6 +124,7 @@
                 <TextBlock Visibility="{Binding CurrentCourier.OrderInProgress, Converter={StaticResource NullToHiddenConverter}}"
                            Foreground="Gray" FontStyle="Italic" HorizontalAlignment="Center" Margin="10" />
             </StackPanel>
+                </Border>
         </GroupBox>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10">
@@ -152,5 +165,6 @@
             <Button Content="History" Width="100" Margin="5" Click="BtnHistory_Click" />
             <Button Content="Close" Width="80" Margin="5" Click="BtnClose_Click" />
         </StackPanel>
+    </Grid>
     </Grid>
 </Window>

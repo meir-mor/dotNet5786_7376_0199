@@ -10,6 +10,14 @@
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
         Loaded="Window_Loaded"
         Closed="Window_Closed">
+    
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="pack://application:,,,/Images/courier.jpg"
+                        Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <Border Background="#33000000"/>
     <Grid Margin="12">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="160" />
@@ -88,4 +96,6 @@
                 VerticalAlignment="Bottom"
                 Click="BtnAddUpdate_Click" />
     </Grid>
+    </Grid>
+
 </Window>

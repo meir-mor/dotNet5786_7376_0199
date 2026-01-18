@@ -19,6 +19,12 @@
         </Style>
     </Window.Resources>
 
+    <Grid>
+      
+        <Grid.Background>
+            <ImageBrush ImageSource="pack://application:,,,/Images/new_order.webp"
+                        Stretch="UniformToFill"/>
+        </Grid.Background>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -165,4 +171,6 @@
             <Button Content="Close" Width="120" Margin="5" Click="BtnClose_Click" />
         </StackPanel>
     </Grid>
+    </Grid>
+
 </Window>
