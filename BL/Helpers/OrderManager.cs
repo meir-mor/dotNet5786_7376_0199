@@ -362,12 +362,38 @@ internal static class OrderManager
     {
         DO.Delivery? delivery;
         lock (AdminManager.BlMutex)
-             delivery = s_dal.Delivery.Read(d => d.OrderId == o.Id);
-        var timeRemaining = o.CreatedAt + s_dal.Config.MaxDeliveryTime - s_dal.Config.Clock;
+            delivery = s_dal.Delivery.Read(d => d.OrderId == o.Id);
+
+        var now = s_dal.Config.Clock;
+
+        var maxDeliveryTime = s_dal.Config.MaxDeliveryTime; 
+
+        var riskRange = s_dal.Config.RiskRange; 
+
+        var timeRemaining = (o.CreatedAt + maxDeliveryTime) - now;
+        if (timeRemaining < TimeSpan.Zero) timeRemaining = TimeSpan.Zero;
+
+        ScheduleStatus scheduleStatus;
+        if (o.Status == DO.OrderStatus.Closed)
+        {
+            scheduleStatus = ScheduleStatus.OnTime;
+            timeRemaining = TimeSpan.Zero;
+        }
+        else if (timeRemaining <= TimeSpan.Zero)
+        {
+            scheduleStatus = ScheduleStatus.Late;
+        }
+        else if (timeRemaining <= riskRange)
+        {
+            scheduleStatus = ScheduleStatus.AtRisk;
+        }
+        else
+        {
+            scheduleStatus = ScheduleStatus.OnTime;
+        }
+
         var timeItsTook = delivery?.EndTime - o.CreatedAt;
-        var scheduleStatus = timeItsTook >= s_dal.Config.MaxDeliveryTime ? ScheduleStatus.Late
-            : timeItsTook >= s_dal.Config.RiskRange ? ScheduleStatus.AtRisk
-            : ScheduleStatus.OnTime;
+
         return new BO.Order
         {
             Id = o.Id,
@@ -376,21 +402,20 @@ internal static class OrderManager
             FullAddress = o.Address,
             Latitude = o.Latitude,
             Longitude = o.Longitude,
-            AerialDistance = Tools.CalculateHaversineDistance(s_dal.Config.Latitude, s_dal.Config.Longitude,
-                o.Latitude, o.Longitude),
+            AerialDistance = Tools.CalculateHaversineDistance(
+                s_dal.Config.Latitude, s_dal.Config.Longitude, o.Latitude, o.Longitude),
             CustomerFullName = o.CustomerName,
             CustomerPhone = o.CustomerPhone,
             Volume = o.Volume,
             OrderOpenTime = o.CreatedAt,
             OrderStatus = (BO.OrderStatus)(int)o.Status,
-            ScheduleStatus = o.Status == OrderStatus.Closed ? scheduleStatus : timeRemaining <= TimeSpan.Zero ? ScheduleStatus.Late :
-                timeRemaining >= s_dal.Config.RiskRange ? ScheduleStatus.AtRisk : ScheduleStatus.OnTime,
-            TimeRemaining = o.Status == OrderStatus.Closed ? TimeSpan.Zero : timeRemaining < TimeSpan.Zero ? TimeSpan.Zero : timeRemaining,
-            MaxDeliveryTime = o.CreatedAt + s_dal.Config.MaxDeliveryTime,
+            ScheduleStatus = scheduleStatus,
+            TimeRemaining = timeRemaining,
+            MaxDeliveryTime = o.CreatedAt + maxDeliveryTime,
             ExpectedDeliveryTime = delivery != null
                 ? delivery.StartTime + TimeSpan.FromHours(
                     delivery.ActualDistance ?? 0 / s_dal.Config.GetAverageSpeed(delivery.ShipmentType))
-                : o.CreatedAt + s_dal.Config.MaxDeliveryTime,
+                : o.CreatedAt + maxDeliveryTime,
             Deliveries = []
         };
     }
