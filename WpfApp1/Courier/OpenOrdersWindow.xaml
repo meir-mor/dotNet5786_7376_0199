@@ -40,7 +40,7 @@
                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Canvas.Background>
                         <ImageBrush
-                            ImageSource="C:\Users\ARI\source\repos\dotNet5786_7376_0199\WpfApp1\Images\israel_map.png"
+                            ImageSource="pack://application:,,,/Images/israel_map.png"
                             Stretch="Fill" Opacity="0.5" />
                     </Canvas.Background>
                     <TextBlock Text="Select an order to view map" Canvas.Left="10" Canvas.Top="10" Foreground="Black"

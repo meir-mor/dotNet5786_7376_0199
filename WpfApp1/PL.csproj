@@ -56,6 +56,10 @@
       <Resource Include="Images\courier.jpg" />
       <None Remove="Images\im.jpg" />
       <Resource Include="Images\im.jpg" />
+      <None Remove="Images\israel_map.png" />
+      <Resource Include="Images\israel_map.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
 
 </Project>
